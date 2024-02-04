@@ -1,15 +1,34 @@
-import express, { type Response, type Request } from "express";
+import express, { 
+  type Response, 
+  type Request 
+}                       from "express";
+import { PrismaClient } from "@prisma/client";
+import { authRoute }    from "./routes/auth.route";
+import cors             from "cors";
+import dotenv           from "dotenv";
+import bodyParser       from "body-parser";
+import serverError      from "./middleware/serverError";
 
-const app = express();
+dotenv.config();
+
+export const app    = express();
+export const prisma = new PrismaClient();
+
+app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/', async (request: Request, response: Response) => {
   try {
-    response.send('Initial state')
+    response.send('API works')
   } catch (error) {
-    console.log('Server error')    
+    console.log('API error')    
   }
 });
 
+app.use('/auth', authRoute);
+
+app.use(serverError);
+
 app.listen(4000, () => {
   console.log("Server started");
-})
+});
