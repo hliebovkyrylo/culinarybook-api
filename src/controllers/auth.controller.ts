@@ -93,15 +93,11 @@ class AuthController {
     let mailOptions = {
       from   : process.env.NODEMAILER_USER as string,
       to     : user?.email,
-      subject: "Confirmation of your Recipebook account✅",
-      text   : "Your verification code: " + code
+      subject: "Your confirmation code for Recipebook✅",
+      text   : "Your confirmation code: " + code
     };
 
-    await transporter.sendMail(mailOptions, (error) => {
-      if (error) {
-        console.log(error);
-      }
-    });
+    await transporter.sendMail(mailOptions);
 
     response.send("Code sent!");
   };
@@ -128,9 +124,15 @@ class AuthController {
       });
     } 
 
-    await authService.UpdateEmailStatus(user.id);
+    if (user.isVerified === false) {
+      await authService.UpdateEmailStatus(user.id);
+      await authService.DeleteVerficationCode(trueVerificationCode.id);
 
-    response.send("Email confirmed!");
+      response.send("Your account is verified!");
+    } else {
+      response.send("Your account is already verified!");
+    }
+    
   };
 };
 

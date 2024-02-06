@@ -31,6 +31,14 @@ class AuthService {
       },
     });
   };
+
+  public async DeleteVerficationCode(codeId: string) {
+    return await prisma.verificationCode.delete({
+      where: {
+        id: codeId,
+      },
+    });
+  };
 };
 
 export const authService = new AuthService();
