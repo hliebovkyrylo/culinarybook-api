@@ -19,6 +19,12 @@ export const CreateVerificationCodeSchema = z.object({
   code  : z.string(),
 });
 
+export const ChangePasswordSchema = z.object({
+  oldPassword: z.string(),
+  newPassword: z.string().min(8),
+});
+
 export type ISignUpSchema                 = z.infer<typeof SignUpSchema>;
 export type ISignInSchema                 = z.infer<typeof SignInSchema>;
 export type ICreateVerificationCodeSchema = z.infer<typeof CreateVerificationCodeSchema>;
+export type IChangePasswordSchema         = z.infer<typeof ChangePasswordSchema>;

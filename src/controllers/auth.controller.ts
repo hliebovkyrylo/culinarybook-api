@@ -3,9 +3,9 @@ import {
   type Response 
 }                            from "express";
 import crypto                from "crypto";
-import nodemailer            from "nodemailer";
 import bcrypt                from "bcrypt";
 import { 
+  IChangePasswordSchema,
   ISignInSchema, 
   ISignUpSchema 
 }                            from "../schemas/auth.schema";
@@ -14,7 +14,7 @@ import { authService }       from "../services/auth.service";
 import { createAccessToken } from "../utils/token";
 
 class AuthController {
-  public async SignUp(request: Request, response: Response) {
+  public async signUp(request: Request, response: Response) {
     const data = request.body as ISignUpSchema;
 
     const userWithSuchEmail    = await userService.getUserByEmail(data.email);
@@ -41,7 +41,7 @@ class AuthController {
     response.send({ accessToken });
   };
 
-  public async SignIn(request: Request, response: Response) {
+  public async signIn(request: Request, response: Response) {
     const data = request.body as ISignInSchema;
 
     const user = await userService.getUserByEmail(data.email);
@@ -67,42 +67,49 @@ class AuthController {
     response.send({ accessToken });
   };
 
-  public async SendVerifyCode(request: Request, response: Response) {
+  public async sendConfirmationCode(request: Request, response: Response) {
     const user = request.user;
 
     const code       = crypto.randomInt(100000, 999999).toString();
     const hashedCode = await bcrypt.hash(code, 8);
 
-    if (user) {
-      await authService.CreateVerificationCode({ userId: user.id, code: hashedCode });
-    } else {
-      response.status(401).send({
+    if (!user) {
+      return response.status(401).send({
         code   : "unauthorized",
         message: "Unauthorized",
       });
     }
 
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.NODEMAILER_USER as string,
-        pass: process.env.NODEMAILER_PASS as string,
-      },
-    });
-
-    let mailOptions = {
-      from   : process.env.NODEMAILER_USER as string,
-      to     : user?.email,
-      subject: "Your confirmation code for Recipebook✅",
-      text   : "Your confirmation code: " + code
-    };
-
-    await transporter.sendMail(mailOptions);
+    await authService.CreateCode({ userId: user.id, code: hashedCode });
+    await authService.SendCode(user.email, code);
 
     response.send("Code sent!");
   };
 
-  public async CheckVerificationCode(request: Request, response: Response) {
+  public async resendConfirmationCode(request: Request, response: Response) {
+    const user = request.user;
+
+    const oldCode = user && await authService.GetVerificationCodeByUserId(user.id);
+
+    if (!oldCode) {
+      return response.status(404).send({
+        code   : "failed-to-get-code",
+        message: "Failed to get code!",
+      });
+    }
+
+    await authService.DeleteVerficationCode(oldCode.id);
+
+    const code       = crypto.randomInt(100000, 999999).toString();
+    const hashedCode = await bcrypt.hash(code, 8);
+
+    await authService.CreateCode({ userId: user.id, code: hashedCode });
+    await authService.SendCode(user.email, code);
+
+    response.send("Code sent!");
+  };
+
+  public async verifyEmail(request: Request, response: Response) {
     const user       = request.user;
     const verifyCode = request.body.code as string;
 
@@ -124,15 +131,45 @@ class AuthController {
       });
     } 
 
-    if (user.isVerified === false) {
-      await authService.UpdateEmailStatus(user.id);
+    if (user.isVerified) {
       await authService.DeleteVerficationCode(trueVerificationCode.id);
-
-      response.send("Your account is verified!");
-    } else {
-      response.send("Your account is already verified!");
+      return response.status(400).send({
+        code   : "account-already-verified",
+        message: "Your account is already verified!"
+      });
     }
-    
+
+    await authService.UpdateEmailStatus(user.id);
+    await authService.DeleteVerficationCode(trueVerificationCode.id);
+
+    response.send("Your account is verified!");
+  };
+
+  public async changePassword(request: Request, response: Response) {
+    const user = request.user;
+    const data = request.body as IChangePasswordSchema;
+  
+    if (!user) {
+      return response.status(401).send({
+        code   : "unauthorized",
+        message: "You are not authorized!",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(data.oldPassword, user.password);
+
+    if (!isMatch) {
+      return response.status(401).send({
+        code   : "password-mismatch",
+        message: "Password mismatch!",
+      });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(data.newPassword, 8);
+
+    await userService.updatePassword(user.id, hashedNewPassword);
+
+    response.send("Password changed!");
   };
 };
 
