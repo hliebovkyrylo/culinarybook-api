@@ -80,7 +80,9 @@ class AuthController {
       });
     }
 
-    await authService.CreateCode({ userId: user.id, code: hashedCode });
+    const expiryTime = Date.now() + 10 * 60 * 1000;
+
+    await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime });
     await authService.SendCode(user.email, code);
 
     response.send("Code sent!");
@@ -103,7 +105,9 @@ class AuthController {
     const code       = crypto.randomInt(100000, 999999).toString();
     const hashedCode = await bcrypt.hash(code, 8);
 
-    await authService.CreateCode({ userId: user.id, code: hashedCode });
+    const expiryTime = Date.now() + 10 * 60 * 1000;
+
+    await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime });
     await authService.SendCode(user.email, code);
 
     response.send("Code sent!");
