@@ -1,12 +1,13 @@
 import { z } from "zod";
 
 export const SignUpSchema = z.object({
-  email     : z.string().email(),
-  username  : z.string(),
-  name      : z.string(),
-  password  : z.string().min(8).max(32),
-  image     : z.string().default(""),
-  isVerified: z.boolean().default(false)
+  email           : z.string().email(),
+  username        : z.string(),
+  name            : z.string(),
+  password        : z.string().min(8).max(32),
+  image           : z.string().default(""),
+  canResetPassword: z.boolean().default(false),
+  isVerified      : z.boolean().default(false)
 });
 
 export const SignInSchema = z.object({

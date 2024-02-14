@@ -29,5 +29,5 @@ export const isCodeExprired = async (
     });
   }
 
-  next();
+  return next();
 };

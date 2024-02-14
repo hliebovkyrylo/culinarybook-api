@@ -12,9 +12,9 @@ import { userService } from "../services/user.service";
 
 
 export const isAuth = async (
-  request: Request,
+  request : Request,
   response: Response,
-  next: NextFunction
+  next    : NextFunction
 ) => {
   try {
     const accessToken = request.headers.authorization;
@@ -29,14 +29,14 @@ export const isAuth = async (
     const id   = verifyToken(accessToken);
     const user = await userService.getUserById(id);
 
-    if (user === null) {
-      response.status(404).send({
+    if (!user) {
+      return response.status(404).send({
         code   : "user-not-found",
         message: "User not found!",
       });
     }
 
-    user && (request.user = user);
+    request.user = user
 
     return next();
 
@@ -54,5 +54,7 @@ export const isAuth = async (
         message: "Access token is not valid"
       });
     }
+
+    console.log(error)
   }
 };

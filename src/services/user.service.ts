@@ -18,7 +18,7 @@ class UserService {
   };
 
   public async getUserById(id: string) {
-    return await prisma.user.findUnique({
+    return await prisma.user.findFirst({
       where: {
         id: id,
       },
@@ -34,6 +34,28 @@ class UserService {
         password: password,
       },
     });
+  };
+
+  public async allowResetPassword(userId: string) {
+    return await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        canResetPassword: true
+      }
+    })
+  };
+
+  public async prohibitResetPassword(userId: string) {
+    return await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        canResetPassword: false
+      }
+    })
   };
 };
 

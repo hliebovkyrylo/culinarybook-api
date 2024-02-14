@@ -80,6 +80,12 @@ class AuthController {
       });
     }
 
+    const isCodeAlreadyExist = await authService.GetVerificationCodeByUserId(user.id);
+
+    if (isCodeAlreadyExist !== null) {
+      await authService.DeleteVerficationCode(isCodeAlreadyExist.id);
+    }
+
     const expiryTime = Date.now() + 10 * 60 * 1000;
 
     await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime });
@@ -174,6 +180,60 @@ class AuthController {
     await userService.updatePassword(user.id, hashedNewPassword);
 
     response.send("Password changed!");
+  };
+
+  public async canResetPassword(request: Request, response: Response) {
+    const user = request.user;
+    const code = request.body.code as string;
+
+    const trueCode = user && await authService.GetVerificationCodeByUserId(user.id);
+
+    if (!trueCode) {
+      return response.status(404).send({
+        code   : "code-not-found",
+        message: "Code not found!",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(code, trueCode.code);
+
+    if (isMatch === false) {
+      response.status(401).send({
+        code   : "code-mismatch",
+        message: "Code missmatch!",
+      });
+    }
+
+    await userService.allowResetPassword(user.id);
+    await authService.DeleteVerficationCode(trueCode.id);
+
+    response.send("The code is correct!");
+  };
+
+  public async resetPassword(request: Request, response: Response) {
+    const user     = request.user;
+    const password = request.body.password;
+
+    if (!user) {
+      return response.status(401).send({
+        code   : "unauthorized",
+        message: "You are not authorized!",
+      });
+    }
+  
+    const hashedNewPassword = await bcrypt.hash(password, 8);
+
+    if (user.canResetPassword === false) {
+      return response.status(403).send({
+        code   : "Forbidden",
+        message: "No rights to reset password!",
+      });
+    }
+
+    await userService.updatePassword(user.id, hashedNewPassword);
+    await userService.prohibitResetPassword(user.id);
+
+    response.send("Password successfully restored");
   };
 };
 
