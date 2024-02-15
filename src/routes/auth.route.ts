@@ -6,8 +6,8 @@ import {
   SignInSchema,
   SignUpSchema
 }                         from "../schemas/auth.schema";
-import { isAuth }         from "../middleware/isAuth";
-import { isCodeExprired } from "../middleware/isCodeExpired";
+import { isAuth }         from "../middleware/auth/isAuth";
+import { isCodeExprired } from "../middleware/auth/isCodeExpired";
 
 export const authRoute = Router();
 

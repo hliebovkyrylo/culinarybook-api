@@ -8,6 +8,7 @@ import cors             from "cors";
 import dotenv           from "dotenv";
 import bodyParser       from "body-parser";
 import serverError      from "./middleware/serverError";
+import { userRoute }    from "./routes/user.route";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get('/', async (request: Request, response: Response) => {
 });
 
 app.use('/auth', authRoute);
+app.use('/user', userRoute);
 
 app.use(serverError);
 

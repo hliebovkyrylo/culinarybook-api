@@ -12,6 +12,7 @@ import {
 import { userService }       from "../services/user.service";
 import { authService }       from "../services/auth.service";
 import { createAccessToken } from "../utils/token";
+import { User } from "@prisma/client";
 
 class AuthController {
   public async signUp(request: Request, response: Response) {
@@ -68,17 +69,10 @@ class AuthController {
   };
 
   public async sendConfirmationCode(request: Request, response: Response) {
-    const user = request.user;
+    const user = request.user as User;
 
     const code       = crypto.randomInt(100000, 999999).toString();
     const hashedCode = await bcrypt.hash(code, 8);
-
-    if (!user) {
-      return response.status(401).send({
-        code   : "unauthorized",
-        message: "Unauthorized",
-      });
-    }
 
     const isCodeAlreadyExist = await authService.GetVerificationCodeByUserId(user.id);
 
@@ -95,7 +89,7 @@ class AuthController {
   };
 
   public async resendConfirmationCode(request: Request, response: Response) {
-    const user = request.user;
+    const user = request.user as User;
 
     const oldCode = user && await authService.GetVerificationCodeByUserId(user.id);
 
@@ -120,7 +114,7 @@ class AuthController {
   };
 
   public async verifyEmail(request: Request, response: Response) {
-    const user       = request.user;
+    const user       = request.user as User;
     const verifyCode = request.body.code as string;
 
     const trueVerificationCode = user && await authService.GetVerificationCodeByUserId(user.id);
@@ -156,15 +150,8 @@ class AuthController {
   };
 
   public async changePassword(request: Request, response: Response) {
-    const user = request.user;
+    const user = request.user as User;
     const data = request.body as IChangePasswordSchema;
-  
-    if (!user) {
-      return response.status(401).send({
-        code   : "unauthorized",
-        message: "You are not authorized!",
-      });
-    }
 
     const isMatch = await bcrypt.compare(data.oldPassword, user.password);
 
@@ -183,7 +170,7 @@ class AuthController {
   };
 
   public async canResetPassword(request: Request, response: Response) {
-    const user = request.user;
+    const user = request.user as User;
     const code = request.body.code as string;
 
     const trueCode = user && await authService.GetVerificationCodeByUserId(user.id);
@@ -211,15 +198,8 @@ class AuthController {
   };
 
   public async resetPassword(request: Request, response: Response) {
-    const user     = request.user;
+    const user     = request.user as User;
     const password = request.body.password;
-
-    if (!user) {
-      return response.status(401).send({
-        code   : "unauthorized",
-        message: "You are not authorized!",
-      });
-    }
   
     const hashedNewPassword = await bcrypt.hash(password, 8);
 
