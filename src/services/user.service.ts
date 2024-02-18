@@ -1,4 +1,5 @@
-import { prisma } from "..";
+import { prisma }                from "..";
+import { IUpdateUserInfoSchema } from "../schemas/user.schema";
 
 class UserService {
   public async getUserByEmail(email: string) {
@@ -65,6 +66,19 @@ class UserService {
           contains: username,
           mode    : "insensitive",
         },
+      },
+    });
+  };
+
+  public async updateUserInfo(userId: string, data: IUpdateUserInfoSchema) {
+    return await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        username: data.username,
+        name    : data.name,
+        image   : data.image,
       },
     });
   };
