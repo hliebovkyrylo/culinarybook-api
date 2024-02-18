@@ -57,6 +57,17 @@ class UserService {
       }
     })
   };
+
+  public async searchUsersByUsername(username: string) {
+    return await prisma.user.findMany({
+      where: {
+        username: {
+          contains: username,
+          mode    : "insensitive",
+        },
+      },
+    });
+  };
 };
 
 export const userService = new UserService();
