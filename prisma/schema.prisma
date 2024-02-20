@@ -18,6 +18,7 @@ model User {
   password         String
   vereficationCode VerificationCode[]
   Follow           Follow[]
+  Recipe           Recipe[]
 }
 
 model VerificationCode {
@@ -33,4 +34,16 @@ model Follow {
   userId     String @db.ObjectId
   followerId String @db.ObjectId
   follower   User   @relation(fields: [followerId], references: [id])
+}
+
+model Recipe {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId      String @db.ObjectId
+  title        String
+  image        String
+  coockingTime String
+  complexity   String
+  typeOfFood   String
+  ingradients  String
+  owner        User @relation(fields: [ownerId], references: [id])
 }
