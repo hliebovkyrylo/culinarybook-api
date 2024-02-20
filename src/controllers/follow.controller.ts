@@ -53,7 +53,7 @@ class FollowController {
     response.send(followers);
   };
 
-  public async getNumberUserFollowers(request: Request, response: Response) {
+  public async getUserFollowers(request: Request, response: Response) {
     const user = request.params.userId as string;
     const followers = await followService.getUserFollowers(user);
 
