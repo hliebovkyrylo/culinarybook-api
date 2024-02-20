@@ -31,6 +31,14 @@ class FollowService {
       },
     });
   };
+
+  public async getUserFollowers(userId: string) {
+    return await prisma.follow.findMany({
+      where: {
+        followerId: userId,
+      },
+    });
+  };
 };
 
 export const followService = new FollowService();

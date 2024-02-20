@@ -1,7 +1,6 @@
 import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
-import { followService } from "../services/follow.service";
-import { IFollowSchema } from "../schemas/user.schema";
+import { followService }               from "../services/follow.service";
 
 class FollowController {
   public async follow(request: Request, response: Response) {
@@ -45,6 +44,20 @@ class FollowController {
     await followService.deleteFollow(follow.id);
 
     response.send("You unfollowing!");
+  };
+
+  public async getMyFollowers(request: Request, response: Response) {
+    const user      = request.user as User;
+    const followers = await followService.getUserFollowers(user.id);
+
+    response.send(followers);
+  };
+
+  public async getNumberUserFollowers(request: Request, response: Response) {
+    const user = request.params.userId as string;
+    const followers = await followService.getUserFollowers(user);
+
+    response.send(followers);
   };
 };
 
