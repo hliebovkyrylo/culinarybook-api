@@ -17,6 +17,7 @@ model User {
   canResetPassword Boolean
   password         String
   vereficationCode VerificationCode[]
+  Follow           Follow[]
 }
 
 model VerificationCode {
@@ -25,4 +26,11 @@ model VerificationCode {
   expiryTime Int
   userId     String @db.ObjectId @unique
   user       User   @relation(fields: [userId], references: [id])
+}
+
+model Follow {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String @db.ObjectId
+  followerId String @db.ObjectId
+  follower   User   @relation(fields: [followerId], references: [id])
 }

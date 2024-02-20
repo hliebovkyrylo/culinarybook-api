@@ -51,7 +51,7 @@ class UserController {
 
     if (data.username === user.username) {
       return response.status(409).send({
-        code: "current-username",
+        code   : "current-username",
         message: "This is your current username! Please, enter another username if you want to change it."
       });
     }
