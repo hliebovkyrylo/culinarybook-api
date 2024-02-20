@@ -1,8 +1,8 @@
 import { prisma }        from "..";
-import { ICreateFollow } from "../schemas/user.schema";
+import { IFollowSchema } from "../schemas/user.schema";
 
 class FollowService {
-  public async createFollow(data: Omit<ICreateFollow, "id">) {
+  public async createFollow(data: Omit<IFollowSchema, "id">) {
     return await prisma.follow.create({ data });
   };
 
@@ -11,6 +11,23 @@ class FollowService {
       where: {
         followerId: followerId,
         userId: userId,
+      },
+    });
+  };
+
+  public async findFollow(data: IFollowSchema) {
+    return await prisma.follow.findFirst({
+      where: {
+        followerId: data.followerId,
+        userId    : data.userId,
+      },
+    });
+  };
+
+  public async deleteFollow(followId: string) {
+    return await prisma.follow.delete({
+      where: {
+        id: followId,
       },
     });
   };

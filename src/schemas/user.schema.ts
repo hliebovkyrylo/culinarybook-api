@@ -6,10 +6,10 @@ export const UdpateUserInfoSchema = z.object({
   image   : z.string(),
 });
 
-export const CreateFollowSchema = z.object({
+export const FollowSchema = z.object({
   followerId: z.string(),
   userId    : z.string(),
 });
 
 export type IUpdateUserInfoSchema = z.infer<typeof UdpateUserInfoSchema>;
-export type ICreateFollow         = z.infer<typeof CreateFollowSchema>;
+export type IFollowSchema        = z.infer<typeof FollowSchema>;
