@@ -22,6 +22,14 @@ class RecipeService {
       data: data,
     });
   };
+
+  public async deleteRecipe(recipeId: string) {
+    return await prisma.recipe.delete({
+      where: {
+        id: recipeId,
+      },
+    });
+  };
 };
 
 export const recipeService = new RecipeService();

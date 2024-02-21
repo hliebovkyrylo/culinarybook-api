@@ -27,13 +27,19 @@ class RecipeController {
   };
 
   public async update(request: Request, response: Response) {
-    const user     = request.user as User;
     const recipeId = request.params.recipeId as string;
     const data     = request.body as IUpdateRecipeSchema;
 
     const updatedRecipe = await recipeService.updateRecipe(recipeId, data);
 
     response.send(updatedRecipe);
+  };
+
+  public async delete(request: Request, response: Response) {
+    const recipeId = request.params.recipeId as string;
+    await recipeService.deleteRecipe(recipeId);
+
+    response.send("Recipe deleted!");
   };
 };
 

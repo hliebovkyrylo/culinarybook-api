@@ -15,3 +15,4 @@ export const recipeRoute = Router();
 recipeRoute.post("/create", isAuth, isVerifiedAccount, validate(CreateRecipeSchema), recipeController.create);
 recipeRoute.get("/:recipeId", accessToRecipe, recipeController.getRecipe);
 recipeRoute.patch("/:recipeId/update", isAuth, isVerifiedAccount, isRecipeOwner, validate(UpdateRecipeSchema), recipeController.update);
+recipeRoute.delete("/:recipeId/delete", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.delete);
