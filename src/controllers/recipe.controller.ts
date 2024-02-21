@@ -11,6 +11,20 @@ class RecipeController {
 
     response.send(recipe);
   };
+
+  public async getRecipe(request: Request, response: Response) {
+    const recipeId = request.params.recipeId as string;
+    const recipe   = await recipeService.getRecipeById(recipeId);
+
+    if (recipe === null) {
+      return response.status(404).send({
+        code   : "recipe-not-found",
+        message: "Recipe not found!"
+      });
+    }
+
+    response.send(recipe);
+  }
 };
 
 export const recipeController = new RecipeController();
