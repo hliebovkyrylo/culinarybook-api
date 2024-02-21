@@ -1,5 +1,5 @@
 import { prisma }              from "..";
-import { ICreateRecipeSchema } from "../schemas/recipe.schema";
+import { ICreateRecipeSchema, IUpdateRecipeSchema } from "../schemas/recipe.schema";
 
 class RecipeService {
   public async createRecipe(data: Omit<ICreateRecipeSchema, "id">) {
@@ -11,6 +11,15 @@ class RecipeService {
       where: {
         id: recipeId,
       },
+    });
+  };
+
+  public async updateRecipe(recipeId: string, data: IUpdateRecipeSchema) {
+    return await prisma.recipe.update({
+      where: {
+        id: recipeId,
+      },
+      data: data,
     });
   };
 };

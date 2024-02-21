@@ -6,7 +6,7 @@ import {
 import { recipeService } from "../services/recipe.service";
 import { verifyToken }   from "../utils/token";
 
-export const isRecipeOwner = async (request: Request, response: Response, next: NextFunction) => {
+export const accessToRecipe = async (request: Request, response: Response, next: NextFunction) => {
   let userId: string = "";
   const accessToken  = request.headers.authorization as string;
 
