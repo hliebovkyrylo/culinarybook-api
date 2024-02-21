@@ -45,5 +45,6 @@ model Recipe {
   complexity   String
   typeOfFood   String
   ingradients  String
+  isPublic     Boolean
   owner        User @relation(fields: [ownerId], references: [id])
 }

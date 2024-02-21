@@ -10,6 +10,7 @@ import bodyParser       from "body-parser";
 import serverError      from "./middleware/serverError";
 import { userRoute }    from "./routes/user.route";
 import { followRoute }  from "./routes/follow.route";
+import { recipeRoute }  from "./routes/recipe.route";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.get('/', async (request: Request, response: Response) => {
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
 app.use('/follow', followRoute);
+app.use('/recipe', recipeRoute);
 
 app.use(serverError);
 
