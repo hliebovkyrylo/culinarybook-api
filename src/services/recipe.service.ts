@@ -1,5 +1,8 @@
 import { prisma }              from "..";
-import { ICreateRecipeSchema, IUpdateRecipeSchema } from "../schemas/recipe.schema";
+import { 
+  ICreateRecipeSchema, 
+  IUpdateRecipeSchema 
+}                              from "../schemas/recipe.schema";
 
 class RecipeService {
   public async createRecipe(data: Omit<ICreateRecipeSchema, "id">) {

@@ -12,7 +12,7 @@ import {
 import { userService }       from "../services/user.service";
 import { authService }       from "../services/auth.service";
 import { createAccessToken } from "../utils/token";
-import { User } from "@prisma/client";
+import { User }              from "@prisma/client";
 
 class AuthController {
   public async signUp(request: Request, response: Response) {
