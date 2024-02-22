@@ -30,6 +30,31 @@ class LikeController {
 
     response.send("You liked it!")
   };
+
+  public async removeLike(request: Request, response: Response) {
+    const user   = request.user as User;
+    const likeId = request.params.likeId as string;
+
+    const like = await likeService.getLikeById(likeId);
+
+    if (like === null) {
+      return response.status(404).send({
+        code   : "like-not-found!",
+        message: "Like not found!",
+      });
+    }
+
+    if (user.id !== like.userId) {
+      return response.status(403).send({
+        code   : "fordbidden",
+        message: "You not have access to change it!"
+      });
+    }
+
+    await likeService.removeLike(likeId);
+
+    response.send("Like removed!");
+  };
 };
 
 export const likeController = new LikeController();

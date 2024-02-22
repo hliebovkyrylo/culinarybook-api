@@ -14,11 +14,27 @@ class LikeService {
     });
   };
 
+  public async getLikeById(likeId: string) {
+    return await prisma.like.findFirst({
+      where: {
+        id: likeId,
+      },
+    });
+  };
+
   public async getUniqueLike(data: ILikeSchema) {
     return await prisma.like.findFirst({
       where: {
         userId  : data.userId,
         recipeId: data.recipeId,
+      },
+    });
+  };
+
+  public async removeLike(likeId: string) {
+    return await prisma.like.delete({
+      where: {
+        id: likeId,
       },
     });
   };

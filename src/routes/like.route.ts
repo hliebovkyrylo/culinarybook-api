@@ -6,3 +6,4 @@ import { likeController } from "../controllers/like.controller";
 export const likeRoute = Router();
 
 likeRoute.post("/create/:recipeId", isAuth, isVerifiedAccount, likeController.createLike);
+likeRoute.delete("/:likeId/remove", isAuth, isVerifiedAccount, likeController.removeLike);
