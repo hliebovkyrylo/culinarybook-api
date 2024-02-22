@@ -16,3 +16,4 @@ recipeRoute.post("/create", isAuth, isVerifiedAccount, validate(CreateRecipeSche
 recipeRoute.get("/:recipeId", accessToRecipe, recipeController.getRecipe);
 recipeRoute.patch("/:recipeId/update", isAuth, isVerifiedAccount, isRecipeOwner, validate(UpdateRecipeSchema), recipeController.update);
 recipeRoute.delete("/:recipeId/delete", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.delete);
+recipeRoute.get("/my/liked", isAuth, isVerifiedAccount, recipeController.getLikedRecipes);

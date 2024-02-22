@@ -2,6 +2,7 @@ import { User }                         from "@prisma/client";
 import { type Request, type Response  } from "express";
 import { recipeService }                from "../services/recipe.service";
 import { ICreateRecipeSchema, IUpdateRecipeSchema }          from "../schemas/recipe.schema";
+import { RecipePreviewDTO } from "../dtos/recipe.dto";
 
 class RecipeController {
   public async create(request: Request, response: Response) {
@@ -40,6 +41,13 @@ class RecipeController {
     await recipeService.deleteRecipe(recipeId);
 
     response.send("Recipe deleted!");
+  };
+
+  public async getLikedRecipes(request: Request, response: Response) {
+    const user    = request.user as User;
+    const recipes = await recipeService.getLikedRecipesByUserId(user.id);
+
+    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 };
 

@@ -30,6 +30,27 @@ class RecipeService {
       },
     });
   };
+
+  public async getLikedRecipesByUserId(userId: string) {
+    const liked = await prisma.like.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        recipeId: true,
+      },
+    });
+
+    const recipeIds = liked.map(id => id.recipeId);
+
+    return await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: recipeIds,
+        },
+      },
+    });
+  };
 };
 
 export const recipeService = new RecipeService();
