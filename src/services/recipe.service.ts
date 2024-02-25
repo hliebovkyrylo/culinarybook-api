@@ -1,8 +1,8 @@
-import { prisma }              from "..";
-import { 
-  ICreateRecipeSchema, 
-  IUpdateRecipeSchema 
-}                              from "../schemas/recipe.schema";
+import { prisma } from "..";
+import {
+  ICreateRecipeSchema,
+  IUpdateRecipeSchema
+} from "../schemas/recipe.schema";
 
 class RecipeService {
   public async createRecipe(data: Omit<ICreateRecipeSchema, "id">) {
@@ -53,6 +53,31 @@ class RecipeService {
         },
       },
     });
+  };
+
+  public async getRecommendedRecipesByKeyword(keyword: string) {
+    return await prisma.recipe.findMany({
+      where: {
+        title: {
+          contains: keyword,
+        },
+      },
+      take: 16,
+    });
+  };
+
+  public async getPopularRecipes() {
+    const recipes = await prisma.recipe.findMany();
+
+    return await Promise.all(recipes.map(async (recipe) => {
+      const likesCount = await prisma.like.count({
+        where: {
+          recipeId: recipe.id,
+        },
+      });
+
+      return { ...recipe, likesCount };
+    }));
   };
 };
 
