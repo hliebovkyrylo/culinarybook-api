@@ -93,6 +93,24 @@ class RecipeService {
       },
     });
   }; 
+
+  public async getVisitedRecipes(userId: string) {
+    return await prisma.visited.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+  };
+
+  public async getRecipesByIds(recipeIds: string[]) {
+    return await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: recipeIds
+        }
+      },
+    });
+  };
 };
 
 export const recipeService = new RecipeService();

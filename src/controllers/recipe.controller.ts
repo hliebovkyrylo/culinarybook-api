@@ -105,6 +105,16 @@ class RecipeController {
 
     response.send(recommendedRecipes.map(recommendedRecipe => new RecipePreviewDTO(recommendedRecipe)));
   };
+
+  public async getVisitedRecipes(request: Request, response: Response) {
+    const user           = request.user as User;
+    const visitedRecipes = await recipeService.getVisitedRecipes(user.id);
+
+    const recipeIds = visitedRecipes.map(recipe => recipe.recipeId);
+    const recipes   = await recipeService.getRecipesByIds(recipeIds);
+
+    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
+  };
 };
 
 export const recipeController = new RecipeController();

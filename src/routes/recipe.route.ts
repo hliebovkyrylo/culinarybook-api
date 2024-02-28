@@ -18,3 +18,4 @@ recipeRoute.patch("/:recipeId/update", isAuth, isVerifiedAccount, isRecipeOwner,
 recipeRoute.delete("/:recipeId/delete", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.delete);
 recipeRoute.get("/my/liked", isAuth, isVerifiedAccount, recipeController.getLikedRecipes);
 recipeRoute.get("/getRecommendedRecipes", recipeController.getRecommendedRecipes);
+recipeRoute.get("/my/visited", isAuth, isVerifiedAccount, recipeController.getVisitedRecipes);
