@@ -20,5 +20,11 @@ export const UpdateRecipeSchema = z.object({
   ingradients : z.string(),
 });
 
-export type ICreateRecipeSchema = z.infer<typeof CreateRecipeSchema>;
-export type IUpdateRecipeSchema = z.infer<typeof UpdateRecipeSchema>;
+export const CreateVisitedRecipe = z.object({
+  recipeId: z.string(),
+  userId  : z.string(),
+});
+
+export type ICreateRecipeSchema   = z.infer<typeof CreateRecipeSchema>;
+export type IUpdateRecipeSchema   = z.infer<typeof UpdateRecipeSchema>;
+export type ICreateVisitedRedcipe = z.infer<typeof CreateVisitedRecipe>;

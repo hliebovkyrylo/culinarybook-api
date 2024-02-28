@@ -1,8 +1,9 @@
-import { prisma } from "..";
 import {
   ICreateRecipeSchema,
+  ICreateVisitedRedcipe,
   IUpdateRecipeSchema
-} from "../schemas/recipe.schema";
+}                         from "../schemas/recipe.schema";
+import { prisma }         from "..";
 
 class RecipeService {
   public async createRecipe(data: Omit<ICreateRecipeSchema, "id">) {
@@ -79,6 +80,19 @@ class RecipeService {
       return { ...recipe, likesCount };
     }));
   };
+
+  public async createVisitedRecipe(data: Omit<ICreateVisitedRedcipe, "id">) {
+    return await prisma.visited.create({ data });
+  };
+
+  public async getVisitedRecipeByIds(recipeId: string, userId: string) {
+    return await prisma.visited.findFirst({
+      where: {
+        userId: userId,
+        recipeId: recipeId,
+      },
+    });
+  }; 
 };
 
 export const recipeService = new RecipeService();

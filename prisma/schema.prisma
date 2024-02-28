@@ -20,6 +20,7 @@ model User {
   follow           Follow[]
   recipe           Recipe[]
   like             Like[]
+  Visited          Visited[]
 }
 
 model VerificationCode {
@@ -49,9 +50,18 @@ model Recipe {
   isPublic     Boolean
   owner        User @relation(fields: [ownerId], references: [id])
   like         Like[]
+  Visited      Visited[]
 }
 
 model Like {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId String @db.ObjectId
+  userId   String @db.ObjectId
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Visited {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   recipeId String @db.ObjectId
   userId   String @db.ObjectId

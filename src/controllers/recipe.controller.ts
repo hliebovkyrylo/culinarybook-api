@@ -7,7 +7,8 @@ import {
 }                                       from "../schemas/recipe.schema";
 import { RecipePreviewDTO }             from "../dtos/recipe.dto";
 import natural                          from "natural";
-import { prisma } from "..";
+import { verifyToken }                  from "../utils/token";
+
 class RecipeController {
   public async create(request: Request, response: Response) {
     const user   = request.user as User;
@@ -18,14 +19,24 @@ class RecipeController {
   };
 
   public async getRecipe(request: Request, response: Response) {
-    const recipeId = request.params.recipeId as string;
-    const recipe   = await recipeService.getRecipeById(recipeId);
+    const recipeId    = request.params.recipeId as string;
+    const recipe      = await recipeService.getRecipeById(recipeId);
+    const accessToken = request.headers.authorization;
 
     if (recipe === null) {
       return response.status(404).send({
         code   : "recipe-not-found",
         message: "Recipe not found!"
       });
+    }
+
+    if (accessToken) {
+      const userId           = verifyToken(accessToken);
+      const isAlreadyVisited = await recipeService.getVisitedRecipeByIds(recipe.id, userId);
+
+      if (isAlreadyVisited === null) {
+        await recipeService.createVisitedRecipe({ userId: userId, recipeId: recipe.id });
+      }
     }
 
     response.send(recipe);
