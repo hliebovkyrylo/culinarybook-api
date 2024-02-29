@@ -9,7 +9,7 @@ import {
 import { RecipePreviewDTO }             from "../dtos/recipe.dto";
 import natural                          from "natural";
 import { verifyToken }                  from "../utils/token";
-import { stepService } from "../services/step.service";
+import { stepService }                  from "../services/step.service";
 
 class RecipeController {
   public async create(request: Request, response: Response) {
@@ -122,6 +122,13 @@ class RecipeController {
     const data     = request.body as Omit<ICreateStepSchema, "recipeId">[];
     const recipeId = request.params.recipeId as string;
     const steps    = await stepService.createStep(data.map(step => ({ ...step, recipeId })));
+
+    response.send(steps);
+  };
+
+  public async getSteps(request: Request, response: Response) {
+    const recipeId = request.params.recipeId as string;
+    const steps    = await stepService.getStepsByRecipeId(recipeId);
 
     response.send(steps);
   };

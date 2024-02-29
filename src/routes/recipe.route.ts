@@ -1,6 +1,5 @@
 import {
-  CreateRecipeSchema, 
-  CreateStepSchema, 
+  CreateRecipeSchema,
   UpdateRecipeSchema 
 }                             from "../schemas/recipe.schema";
 import { Router }             from "express";
@@ -20,4 +19,5 @@ recipeRoute.delete("/:recipeId/delete", isAuth, isVerifiedAccount, isRecipeOwner
 recipeRoute.get("/my/liked", isAuth, isVerifiedAccount, recipeController.getLikedRecipes);
 recipeRoute.get("/getRecommendedRecipes", recipeController.getRecommendedRecipes);
 recipeRoute.get("/my/visited", isAuth, isVerifiedAccount, recipeController.getVisitedRecipes);
-recipeRoute.post("/createStep/:recipeId", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.createSteps);
+recipeRoute.post("/:recipeId/createStep", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.createSteps);
+recipeRoute.get("/:recipeId/steps", recipeController.getSteps);
