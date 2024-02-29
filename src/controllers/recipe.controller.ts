@@ -3,11 +3,13 @@ import { type Request, type Response  } from "express";
 import { recipeService }                from "../services/recipe.service";
 import { 
   ICreateRecipeSchema, 
+  ICreateStepSchema, 
   IUpdateRecipeSchema 
 }                                       from "../schemas/recipe.schema";
 import { RecipePreviewDTO }             from "../dtos/recipe.dto";
 import natural                          from "natural";
 import { verifyToken }                  from "../utils/token";
+import { stepService } from "../services/step.service";
 
 class RecipeController {
   public async create(request: Request, response: Response) {
@@ -114,6 +116,14 @@ class RecipeController {
     const recipes   = await recipeService.getRecipesByIds(recipeIds);
 
     response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
+  };
+
+  public async createSteps(request: Request, response: Response) {
+    const data     = request.body as Omit<ICreateStepSchema, "recipeId">[];
+    const recipeId = request.params.recipeId as string;
+    const steps    = await stepService.createStep(data.map(step => ({ ...step, recipeId })));
+
+    response.send(steps);
   };
 };
 

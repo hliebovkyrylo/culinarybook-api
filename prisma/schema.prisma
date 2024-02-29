@@ -53,6 +53,7 @@ model Recipe {
   like         Like[]
   Visited      Visited[]
   Saved        Saved[]
+  Step         Step[]
 }
 
 model Like {
@@ -77,4 +78,12 @@ model Saved {
   userId   String @db.ObjectId
   recipe   Recipe @relation(fields: [recipeId], references: [id])
   user     User   @relation(fields: [userId], references: [id])
+}
+
+model Step {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId        String @db.ObjectId
+  stepNumber      Int
+  stepDescription String
+  recipe          Recipe @relation(fields: [recipeId], references: [id])
 }

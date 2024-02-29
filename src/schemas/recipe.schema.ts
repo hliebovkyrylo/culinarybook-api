@@ -25,6 +25,13 @@ export const CreateVisitedRecipe = z.object({
   userId  : z.string(),
 });
 
+export const CreateStepSchema = z.object({
+  recipeId       : z.string(),
+  stepNumber     : z.number(),
+  stepDescription: z.string().min(3).max(600),
+});
+
 export type ICreateRecipeSchema   = z.infer<typeof CreateRecipeSchema>;
 export type IUpdateRecipeSchema   = z.infer<typeof UpdateRecipeSchema>;
 export type ICreateVisitedRedcipe = z.infer<typeof CreateVisitedRecipe>;
+export type ICreateStepSchema     = z.infer<typeof CreateStepSchema>;

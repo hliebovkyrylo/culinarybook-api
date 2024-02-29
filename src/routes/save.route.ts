@@ -2,7 +2,7 @@ import { Router }            from "express";
 import { isAuth }            from "../middleware/auth/isAuth";
 import { isVerifiedAccount } from "../middleware/auth/isVerified";
 import { saveController }    from "../controllers/save.controller";
-import { accessToRecipe } from "../middleware/recipe/accessToRecipe";
+import { accessToRecipe }    from "../middleware/recipe/accessToRecipe";
 
 export const saveRoute = Router();
 
