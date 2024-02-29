@@ -6,10 +6,11 @@ class LikeService {
     return await prisma.like.create({ data });
   };
 
-  public async getLikeByRecipeId(recipeId: string) {
+  public async getLikeByIds(data: Omit<ILikeSchema, "id">) {
     return await prisma.like.findFirst({
       where: {
-        recipeId: recipeId,
+        userId  : data.userId,
+        recipeId: data.recipeId,
       },
     });
   };
@@ -22,19 +23,17 @@ class LikeService {
     });
   };
 
-  public async getUniqueLike(data: ILikeSchema) {
-    return await prisma.like.findFirst({
+  public async removeLike(data: Omit<ILikeSchema, "id">) {
+    const like = await prisma.like.findFirst({
       where: {
         userId  : data.userId,
         recipeId: data.recipeId,
       },
     });
-  };
-
-  public async removeLike(likeId: string) {
+    
     return await prisma.like.delete({
       where: {
-        id: likeId,
+        id: like?.id,
       },
     });
   };

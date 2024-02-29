@@ -17,7 +17,7 @@ class LikeController {
       });
     }
 
-    const alreadyLiked = await likeService.getUniqueLike({ userId: user.id, recipeId: recipeId });
+    const alreadyLiked = await likeService.getLikeByIds({ userId: user.id, recipeId: recipeId });
 
     if (alreadyLiked !== null) {
       return response.status(409).send({
@@ -33,9 +33,9 @@ class LikeController {
 
   public async removeLike(request: Request, response: Response) {
     const user   = request.user as User;
-    const likeId = request.params.likeId as string;
+    const recipeId = request.params.recipeId as string;
 
-    const like = await likeService.getLikeById(likeId);
+    const like = await likeService.getLikeByIds({ userId: user.id, recipeId: recipeId });
 
     if (like === null) {
       return response.status(404).send({
@@ -51,7 +51,7 @@ class LikeController {
       });
     }
 
-    await likeService.removeLike(likeId);
+    await likeService.removeLike({ userId: user.id, recipeId: recipeId });
 
     response.send("Like removed!");
   };

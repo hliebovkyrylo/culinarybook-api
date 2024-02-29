@@ -21,6 +21,7 @@ model User {
   recipe           Recipe[]
   like             Like[]
   Visited          Visited[]
+  Saved            Saved[]
 }
 
 model VerificationCode {
@@ -51,6 +52,7 @@ model Recipe {
   owner        User @relation(fields: [ownerId], references: [id])
   like         Like[]
   Visited      Visited[]
+  Saved        Saved[]
 }
 
 model Like {
@@ -62,6 +64,14 @@ model Like {
 }
 
 model Visited {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId String @db.ObjectId
+  userId   String @db.ObjectId
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Saved {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   recipeId String @db.ObjectId
   userId   String @db.ObjectId
