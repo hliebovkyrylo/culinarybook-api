@@ -13,6 +13,7 @@ import { followRoute }  from "./routes/follow.route";
 import { recipeRoute }  from "./routes/recipe.route";
 import { likeRoute }    from "./routes/like.route";
 import { saveRoute }    from "./routes/save.route";
+import { commentRoute } from "./routes/comment.route";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use('/follow', followRoute);
 app.use('/recipe', recipeRoute);
 app.use('/like', likeRoute);
 app.use('/save', saveRoute);
+app.use('/comment', commentRoute);
 
 app.use(serverError);
 
