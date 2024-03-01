@@ -21,6 +21,9 @@ class StepService {
           in: stepId
         },
       },
+      orderBy: {
+        stepNumber: "asc",
+      },
     });
   };
 
