@@ -162,6 +162,40 @@ class RecipeController {
 
     response.send(updatedSteps);
   };
+
+  public async deleteStep(request: Request, response: Response) {
+    const user   = request.user as User;
+    const stepId = request.params.stepId as string;
+
+    const step = await stepService.getStepById(stepId);
+
+    if (step === null) {
+      return response.status(404).send({
+        code   : "step-not-found",
+        message: "Step not found!"
+      });
+    }
+
+    const recipe = await recipeService.getRecipeById(step.recipeId);
+
+    if (recipe === null) {
+      return response.status(404).send({
+        code   : "recipe-not-found",
+        message: "Recipe not found!"
+      })
+    }
+
+    if (user.id.toString() !== recipe.ownerId.toString()) {
+      return response.status(403).send({
+        code   : "have-no-access",
+        message: "You have no access to change it!",
+      });
+    }
+
+    await stepService.deleteStepById(stepId);
+
+    response.send("Step deleted!")
+  };
 };
 
 export const recipeController = new RecipeController();

@@ -1,4 +1,4 @@
-import { prisma }            from "..";
+import { prisma }                               from "..";
 import { ICreateStepSchema, IUpdateStepSchema } from "../schemas/recipe.schema";
 
 class StepService {
@@ -33,6 +33,22 @@ class StepService {
     );
   
     return await Promise.all(promises);
+  };
+
+  public async deleteStepById(stepId: string) {
+    return await prisma.step.delete({
+      where: {
+        id: stepId,
+      },
+    });
+  };
+
+  public async getStepById(stepId: string) {
+    return await prisma.step.findFirst({
+      where: {
+        id: stepId,
+      },
+    });
   };
 };
 
