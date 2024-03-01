@@ -1,5 +1,5 @@
 import { prisma }            from "..";
-import { ICreateStepSchema } from "../schemas/recipe.schema";
+import { ICreateStepSchema, IUpdateStepSchema } from "../schemas/recipe.schema";
 
 class StepService {
   public async createStep(data: Omit<ICreateStepSchema, "id">[]) {
@@ -12,6 +12,27 @@ class StepService {
         recipeId: recipeId,
       },
     });
+  };
+
+  public async getStepsByIds(stepId: string[]) {
+    return await prisma.step.findMany({
+      where: {
+        id: {
+          in: stepId
+        },
+      },
+    });
+  };
+
+  public async updateStepsByIds(data: IUpdateStepSchema[]) {
+    const promises = data.map(step =>
+      prisma.step.update({
+        where: { id: step.stepId },
+        data: { stepDescription: step.stepDescription },
+      })
+    );
+  
+    return await Promise.all(promises);
   };
 };
 

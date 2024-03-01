@@ -4,7 +4,8 @@ import { recipeService }                from "../services/recipe.service";
 import { 
   ICreateRecipeSchema, 
   ICreateStepSchema, 
-  IUpdateRecipeSchema 
+  IUpdateRecipeSchema, 
+  IUpdateStepSchema
 }                                       from "../schemas/recipe.schema";
 import { RecipePreviewDTO }             from "../dtos/recipe.dto";
 import natural                          from "natural";
@@ -131,6 +132,35 @@ class RecipeController {
     const steps    = await stepService.getStepsByRecipeId(recipeId);
 
     response.send(steps);
+  };
+
+  public async updateSteps(request: Request, response: Response) {
+    const user = request.user as User;
+    const data = request.body as IUpdateStepSchema[];
+
+    const stepIds        = data.map(step => step.stepId);
+    const step           = await stepService.getStepsByIds(stepIds);
+    const stepRecipesIds = step.map(step => step.recipeId);
+
+    const recipes = await recipeService.getRecipesByIds(stepRecipesIds);
+
+    if (step === null) {
+      return response.status(404).send({
+        code   : "step-not-found",
+        message: "Step not found!",
+      });
+    }
+
+    if (!recipes.map(recipe => recipe.ownerId.toString()).includes(user.id.toString())) {
+      return response.status(403).send({
+        code   : "have-no-access",
+        message: "You have no access to change it!",
+      });
+    }
+
+    const updatedSteps = await stepService.updateStepsByIds(data);
+
+    response.send(updatedSteps);
   };
 };
 

@@ -1,6 +1,7 @@
 import {
   CreateRecipeSchema,
-  UpdateRecipeSchema 
+  UpdateRecipeSchema, 
+  UpdateStepSchema
 }                             from "../schemas/recipe.schema";
 import { Router }             from "express";
 import { isAuth }             from "../middleware/auth/isAuth";
@@ -21,3 +22,4 @@ recipeRoute.get("/getRecommendedRecipes", recipeController.getRecommendedRecipes
 recipeRoute.get("/my/visited", isAuth, isVerifiedAccount, recipeController.getVisitedRecipes);
 recipeRoute.post("/:recipeId/createStep", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.createSteps);
 recipeRoute.get("/:recipeId/steps", recipeController.getSteps);
+recipeRoute.patch("/update/steps", isAuth, isVerifiedAccount, recipeController.updateSteps);

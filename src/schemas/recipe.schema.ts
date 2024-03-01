@@ -31,7 +31,13 @@ export const CreateStepSchema = z.object({
   stepDescription: z.string().min(3).max(600),
 });
 
+export const UpdateStepSchema = z.object({
+  stepId         : z.string(),
+  stepDescription: z.string().min(3).max(600),
+});
+
 export type ICreateRecipeSchema   = z.infer<typeof CreateRecipeSchema>;
 export type IUpdateRecipeSchema   = z.infer<typeof UpdateRecipeSchema>;
 export type ICreateVisitedRedcipe = z.infer<typeof CreateVisitedRecipe>;
 export type ICreateStepSchema     = z.infer<typeof CreateStepSchema>;
+export type IUpdateStepSchema     = z.infer<typeof UpdateStepSchema>;
