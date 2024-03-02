@@ -31,7 +31,14 @@ class CommentController {
     const commentDTO = new CommentDTO(comment);
 
     response.send(commentDTO);
-  }
+  };
+
+  public async getComments(request: Request, response: Response) {
+    const recipeId = request.params.recipeId as string;
+    const comments = await commentService.getCommentsByRecipeId(recipeId);
+
+    response.send(comments);
+  };
 };
 
 export const commentController = new CommentController();

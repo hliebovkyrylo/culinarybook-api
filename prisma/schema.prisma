@@ -90,11 +90,12 @@ model Step {
 }
 
 model Comment {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
-  recipeId       String @db.ObjectId
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId       String   @db.ObjectId
   authorUsername String
   authorImage    String
   commentText    String
   grade          Int
-  recipe         Recipe @relation(fields: [recipeId], references: [id])
+  recipe         Recipe   @relation(fields: [recipeId], references: [id])
+  createdAt      DateTime @default(now()) @map("createdAt")
 }

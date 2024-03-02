@@ -4,7 +4,9 @@ import { isVerifiedAccount }   from "../middleware/auth/isVerified";
 import { validate }            from "../utils/validate";
 import { CreateCommentSchema } from "../schemas/comment.schema";
 import { commentController }   from "../controllers/comment.controller";
+import { accessToRecipe }      from "../middleware/recipe/accessToRecipe";
 
 export const commentRoute = Router();
 
 commentRoute.post("/create/:recipeId", isAuth, isVerifiedAccount, validate(CreateCommentSchema), commentController.create);
+commentRoute.get("/getComments/:recipeId", accessToRecipe, commentController.getComments);
