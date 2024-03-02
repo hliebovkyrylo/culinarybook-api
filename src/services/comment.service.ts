@@ -28,6 +28,22 @@ class CommentService {
       },
     });
   };
+
+  public async deleteComment(commentId: string) {
+    return await prisma.comment.delete({
+      where: {
+        id: commentId,
+      },
+    });
+  };
+
+  public async getCommentById(commentId: string) {
+    return await prisma.comment.findFirst({
+      where: {
+        id: commentId,
+      },
+    });
+  };
 };
 
 export const commentService = new CommentService();

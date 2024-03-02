@@ -80,9 +80,10 @@ class AuthController {
       await authService.DeleteVerficationCode(isCodeAlreadyExist.id);
     }
 
-    const expiryTime = Date.now() + 10 * 60 * 1000;
+    const expiryTime = new Date();
+    expiryTime.setMinutes(expiryTime.getMinutes() + 10);
 
-    await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime });
+    await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime: expiryTime.getTime() });
     await authService.SendCode(user.email, code);
 
     response.send("Code sent!");
@@ -105,9 +106,10 @@ class AuthController {
     const code       = crypto.randomInt(100000, 999999).toString();
     const hashedCode = await bcrypt.hash(code, 8);
 
-    const expiryTime = Date.now() + 10 * 60 * 1000;
+    const expiryTime = new Date();
+    expiryTime.setMinutes(expiryTime.getMinutes() + 10);
 
-    await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime });
+    await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime: expiryTime.getDate() });
     await authService.SendCode(user.email, code);
 
     response.send("Code sent!");

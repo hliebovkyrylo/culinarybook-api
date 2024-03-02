@@ -27,7 +27,7 @@ model User {
 model VerificationCode {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   code       String
-  expiryTime Int
+  expiryTime BigInt
   userId     String @db.ObjectId @unique
   user       User   @relation(fields: [userId], references: [id])
 }

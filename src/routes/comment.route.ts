@@ -10,3 +10,4 @@ export const commentRoute = Router();
 
 commentRoute.post("/create/:recipeId", isAuth, isVerifiedAccount, validate(CreateCommentSchema), commentController.create);
 commentRoute.get("/getComments/:recipeId", accessToRecipe, commentController.getComments);
+commentRoute.delete("/:commentId/delete", isAuth, isVerifiedAccount, commentController.deleteComment);
