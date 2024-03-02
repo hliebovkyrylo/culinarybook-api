@@ -4,6 +4,8 @@ import {
   ISignUpSchema 
 }                                 from "../schemas/auth.schema";
 import nodemailer                 from "nodemailer";
+import ejs                        from "ejs";
+import path                       from "path";
 
 class AuthService {
   public async SignUp(data: Omit<ISignUpSchema, "id">) {
@@ -26,6 +28,9 @@ class AuthService {
   };
 
   public async SendCode(email: string, code: string) {
+    const templatePath = path.resolve(__dirname, '../../views/confirmationCode.ejs');
+    const html = await ejs.renderFile(templatePath, { code, email });
+
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -38,7 +43,8 @@ class AuthService {
       from   : process.env.NODEMAILER_USER as string,
       to     : email,
       subject: "Your confirmation code for Recipebook✅",
-      text   : "Your confirmation code: " + code
+      text   : "Your confirmation code",
+      html   : html,
     };
 
     await transporter.sendMail(mailOptions);
