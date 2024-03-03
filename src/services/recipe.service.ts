@@ -4,9 +4,9 @@ import {
   IUpdateRecipeSchema
 }                         from "../schemas/recipe.schema";
 import { prisma }         from "..";
-import { likeService } from "./like.service";
-import { saveService } from "./save.service";
-import { stepService } from "./step.service";
+import { likeService }    from "./like.service";
+import { saveService }    from "./save.service";
+import { stepService }    from "./step.service";
 import { commentService } from "./comment.service";
 
 class RecipeService {
@@ -135,6 +135,27 @@ class RecipeService {
         id: {
           in: recipeIds
         }
+      },
+    });
+  };
+
+  public async getSavedRecipesByUserId(userId: string) {
+    const saved = await prisma.saved.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        recipeId: true,
+      },
+    });
+
+    const recipesIds = saved.map(save => save.recipeId);
+
+    return await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: recipesIds,
+        },
       },
     });
   };

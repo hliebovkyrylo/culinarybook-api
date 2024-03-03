@@ -196,6 +196,13 @@ class RecipeController {
 
     response.send("Step deleted!")
   };
+
+  public async getSavedRecipes(request: Request, response: Response) {
+    const user         = request.user as User;
+    const savedRecipes = await recipeService.getSavedRecipesByUserId(user.id);
+
+    response.send(savedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
+  };
 };
 
 export const recipeController = new RecipeController();
