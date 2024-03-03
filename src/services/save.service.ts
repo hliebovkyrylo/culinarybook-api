@@ -29,6 +29,24 @@ class SaveService {
       },
     });
   };
+
+  public async getSavedByRecipeId(recipeId: string) {
+    return await prisma.saved.findMany({
+      where: {
+        recipeId: recipeId,
+      },
+    });
+  };
+
+  public async deleteAllSavedById(saveId: string[]) {
+    return await prisma.saved.deleteMany({
+      where: {
+        id: {
+          in: saveId,
+        },
+      },
+    });
+  };
 };
 
 export const saveService = new SaveService();

@@ -4,6 +4,10 @@ import {
   IUpdateRecipeSchema
 }                         from "../schemas/recipe.schema";
 import { prisma }         from "..";
+import { likeService } from "./like.service";
+import { saveService } from "./save.service";
+import { stepService } from "./step.service";
+import { commentService } from "./comment.service";
 
 class RecipeService {
   public async createRecipe(data: Omit<ICreateRecipeSchema, "id">) {
@@ -28,12 +32,35 @@ class RecipeService {
   };
 
   public async deleteRecipe(recipeId: string) {
+    const [recipeLikes, recipeSaved, recipeSteps, recipeComments] = await Promise.all([
+      likeService.getLikesByRecipeId(recipeId),
+      saveService.getSavedByRecipeId(recipeId),
+      stepService.getStepsByRecipeId(recipeId),
+      commentService.getCommentsByRecipeId(recipeId),
+    ]);
+  
+    if (recipeLikes) {
+      await likeService.deleteLikes(recipeLikes.map(like => like.id));
+    }
+  
+    if (recipeSaved) {
+      await saveService.deleteAllSavedById(recipeSaved.map(save => save.id));
+    }
+  
+    if (recipeSteps) {
+      await stepService.deleteStepsByIds(recipeSteps.map(step => step.id));
+    }
+  
+    if (recipeComments) {
+      await commentService.deleteCommentsByIds(recipeComments.map(comment => comment.id));
+    }
+  
     return await prisma.recipe.delete({
       where: {
         id: recipeId,
       },
     });
-  };
+  }  
 
   public async getLikedRecipesByUserId(userId: string) {
     const liked = await prisma.like.findMany({

@@ -53,6 +53,16 @@ class StepService {
       },
     });
   };
+
+  public async deleteStepsByIds(stepId: string[]) {
+    return await prisma.step.deleteMany({
+      where: {
+        id: {
+          in: stepId,
+        },
+      },
+    });
+  };
 };
 
 export const stepService = new StepService();

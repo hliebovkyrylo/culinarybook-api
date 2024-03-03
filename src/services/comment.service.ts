@@ -44,6 +44,16 @@ class CommentService {
       },
     });
   };
+
+  public async deleteCommentsByIds(commentId: string[]) {
+    return await prisma.comment.deleteMany({
+      where: {
+        id: {
+          in: commentId,
+        },
+      },
+    });
+  };
 };
 
 export const commentService = new CommentService();

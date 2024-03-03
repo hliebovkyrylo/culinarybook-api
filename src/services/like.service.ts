@@ -45,6 +45,16 @@ class LikeService {
       },
     });
   };
+
+  public async deleteLikes(likeId: string[]) {
+    return await prisma.like.deleteMany({
+      where: {
+        id: {
+          in: likeId,
+        },
+      },
+    });
+  };
 };
 
 export const likeService = new LikeService();
