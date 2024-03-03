@@ -37,6 +37,14 @@ class LikeService {
       },
     });
   };
+
+  public async getLikesByRecipeId(recipeId: string) {
+    return await prisma.like.findMany({
+      where: {
+        recipeId: recipeId,
+      },
+    });
+  };
 };
 
 export const likeService = new LikeService();

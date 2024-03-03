@@ -55,6 +55,13 @@ class LikeController {
 
     response.send("Like removed!");
   };
+
+  public async getRecipeLikes(request: Request, response: Response) {
+    const recipeId = request.params.recipeId;
+    const likes    = await likeService.getLikesByRecipeId(recipeId);
+
+    response.send(likes);
+  };
 };
 
 export const likeController = new LikeController();
