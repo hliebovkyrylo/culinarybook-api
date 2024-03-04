@@ -17,7 +17,7 @@ recipeRoute.get("/:recipeId", accessToRecipe, recipeController.getRecipe);
 recipeRoute.patch("/:recipeId/update", isAuth, isVerifiedAccount, isRecipeOwner, validate(UpdateRecipeSchema), recipeController.update);
 recipeRoute.delete("/:recipeId/delete", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.delete);
 recipeRoute.get("/my/liked", isAuth, isVerifiedAccount, recipeController.getLikedRecipes);
-recipeRoute.get("/getRecommendedRecipes", recipeController.getRecommendedRecipes);
+recipeRoute.get("/recommended/recipes", isAuth, isVerifiedAccount, recipeController.getRecommendedRecipes);
 recipeRoute.get("/my/visited", isAuth, isVerifiedAccount, recipeController.getVisitedRecipes);
 recipeRoute.post("/:recipeId/createStep", isAuth, isVerifiedAccount, isRecipeOwner, recipeController.createSteps);
 recipeRoute.get("/:recipeId/steps", recipeController.getSteps);

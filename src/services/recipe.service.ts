@@ -83,12 +83,10 @@ class RecipeService {
     });
   };
 
-  public async getRecommendedRecipesByKeyword(keyword: string) {
+  public async getAllRecipes() {
     return await prisma.recipe.findMany({
       where: {
-        title: {
-          contains: keyword,
-        },
+        isPublic: true,
       },
       take: 16,
     });
@@ -121,10 +119,18 @@ class RecipeService {
     });
   }; 
 
-  public async getVisitedRecipes(userId: string) {
-    return await prisma.visited.findMany({
+  public async getVisitedRecipesByUserId(userId: string) {
+    const visited = await prisma.visited.findMany({
       where: {
         userId: userId,
+      },
+    });
+
+    return await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: visited.map(visit => visit.recipeId),
+        },
       },
     });
   };

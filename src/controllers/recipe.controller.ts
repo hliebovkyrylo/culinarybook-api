@@ -69,54 +69,55 @@ class RecipeController {
   };
 
   public async getRecommendedRecipes(request: Request, response: Response) {
-    const user         = request.user as User;
-    const likedRecipes = await recipeService.getLikedRecipesByUserId(user.id);
+    const user = request.user as User;
 
-    if (!user) {
-      const recipesWithLikes = await recipeService.getPopularRecipes();
+    const likedRecipes   = await recipeService.getLikedRecipesByUserId(user.id);
+    const savedRecipes   = await recipeService.getSavedRecipesByUserId(user.id);
+    const visitedRecipes = await recipeService.getVisitedRecipesByUserId(user.id);
 
-      const sortedRecipes = recipesWithLikes.sort((a, b) => {
-        const likesDiff = b.likesCount - a.likesCount;
+    const recipes = likedRecipes.concat(savedRecipes, visitedRecipes);
 
-        return likesDiff;
-      });
-
-      response.send(sortedRecipes);
-    }
-
-    const tokenizer = new natural.WordTokenizer();
     let keywords: string[] = [];
 
-    likedRecipes.forEach(recipe => {
-      const words = tokenizer.tokenize(recipe.title);
-      if (words) {
-        keywords = [...keywords, ...words];
-      }
+    let recipeWords = recipes.map(recipe => {
+      return new Set(recipe.title.split(' '));
+    });
+    
+    keywords = [...recipeWords[0]].filter(word => {
+      return recipeWords.every(set => set.has(word));
     });
 
-    let recommendedRecipes: Recipe[] = [];
+    const findedRecipes = (await recipeService.getAllRecipes()).filter(recipe => recipe.ownerId !== user.id);
 
-    for (let keyword of keywords) {
-      const recipes = await recipeService.getRecommendedRecipesByKeyword(keyword);
-
-      recommendedRecipes = [...recommendedRecipes, ...recipes];
+    function containsWord(recipe: Recipe) {
+      for (let word of keywords) {
+        if (recipe.title.includes(word)) {
+          return true;
+        }
+      };
     };
 
-    recommendedRecipes = recommendedRecipes.filter((recipe, index, self) => 
-      index === self.findIndex((r) => r.id === recipe.id)
-    );
+    findedRecipes.sort((a, b) => {
+      let aContainsWord = containsWord(a);
+      let bContainsWord = containsWord(b);
 
-    response.send(recommendedRecipes.map(recommendedRecipe => new RecipePreviewDTO(recommendedRecipe)));
+      if (aContainsWord && !bContainsWord) {
+        return -1;
+      } else if (!aContainsWord && bContainsWord) {
+        return 1;
+      } else {
+        return 0;
+      }
+    })
+
+    response.send(findedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
   public async getVisitedRecipes(request: Request, response: Response) {
     const user           = request.user as User;
-    const visitedRecipes = await recipeService.getVisitedRecipes(user.id);
+    const visitedRecipes = await recipeService.getVisitedRecipesByUserId(user.id);
 
-    const recipeIds = visitedRecipes.map(recipe => recipe.recipeId);
-    const recipes   = await recipeService.getRecipesByIds(recipeIds);
-
-    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
+    response.send(visitedRecipes);
   };
 
   public async createSteps(request: Request, response: Response) {
