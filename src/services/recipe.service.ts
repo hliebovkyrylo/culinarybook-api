@@ -92,20 +92,6 @@ class RecipeService {
     });
   };
 
-  public async getPopularRecipes() {
-    const recipes = await prisma.recipe.findMany();
-
-    return await Promise.all(recipes.map(async (recipe) => {
-      const likesCount = await prisma.like.count({
-        where: {
-          recipeId: recipe.id,
-        },
-      });
-
-      return { ...recipe, likesCount };
-    }));
-  };
-
   public async createVisitedRecipe(data: Omit<ICreateVisitedRedcipe, "id">) {
     return await prisma.visited.create({ data });
   };
@@ -118,6 +104,14 @@ class RecipeService {
       },
     });
   }; 
+
+  public async getRecipeVisitsByRecipeId(recipeId: string) {
+    return await prisma.visited.findMany({
+      where: {
+        recipeId: recipeId,
+      },
+    });
+  };
 
   public async getVisitedRecipesByUserId(userId: string) {
     const visited = await prisma.visited.findMany({

@@ -8,9 +8,10 @@ import {
   IUpdateStepSchema
 }                                       from "../schemas/recipe.schema";
 import { RecipePreviewDTO }             from "../dtos/recipe.dto";
-import natural                          from "natural";
 import { verifyToken }                  from "../utils/token";
 import { stepService }                  from "../services/step.service";
+import { likeService } from "../services/like.service";
+import { commentService } from "../services/comment.service";
 
 class RecipeController {
   public async create(request: Request, response: Response) {
@@ -97,6 +98,28 @@ class RecipeController {
       };
     };
 
+    const recipesIds = recipes.map(recipe => recipe.id);
+
+    const likes = await Promise.all(recipesIds.map(recipeId => {
+      return likeService.getLikesByRecipeId(recipeId);
+    }));
+
+    const views = await Promise.all(recipesIds.map(recipeId => {
+      return recipeService.getRecipeVisitsByRecipeId(recipeId);
+    }));
+
+    const comments = await Promise.all(recipesIds.map(recipeId => {
+      return commentService.getCommentsByRecipeId(recipeId);
+    }));
+
+    function calculateScore(recipeId: string) {
+      const likesCount    = likes.flat().filter(like => like.recipeId === recipeId).length;
+      const viewsCount    = views.flat().filter(view => view.recipeId === recipeId).length;
+      const commentsCount = comments.flat().filter(comment => comment.recipeId === recipeId).length;
+    
+      return 1 * commentsCount + 2 * viewsCount + 3 * likesCount;
+    };
+
     findedRecipes.sort((a, b) => {
       let aContainsWord = containsWord(a);
       let bContainsWord = containsWord(b);
@@ -106,7 +129,7 @@ class RecipeController {
       } else if (!aContainsWord && bContainsWord) {
         return 1;
       } else {
-        return 0;
+        return calculateScore(b.id) - calculateScore(a.id);
       }
     })
 

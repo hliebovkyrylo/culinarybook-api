@@ -63,6 +63,12 @@ class StepService {
       },
     });
   };
+
+  public async getPopularRecipes() {
+    return await prisma.recipe.findMany({
+      take: 16,
+    });
+  };
 };
 
 export const stepService = new StepService();
