@@ -2,8 +2,8 @@ import {
   ICreateRecipeSchema,
   ICreateVisitedRedcipe,
   IUpdateRecipeSchema
-}                         from "../schemas/recipe.schema";
-import { prisma }         from "..";
+}                         from "../../schemas/recipe.schema";
+import { prisma }         from "../..";
 import { likeService }    from "./like.service";
 import { saveService }    from "./save.service";
 import { stepService }    from "./step.service";

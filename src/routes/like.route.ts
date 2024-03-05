@@ -1,7 +1,7 @@
 import { Router }            from "express";
 import { isAuth }            from "../middleware/auth/isAuth";
 import { isVerifiedAccount } from "../middleware/auth/isVerified";
-import { likeController }    from "../controllers/like.controller";
+import { likeController }    from "../controllers/recipe/like.controller";
 import { accessToRecipe }    from "../middleware/recipe/accessToRecipe";
 
 export const likeRoute = Router();

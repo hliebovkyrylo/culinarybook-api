@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import { User }                        from "@prisma/client";
-import { saveService }                 from "../services/save.service";
-import { recipeService }               from "../services/recipe.service";
+import { saveService }                 from "../../services/recipe/save.service";
+import { recipeService }               from "../../services/recipe/recipe.service";
 
 class SaveController {
   public async save(request: Request, response: Response) {

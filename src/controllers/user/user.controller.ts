@@ -2,10 +2,10 @@ import {
   type Request, 
   type Response 
 }                                     from "express";
-import { ProfileDTO, UserPreviewDTO } from "../dtos/user.dto";
+import { ProfileDTO, UserPreviewDTO } from "../../dtos/user.dto";
 import { User }                       from "@prisma/client";
-import { userService }                from "../services/user.service";
-import { IUpdateUserInfoSchema }      from "../schemas/user.schema";
+import { userService }                from "../../services/user/user.service";
+import { IUpdateUserInfoSchema }      from "../../schemas/user.schema";
 
 class UserController {
   public async getMe(request: Request, response: Response) {

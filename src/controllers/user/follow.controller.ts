@@ -1,6 +1,6 @@
 import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
-import { followService }               from "../services/follow.service";
+import { followService }               from "../../services/user/follow.service";
 
 class FollowController {
   public async follow(request: Request, response: Response) {

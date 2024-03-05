@@ -1,5 +1,5 @@
-import { prisma }                               from "..";
-import { ICreateStepSchema, IUpdateStepSchema } from "../schemas/recipe.schema";
+import { prisma }                               from "../..";
+import { ICreateStepSchema, IUpdateStepSchema } from "../../schemas/recipe.schema";
 
 class StepService {
   public async createStep(data: Omit<ICreateStepSchema, "id">[]) {

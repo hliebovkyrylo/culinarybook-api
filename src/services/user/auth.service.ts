@@ -1,8 +1,8 @@
-import { prisma }                 from "..";
+import { prisma }                 from "../..";
 import { 
   ICreateVerificationCodeSchema, 
   ISignUpSchema 
-}                                 from "../schemas/auth.schema";
+}                                 from "../../schemas/auth.schema";
 import nodemailer                 from "nodemailer";
 import ejs                        from "ejs";
 import path                       from "path";

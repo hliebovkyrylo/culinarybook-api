@@ -3,7 +3,7 @@ import {
   type Response, 
   type NextFunction 
 }                      from "express";
-import { authService } from "../../services/auth.service";
+import { authService } from "../../services/user/auth.service";
 
 export const isCodeExprired = async (
   request : Request,

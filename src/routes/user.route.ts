@@ -1,7 +1,7 @@
 import { Router }               from "express";
 import { isAuth }               from "../middleware/auth/isAuth";
 import { isVerifiedAccount }    from "../middleware/auth/isVerified";
-import { userController }       from "../controllers/user.controller";
+import { userController }       from "../controllers/user/user.controller";
 import { validate }             from "../utils/validate";
 import { UdpateUserInfoSchema } from "../schemas/user.schema";
 

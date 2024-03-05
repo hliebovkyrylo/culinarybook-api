@@ -1,5 +1,5 @@
 import { Router }         from "express";
-import { authController } from "../controllers/auth.controller";
+import { authController } from "../controllers/user/auth.controller";
 import { validate }       from "../utils/validate";
 import {
   ChangePasswordSchema,

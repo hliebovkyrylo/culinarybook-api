@@ -1,7 +1,7 @@
 import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
-import { likeService }                 from "../services/like.service";
-import { recipeService }               from "../services/recipe.service";
+import { likeService }                 from "../../services/recipe/like.service";
+import { recipeService }               from "../../services/recipe/recipe.service";
 
 class LikeController {
   public async createLike(request: Request, response: Response) {
