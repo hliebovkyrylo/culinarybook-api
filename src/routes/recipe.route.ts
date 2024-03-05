@@ -25,3 +25,4 @@ recipeRoute.patch("/update/steps", isAuth, isVerifiedAccount, recipeController.u
 recipeRoute.delete("/step/delete/:stepId", isAuth, isVerifiedAccount, recipeController.deleteStep);
 recipeRoute.get("/saved/get", isAuth, isVerifiedAccount, recipeController.getSavedRecipes);
 recipeRoute.get("/popular/recipes", recipeController.getPopularRecipes);
+recipeRoute.get("/", recipeController.getRecipesByTitle);

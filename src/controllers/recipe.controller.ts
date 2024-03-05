@@ -1,5 +1,5 @@
 import { Recipe, User }                 from "@prisma/client";
-import { response, type Request, type Response  } from "express";
+import { type Request, type Response  } from "express";
 import { recipeService }                from "../services/recipe.service";
 import { 
   ICreateRecipeSchema, 
@@ -10,8 +10,8 @@ import {
 import { RecipePreviewDTO }             from "../dtos/recipe.dto";
 import { verifyToken }                  from "../utils/token";
 import { stepService }                  from "../services/step.service";
-import { likeService } from "../services/like.service";
-import { commentService } from "../services/comment.service";
+import { likeService }                  from "../services/like.service";
+import { commentService }               from "../services/comment.service";
 
 class RecipeController {
   public async create(request: Request, response: Response) {
@@ -256,6 +256,13 @@ class RecipeController {
     recipes.sort((a, b) => {
       return calculateScore(b.id) - calculateScore(a.id);
     });
+
+    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
+  };
+
+  public async getRecipesByTitle(request: Request, response: Response) {
+    const recipeTitle = request.query.title as string;
+    const recipes     = await recipeService.findRecipesByTitle(recipeTitle);
 
     response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
   };

@@ -159,6 +159,18 @@ class RecipeService {
       },
     });
   };
+
+  public async findRecipesByTitle(recipeTitle: string) {
+    return await prisma.recipe.findMany({
+      where: {
+        title: {
+          contains: recipeTitle,
+          mode    : "insensitive",
+        },
+      },
+      take: 16,
+    });
+  };
 };
 
 export const recipeService = new RecipeService();
