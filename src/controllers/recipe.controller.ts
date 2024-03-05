@@ -1,5 +1,5 @@
 import { Recipe, User }                 from "@prisma/client";
-import { type Request, type Response  } from "express";
+import { response, type Request, type Response  } from "express";
 import { recipeService }                from "../services/recipe.service";
 import { 
   ICreateRecipeSchema, 
@@ -226,6 +226,38 @@ class RecipeController {
     const savedRecipes = await recipeService.getSavedRecipesByUserId(user.id);
 
     response.send(savedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
+  };
+
+  public async getPopularRecipes(request: Request, response: Response) {
+    const recipes = await recipeService.getAllRecipes();
+
+    const recipesIds = recipes.map(recipe => recipe.id);
+
+    const likes = await Promise.all(recipesIds.map(recipeId => {
+      return likeService.getLikesByRecipeId(recipeId);
+    }));
+
+    const views = await Promise.all(recipesIds.map(recipeId => {
+      return recipeService.getRecipeVisitsByRecipeId(recipeId);
+    }));
+
+    const comments = await Promise.all(recipesIds.map(recipeId => {
+      return commentService.getCommentsByRecipeId(recipeId);
+    }));
+
+    function calculateScore(recipeId: string) {
+      const likesCount    = likes.flat().filter(like => like.recipeId === recipeId).length;
+      const viewsCount    = views.flat().filter(view => view.recipeId === recipeId).length;
+      const commentsCount = comments.flat().filter(comment => comment.recipeId === recipeId).length;
+    
+      return 1 * commentsCount + 2 * viewsCount + 3 * likesCount;
+    };
+
+    recipes.sort((a, b) => {
+      return calculateScore(b.id) - calculateScore(a.id);
+    });
+
+    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 };
 
