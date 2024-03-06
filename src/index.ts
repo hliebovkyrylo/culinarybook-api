@@ -19,6 +19,7 @@ dotenv.config();
 
 export const app    = express();
 export const prisma = new PrismaClient();
+export const port   = process.env.PORT as string;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -41,6 +42,6 @@ app.use('/comment', commentRoute);
 
 app.use(serverError);
 
-app.listen(4000, () => {
+app.listen(port, () => {
   console.log("Server started");
 });
