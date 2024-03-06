@@ -4,13 +4,14 @@ import {
   type NextFunction 
 }                      from "express";
 import { authService } from "../../services/user/auth.service";
+import { User } from "@prisma/client";
 
 export const isCodeExprired = async (
   request : Request,
   response: Response,
   next    : NextFunction,
 ) => {
-  const user = request.user;
+  const user = request.user as User;
 
   const code = user && await authService.GetVerificationCodeByUserId(user.id);
 
