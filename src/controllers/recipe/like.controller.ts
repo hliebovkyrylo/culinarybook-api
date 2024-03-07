@@ -39,7 +39,7 @@ class LikeController {
 
     if (like === null) {
       return response.status(404).send({
-        code   : "like-not-found!",
+        code   : "like-not-found",
         message: "Like not found!",
       });
     }

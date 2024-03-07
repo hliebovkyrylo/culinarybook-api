@@ -140,7 +140,7 @@ class RecipeController {
     const user           = request.user as User;
     const visitedRecipes = await recipeService.getVisitedRecipesByUserId(user.id);
 
-    response.send(visitedRecipes);
+    response.send(visitedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
   public async createSteps(request: Request, response: Response) {

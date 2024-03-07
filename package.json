@@ -13,6 +13,7 @@
     "nodemailer": "^6.9.9",
     "nodemon": "^3.0.3",
     "prisma": "^5.10.2",
+    "swagger-ui-express": "^5.0.0",
     "vercel": "^33.5.3",
     "zod": "^3.22.4",
     "zod-validation-error": "^3.0.0"
@@ -36,6 +37,7 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/nodemailer": "^6.4.14",
+    "@types/swagger-ui-express": "^4.1.6",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.3"
   }

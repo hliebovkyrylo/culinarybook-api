@@ -1,0 +1,3201 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Recipebook-API",
+    "description" : "API for Recipebook application",
+    "version" : "0.1"
+  },
+  "servers" : [ {
+    "description" : "SwaggerHub API Auto Mocking",
+    "url" : "https://virtserver.swaggerhub.com/KIRILGLEBOW030/Recipebook/0.1"
+  }, {
+    "url" : "https://api-recipebook.up.railway.app"
+  } ],
+  "paths" : {
+    "/auth/sign-up" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "sign-up",
+        "description" : "",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "email" : "example@example.com",
+                  "username" : "exampleusername",
+                  "name" : "Name",
+                  "password" : "qwe123qwe",
+                  "image" : ""
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "accessToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request body",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "invalid-request-body",
+                    "message" : "Zod error message"
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Such email or username already exist",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign-in" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "sign-in",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "email" : "example@example.com",
+                  "password" : "qwe123qwe"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "accessToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request body",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "invalid-request-body",
+                    "message" : "Zod error message"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Wrong data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "wrong-data",
+                    "message" : "The entered data is not valid"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Email not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "user-not-found",
+                    "message" : "This account was not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/send-code" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "send-code",
+        "requestBody" : {
+          "content" : { }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Code sent!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/verify-email" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "check-code",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "code" : "545176"
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Your account is verified!"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Code not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-already-verified",
+                    "message" : "Your account is already verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Code not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "code-not-found",
+                    "message" : "Code not found!"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Code not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "wrong-entered-code",
+                    "message" : "Wrong entered code!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/change-password" : {
+      "patch" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "change-password",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "oldPassword" : "1234567890",
+                  "newPassword" : "qwer12341qwer"
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YmY4MmI1NzBiNmVkNjdmNjExYjljMiIsImlhdCI6MTcwNzA1MDQyOCwiZXhwIjoxNzA5NjQyNDI4fQ.a4dvnnhXtnomFe1crg3Dc8-TbSW_HBJs3Il3x6rSIwg"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Password changed!"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request body",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "invalid-request-body",
+                    "message" : "Zod error message"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "password-mismatch",
+                    "message" : "Password mismatch!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/resent-code" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "resent-code",
+        "requestBody" : {
+          "content" : { }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YmY4MmI1NzBiNmVkNjdmNjExYjljMiIsImlhdCI6MTcwNzA1MDQyOCwiZXhwIjoxNzA5NjQyNDI4fQ.a4dvnnhXtnomFe1crg3Dc8-TbSW_HBJs3Il3x6rSIwg"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Code sent!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Code not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "failed-to-get-code",
+                    "message" : "Failed to get code!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/canReset-password" : {
+      "patch" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "canReset-password",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "code" : "388865"
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "The code is correct!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "code-not-found",
+                    "message" : "Code not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password" : {
+      "patch" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "reset-password",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "password" : "zxc123zxc"
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Password successfully restored"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "Forbidden",
+                    "message" : "No rights to reset password!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/me" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "me",
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "email" : "example@example.com",
+                    "username" : "exampleusername",
+                    "name" : "Example Name",
+                    "image" : "",
+                    "isVerified" : true,
+                    "canResetPassword" : false
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userId}" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "user-byId",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "email" : "example@example.com",
+                    "username" : "exampleusername",
+                    "name" : "Example Name",
+                    "image" : "",
+                    "isVerified" : true,
+                    "canResetPassword" : false
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "user-not-found",
+                    "message" : "User not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "user-search",
+        "parameters" : [ {
+          "name" : "username",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "exampleuser"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "username" : "exampleusername",
+                    "name" : "Example Name",
+                    "image" : ""
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6c",
+                    "username" : "anotherusername",
+                    "name" : "Another Name",
+                    "image" : ""
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update" : {
+      "patch" : {
+        "tags" : [ "User" ],
+        "summary" : "user/update",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "username" : "updatedusername",
+                  "name" : "name",
+                  "image" : ""
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "required" : true,
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "email" : "example@example.com",
+                    "username" : "exampleusername",
+                    "name" : "Example Name",
+                    "image" : "",
+                    "isVerified" : true,
+                    "canResetPassword" : false
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Such username already already exist or this is current username",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/follow/{userId}" : {
+      "post" : {
+        "tags" : [ "Follow" ],
+        "summary" : "follow",
+        "requestBody" : {
+          "content" : { }
+        },
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "You following!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "You can't follow your account or already followed",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/follow/{userId}/unfollow" : {
+      "delete" : {
+        "tags" : [ "Follow" ],
+        "summary" : "follow/unfollow",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "You unfollowing!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Follow not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "unfollowed",
+                    "message" : "You are not followed it account!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/follow/getMyFollowers" : {
+      "get" : {
+        "tags" : [ "Follow" ],
+        "summary" : "follow/getMyFollowers",
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "userId" : "65e32b2280249h30f3ab3",
+                    "followerId" : "65e32b483gd5600f3bb5"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "userId" : "65e32b2280249h30f3ab3",
+                    "followerId" : "65e32b483gd5600f3bb5"
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/create" : {
+      "post" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/create",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "title" : "example title",
+                  "image" : "",
+                  "coockingTime" : "45-60 minutes",
+                  "complexity" : "middle",
+                  "typeOfFood" : "fastfood",
+                  "ingradients" : "ingradients"
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "title" : "example title",
+                    "image" : "",
+                    "coockingTime" : "45-60 minutes",
+                    "complexity" : "middle",
+                    "typeOfFood" : "fastfood",
+                    "ingradients" : "ingradients"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid request body",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "invalid-request-body",
+                    "message" : "Zod error message"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/{recipeId}" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/:recipeId",
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "ownerId" : "65cc7fb2925b86e5c4814a6b",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood",
+                    "ingradients" : "ingeradients",
+                    "isPublic" : true
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "messge" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/{recipeId}/update" : {
+      "patch" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/update",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "title" : "recipe updated title",
+                  "image" : "",
+                  "coockingTime" : "15-20 minutes",
+                  "complexity" : "easy",
+                  "typeOfFood" : "fastfood",
+                  "ingradients" : "updated ingradients"
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "ownerId" : "65cc7fb2925b86e5c4814a6b",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood",
+                    "ingradients" : "ingeradients",
+                    "isPublic" : true
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not recipe owner or not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/{recipeId}/delete" : {
+      "delete" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/delete",
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Recipe deleted!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not recipe owner or not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/my/liked" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/liked",
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/like/create/{recipeId}" : {
+      "post" : {
+        "tags" : [ "Like" ],
+        "summary" : "like/create",
+        "requestBody" : {
+          "content" : { }
+        },
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "You liked it!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found, impossible to like!"
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Already liked",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-already-liked",
+                    "message" : "You alreaddy liked this recipe!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/like/{likeId}/remove" : {
+      "delete" : {
+        "tags" : [ "Like" ],
+        "summary" : "like/remove",
+        "parameters" : [ {
+          "name" : "likeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Like removed!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account or not your like",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Like not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "like-not-found",
+                    "message" : "Like not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/my/visited" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/visited",
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/save/create/{recipeId}" : {
+      "post" : {
+        "tags" : [ "Save" ],
+        "summary" : "save/create",
+        "requestBody" : {
+          "content" : { }
+        },
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Saved!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Already saved",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "already-saved",
+                    "message" : "You alredy save this recipe!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/save/delete/{recipeId}" : {
+      "delete" : {
+        "tags" : [ "Save" ],
+        "summary" : "save/delete",
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Removed from saved!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account or not your saved",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Saved recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "saved-recipe-not-found",
+                    "message" : "Saved recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/{recipeId}/createStep" : {
+      "post" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/createStep/:recipeId",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : [ {
+                  "stepNumber" : 1,
+                  "stepDescription" : "Step description"
+                }, {
+                  "stepNumber" : 2,
+                  "stepDescription" : "Step description"
+                }, {
+                  "stepNumber" : 3,
+                  "stepDescription" : "Step description"
+                }, {
+                  "stepNumber" : 4,
+                  "stepDescription" : "Step description"
+                } ]
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 1,
+                    "stepDescription" : "Step description"
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 2,
+                    "stepDescription" : "Step description"
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 3,
+                    "stepDescription" : "Step description"
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 4,
+                    "stepDescription" : "Step description"
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account or not your recipe",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/{recipeId}/steps" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/steps/:recipeId",
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 1,
+                    "stepDescription" : "Step description"
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 2,
+                    "stepDescription" : "Step description"
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 3,
+                    "stepDescription" : "Step description"
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "recipeId" : "65cc7fb2925b86e5c384v6c",
+                    "stepNumber" : 4,
+                    "stepDescription" : "Step description"
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/update/steps" : {
+      "patch" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/update/steps",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : [ {
+                  "stepId" : "65e07437808bc2cf177b43f8",
+                  "stepDescription" : "updated desc"
+                }, {
+                  "stepId" : "65e07437808bc2cf177b43f9",
+                  "stepDescription" : "updated description"
+                } ]
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "stepId" : "65e07437808bc2cf177b43f8",
+                    "stepDescription" : "updated desc"
+                  }, {
+                    "stepId" : "65e07437808bc2cf177b43f9",
+                    "stepDescription" : "updated description"
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account or not your recipe",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Step not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "step-not-found",
+                    "message" : "Step not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/step/delete/{stepId}" : {
+      "delete" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/deleteStep/:stepId",
+        "parameters" : [ {
+          "name" : "stepId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Step deleted!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account or not your recipe",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Step not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "step-not-found",
+                    "message" : "Step not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/create/{recipeId}" : {
+      "post" : {
+        "tags" : [ "Comment" ],
+        "summary" : "comment/create",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "commentText" : "Good recipe!",
+                  "grade" : 4
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "id" : "65e48ab8309ef4e9fb4fbafb",
+                    "authorImage" : "authorimage",
+                    "authorUsername" : "authorusername",
+                    "commentText" : "Good recipe!",
+                    "grade" : 4,
+                    "createdAt" : "2024-03-06T15:36:51+00:00"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Same text",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "same-text",
+                    "message" : "You have posted more than 5 comments with the same text, please change it!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/getComments/{recipeId}" : {
+      "get" : {
+        "tags" : [ "Comment" ],
+        "summary" : "comment/getComments/:recipeId",
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e48ab8309ef4e9fb4fbafb",
+                    "authorImage" : "authorimage",
+                    "authorUsername" : "authorusername",
+                    "commentText" : "Good recipe!",
+                    "grade" : 4,
+                    "createdAt" : "2024-03-06T15:36:51+00:00"
+                  }, {
+                    "id" : "65e48ab8309ef4e9fb4fbafb",
+                    "authorImage" : "authorimage",
+                    "authorUsername" : "authorusername",
+                    "commentText" : "Very tasty!",
+                    "grade" : 5,
+                    "createdAt" : "2024-03-06T15:36:51+00:00"
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/{commentId}/delete" : {
+      "delete" : {
+        "tags" : [ "Comment" ],
+        "summary" : "comment/:commentId/delete",
+        "parameters" : [ {
+          "name" : "commentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Comment deleted!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account or not your comment",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Comment not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "comment-not-found",
+                    "message" : "Comment not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/like/{recipeId}/getAll" : {
+      "get" : {
+        "tags" : [ "Like" ],
+        "summary" : "like/:recipeId/getAll",
+        "parameters" : [ {
+          "name" : "recipeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "recipeId" : "65e32b228ff4600f3aah",
+                    "userId" : "65e32b228ff46gf6aj"
+                  }, {
+                    "id" : "65e32b2280249g600f3aa8c",
+                    "recipeId" : "65e32b2dff4600f3aah",
+                    "userId" : "65e32b228k46gf6aj"
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Recipe not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "recipe-not-found",
+                    "message" : "Recipe not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/saved/get" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/saved",
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/recommended/recipes" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/recommended",
+        "parameters" : [ {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Selected according to user interests",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "hard",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "midlle",
+                    "typeOfFood" : "fastfood"
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe/popular/recipes" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe/popular/recipes",
+        "responses" : {
+          "200" : {
+            "description" : "Selected popular recipes",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "hard",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "midlle",
+                    "typeOfFood" : "fastfood"
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recipe" : {
+      "get" : {
+        "tags" : [ "Recipe" ],
+        "summary" : "recipe?title=pizza",
+        "parameters" : [ {
+          "name" : "title",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "example"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "easy",
+                    "typeOfFood" : "fastfood"
+                  }, {
+                    "id" : "65e32b2280249d5600f3aa8c",
+                    "title" : "pizza",
+                    "image" : "",
+                    "coockingTime" : "40-60 minutes",
+                    "complexity" : "hard",
+                    "typeOfFood" : "fastfood"
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -14,6 +14,8 @@ import { recipeRoute }  from "./routes/recipe.route";
 import { likeRoute }    from "./routes/like.route";
 import { saveRoute }    from "./routes/save.route";
 import { commentRoute } from "./routes/comment.route";
+import fs               from "fs";
+import swaggerUi        from "swagger-ui-express";
 
 dotenv.config();
 
@@ -23,6 +25,19 @@ export const port   = process.env.PORT as string;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+const existAPISwaggerJson = fs.existsSync("./api-swagger.json");
+
+if (existAPISwaggerJson) {
+  const rawData = fs.readFileSync("./api-swagger.json", "utf-8");
+
+  const jsonData = JSON.parse(rawData.replace(/\$\{[A-Z_]+\}/, (match: string) => {
+    const env = match.replace(/\${([^}]+)}/, '$1');
+    return process.env[env] || '';
+  }));
+
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(jsonData));
+}
 
 app.get('/', async (request: Request, response: Response) => {
   try {
