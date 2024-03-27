@@ -20,8 +20,9 @@ model User {
   follow           Follow[]
   recipe           Recipe[]
   like             Like[]
-  Visited          Visited[]
-  Saved            Saved[]
+  visited          Visited[]
+  saved            Saved[]
+  commentReply     CommentReply[]
 }
 
 model VerificationCode {
@@ -51,10 +52,10 @@ model Recipe {
   isPublic     Boolean
   owner        User @relation(fields: [ownerId], references: [id])
   like         Like[]
-  Visited      Visited[]
-  Saved        Saved[]
-  Step         Step[]
-  Comment      Comment[]
+  visited      Visited[]
+  saved        Saved[]
+  step         Step[]
+  comment      Comment[]
 }
 
 model Like {
@@ -98,4 +99,15 @@ model Comment {
   grade          Int
   recipe         Recipe   @relation(fields: [recipeId], references: [id])
   createdAt      DateTime @default(now()) @map("createdAt")
+  commentReply   CommentReply[]
+}
+
+model CommentReply {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  commentText String 
+  commentId   String  @db.ObjectId
+  userId      String  @db.ObjectId
+  user        User    @relation(fields: [userId], references: [id])
+  comment     Comment @relation(fields: [commentId], references: [id])
+  createdAt   DateTime @default(now()) @map("createdAt")
 }
