@@ -1,5 +1,5 @@
 import { prisma }         from "../..";
-import { ICommentSchema } from "../../schemas/comment.schema";
+import { ICommentReplySchema, ICommentSchema } from "../../schemas/comment.schema";
 
 class CommentService {
   public async createComment(data: Omit<ICommentSchema, "id">) {
@@ -51,6 +51,50 @@ class CommentService {
         id: {
           in: commentId,
         },
+      },
+    });
+  };
+
+  public async createCommentReply(data: Omit<ICommentReplySchema, "id">) {
+    return await prisma.commentReply.create({ data });
+  };
+
+  public async getCommentRepliesByText(commentText: string, commentId: string, userId: string) {
+    return await prisma.commentReply.findMany({
+      where: {
+        userId     : userId,
+        commentId  : commentId,
+        commentText: {
+          contains: commentText,
+          mode    : "insensitive",
+        },
+      },
+    });
+  };
+
+  public async getCommentRepliesByCommentId(commentId: string) {
+    return await prisma.commentReply.findMany({
+      where: {
+        commentId: commentId,
+      },
+      orderBy: {
+        createdAt: "desc"
+      },
+    });
+  };
+
+  public async getCommentReplyById(commentReplyId: string) {
+    return await prisma.commentReply.findFirst({
+      where: {
+        id: commentReplyId,
+      },
+    });
+  };
+
+  public async deleteCommentReply(commentReplyId: string) {
+    return await prisma.commentReply.delete({
+      where: {
+        id: commentReplyId,
       },
     });
   };
