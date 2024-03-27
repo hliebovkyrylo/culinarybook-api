@@ -30,6 +30,12 @@ class CommentService {
   };
 
   public async deleteComment(commentId: string) {
+    await prisma.commentReply.deleteMany({
+      where: {
+        commentId: commentId,
+      },
+    });
+
     return await prisma.comment.delete({
       where: {
         id: commentId,
