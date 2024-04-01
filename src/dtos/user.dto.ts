@@ -1,7 +1,7 @@
 import { type User } from "@prisma/client";
 
 export type IUserDTO        = Omit<User, "password">;
-export type IUserPreviewDTO = Omit<User, "password" | "isVerified" | "canResetPassword" | "email">;
+export type IUserPreviewDTO = Omit<User, "password" | "isVerified" | "canResetPassword" | "email" | "isPrivate">;
 
 export class ProfileDTO implements IUserDTO {
   public id              : string;
@@ -11,6 +11,7 @@ export class ProfileDTO implements IUserDTO {
   public image           : string;
   public isVerified      : boolean;
   public canResetPassword: boolean;
+  public isPrivate       : boolean;
 
   constructor (data: IUserDTO) {
     this.id               = data.id,
@@ -20,6 +21,7 @@ export class ProfileDTO implements IUserDTO {
     this.image            = data.image,
     this.isVerified       = data.isVerified,
     this.canResetPassword = data.canResetPassword
+    this.isPrivate        = data.isPrivate
   };
 };
 

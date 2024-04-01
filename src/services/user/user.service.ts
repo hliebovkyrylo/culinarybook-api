@@ -82,6 +82,17 @@ class UserService {
       },
     });
   };
+
+  public async changeAccountType(userId: string, isPrivate: boolean) {
+    return await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        isPrivate: !isPrivate,
+      },
+    });
+  };
 };
 
 export const userService = new UserService();

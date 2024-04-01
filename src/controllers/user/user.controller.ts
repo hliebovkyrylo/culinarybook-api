@@ -61,6 +61,13 @@ class UserController {
 
     response.send({ ...updatedUserDTO });
   };
+
+  public async updateAccountType(request: Request, response: Response) {
+    const user = request.user as User;
+    await userService.changeAccountType(user.id, user.isPrivate);
+
+    response.send("Account type changed!");
+  }
 };
 
 export const userController = new UserController();
