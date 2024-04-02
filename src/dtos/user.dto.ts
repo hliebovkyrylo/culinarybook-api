@@ -9,6 +9,7 @@ export class ProfileDTO implements IUserDTO {
   public username        : string;
   public name            : string;
   public image           : string;
+  backgroundImage        : string;
   public isVerified      : boolean;
   public canResetPassword: boolean;
   public isPrivate       : boolean;
@@ -19,6 +20,7 @@ export class ProfileDTO implements IUserDTO {
     this.username         = data.username,
     this.name             = data.name,
     this.image            = data.image,
+    this.backgroundImage  = data.backgroundImage,
     this.isVerified       = data.isVerified,
     this.canResetPassword = data.canResetPassword
     this.isPrivate        = data.isPrivate
@@ -26,15 +28,17 @@ export class ProfileDTO implements IUserDTO {
 };
 
 export class UserPreviewDTO implements IUserPreviewDTO {
-  public id      : string;
-  public username: string;
-  public name    : string;
-  public image   : string;
+  public id             : string;
+  public username       : string;
+  public name           : string;
+  public image          : string;
+  public backgroundImage: string;
 
   constructor (data: IUserPreviewDTO) {
-    this.id       = data.id,
-    this.username = data.username, 
-    this.name     = data.name,
-    this.image    = data.image
+    this.id              = data.id,
+    this.username        = data.username, 
+    this.name            = data.name,
+    this.image           = data.image,
+    this.backgroundImage = data.backgroundImage
   };
 };
