@@ -6,6 +6,7 @@ export const SignUpSchema = z.object({
   name            : z.string(),
   password        : z.string().min(8).max(32),
   image           : z.string().default(""),
+  backgroundImage : z.string().default(""),
   isPrivate       : z.boolean().default(false),
   canResetPassword: z.boolean().default(false),
   isVerified      : z.boolean().default(false)
