@@ -29,6 +29,24 @@ class NotificationService {
       },
     });
   };
+
+  public async getNotificationsByRecipeId(recipeId: string) {
+    return await prisma.notification.findMany({
+      where: {
+        recipeId: recipeId,
+      }
+    });
+  };
+
+  public async deleteNotificationsByRecipeId(recipeId: string[]) {
+    return await prisma.notification.deleteMany({
+      where: {
+        recipeId: {
+          in: recipeId
+        },
+      },
+    });
+  };
 };
 
 export const notificationService = new NotificationService();

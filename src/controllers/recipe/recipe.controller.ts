@@ -57,6 +57,16 @@ class RecipeController {
 
   public async delete(request: Request, response: Response) {
     const recipeId = request.params.recipeId as string;
+
+    const recipe = await recipeService.getRecipeById(recipeId);
+
+    if (recipe === null) {
+      return response.status(404).send({
+        code   : "recipe-not-found",
+        message: "Recipe not found!",
+      });
+    }
+    
     await recipeService.deleteRecipe(recipeId);
 
     response.send("Recipe deleted!");

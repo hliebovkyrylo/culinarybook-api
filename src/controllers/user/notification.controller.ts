@@ -12,8 +12,7 @@ class NotificationController {
     notifications = await notificationService.getNotificationsByUserId(user.id);
     
     response.send(notifications);
-};
-
+  };
 };
 
 export const notificationController = new NotificationController();
