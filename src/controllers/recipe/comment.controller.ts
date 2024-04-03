@@ -1,10 +1,11 @@
-import { User }                        from "@prisma/client";
-import { type Request, type Response } from "express";
-import { ICommentSchema, ICreateCommentReplySchema }              from "../../schemas/comment.schema";
-import { commentService }              from "../../services/recipe/comment.service";
-import { CommentDTO, CommentReplyDTO }                  from "../../dtos/comment.dto";
-import { userService }                 from "../../services/user/user.service";
-import { recipeService } from "../../services/recipe/recipe.service";
+import { User }                                      from "@prisma/client";
+import { type Request, type Response }               from "express";
+import { ICommentSchema, ICreateCommentReplySchema } from "../../schemas/comment.schema";
+import { commentService }                            from "../../services/recipe/comment.service";
+import { CommentDTO, CommentReplyDTO }               from "../../dtos/comment.dto";
+import { userService }                               from "../../services/user/user.service";
+import { recipeService }                             from "../../services/recipe/recipe.service";
+import { notificationService }                       from "../../services/user/notification.service";
 
 class CommentController {
   public async create(request: Request, response: Response) {
@@ -16,7 +17,7 @@ class CommentController {
 
     if (comments.length > 4) {
       return response.status(409).send({
-        code: "same-text",
+        code   : "same-text",
         message: "You have posted more than 5 comments with the same text, please change it!"
       });
     }
@@ -26,9 +27,23 @@ class CommentController {
         ...data, 
         authorImage   : user.image, 
         recipeId      : recipeId,
-        authorUsername: user.username 
+        authorUsername: user.username,
+        userId        : user.id
       }
     );
+
+    const recipe = await recipeService.getRecipeById(recipeId);
+
+    if (!recipe) {
+      return response.status(404).send({
+        code   : "recipe-not-found",
+        message: "Recipe not found!"
+      });
+    }
+
+    if (user.id !== comment.userId) {
+      await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "comment", noficationData: data.commentText, recipeId: recipe.id, createdAt: new Date })
+    }
 
     const commentDTO = new CommentDTO(comment);
 
@@ -83,8 +98,21 @@ class CommentController {
       });
     }
 
-    const commentReply = await commentService.createCommentReply({ ...data, userId: user.id, commentId });
+    const commentReply    = await commentService.createCommentReply({ ...data, userId: user.id, commentId });
     const commentReplyDTO = new CommentReplyDTO(commentReply);
+
+    const comment = await commentService.getCommentById(commentId);
+
+    if (comment === null) {
+      return response.status(404).send({
+        code   : "comment-not-found",
+        message: "Comment not found!",
+      });
+    }
+
+    if (user.id !== comment.userId) {
+      await notificationService.craeteNotification({ userId: comment.userId, noficitaionCreatorId: user.id, type: "comment-reply", noficationData: data.commentText, recipeId: comment.recipeId, createdAt: new Date })
+    }
 
     response.send(commentReplyDTO);
   };

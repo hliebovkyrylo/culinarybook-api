@@ -2,6 +2,7 @@ import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
 import { likeService }                 from "../../services/recipe/like.service";
 import { recipeService }               from "../../services/recipe/recipe.service";
+import { notificationService }         from "../../services/user/notification.service";
 
 class LikeController {
   public async createLike(request: Request, response: Response) {
@@ -27,6 +28,10 @@ class LikeController {
     }
 
     await likeService.createlike({ userId: user.id, recipeId: recipeId });
+    
+    if (user.id !== recipe.ownerId) {
+      await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "like", noficationData: "", recipeId: recipe.id, createdAt: new Date })
+    }
 
     response.send("You liked it!")
   };

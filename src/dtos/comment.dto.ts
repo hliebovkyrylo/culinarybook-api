@@ -10,6 +10,7 @@ export class CommentDTO implements ICommentDTO {
   public commentText   : string;
   public grade         : number;
   public createdAt     : Date;
+  public userId        : string;
 
   constructor (data: ICommentDTO) {
     this.id             = data.id,
@@ -18,6 +19,7 @@ export class CommentDTO implements ICommentDTO {
     this.commentText    = data.commentText,
     this.grade          = data.grade
     this.createdAt      = data.createdAt
+    this.userId         = data.userId
   };
 };
 

@@ -1,6 +1,7 @@
 import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
 import { followService }               from "../../services/user/follow.service";
+import { notificationService }         from "../../services/user/notification.service";
 
 class FollowController {
   public async follow(request: Request, response: Response) {
@@ -24,6 +25,8 @@ class FollowController {
     }
 
     await followService.createFollow({ followerId: user.id, userId: followUser });
+
+    await notificationService.craeteNotification({ userId: followUser, noficitaionCreatorId: user.id, type: "follow", noficationData: "", recipeId: "", createdAt: new Date })
 
     response.send("You following!");
   };

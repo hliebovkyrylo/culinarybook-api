@@ -8,6 +8,7 @@ import { likeService }    from "./like.service";
 import { saveService }    from "./save.service";
 import { stepService }    from "./step.service";
 import { commentService } from "./comment.service";
+import { notificationService } from "../user/notification.service";
 
 class RecipeService {
   public async createRecipe(data: Omit<ICreateRecipeSchema, "id">) {
@@ -32,11 +33,12 @@ class RecipeService {
   };
 
   public async deleteRecipe(recipeId: string) {
-    const [recipeLikes, recipeSaved, recipeSteps, recipeComments] = await Promise.all([
+    const [recipeLikes, recipeSaved, recipeSteps, recipeComments, notifications] = await Promise.all([
       likeService.getLikesByRecipeId(recipeId),
       saveService.getSavedByRecipeId(recipeId),
       stepService.getStepsByRecipeId(recipeId),
       commentService.getCommentsByRecipeId(recipeId),
+      notificationService.getNotificationsByRecipeId(recipeId),
     ]);
   
     if (recipeLikes) {
@@ -54,6 +56,11 @@ class RecipeService {
     if (recipeComments) {
       await commentService.deleteCommentsByIds(recipeComments.map(comment => comment.id));
     }
+
+    if (notifications) {
+      const recipeIds = notifications.map(notification => notification.recipeId).filter(id => id !== null) as string[];
+      await notificationService.deleteNotificationsByRecipeId(recipeIds);
+    }    
   
     return await prisma.recipe.delete({
       where: {
