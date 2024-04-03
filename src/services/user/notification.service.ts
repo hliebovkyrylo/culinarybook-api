@@ -47,6 +47,34 @@ class NotificationService {
       },
     });
   };
+
+  public async getRecipeNotification(noficitaionCreatorId: string, recipeId: string, type: string) {
+    return await prisma.notification.findFirst({
+      where: {
+        recipeId            : recipeId,
+        noficitaionCreatorId: noficitaionCreatorId,
+        type                : type,
+      },
+    });
+  };
+
+  public async getFollowNotification(noficitaionCreatorId: string, userId: string, type: string) {
+    return await prisma.notification.findFirst({
+      where: {
+        userId              : userId,
+        noficitaionCreatorId: noficitaionCreatorId,
+        type                : type,
+      },
+    });
+  };
+
+  public async deleteNotification(notificationId: string) {
+    return await prisma.notification.delete({
+      where: {
+        id: notificationId,
+      },
+    });
+  };
 };
 
 export const notificationService = new NotificationService();

@@ -41,7 +41,7 @@ class CommentController {
       });
     }
 
-    if (user.id !== comment.userId) {
+    if (user.id !== recipe.ownerId) {
       await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "comment", noficationData: data.commentText, recipeId: recipe.id, createdAt: new Date })
     }
 
@@ -80,6 +80,10 @@ class CommentController {
     }
 
     await commentService.deleteComment(commentId);
+
+    const notification = await notificationService.getRecipeNotification(user.id, comment.recipeId, 'comment');
+    
+    notification && await notificationService.deleteNotification(notification.id)
 
     response.send("Comment deleted!");
   };

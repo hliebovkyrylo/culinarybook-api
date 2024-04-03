@@ -57,6 +57,11 @@ class SaveController {
     }
 
     await saveService.removeSave({ userId: user.id, recipeId: recipeId });
+
+    const notification = await notificationService.getRecipeNotification(user.id, save.recipeId, 'save');
+    
+    notification && await notificationService.deleteNotification(notification.id)
+
     response.send("Removed from saved!");
   };
 };
