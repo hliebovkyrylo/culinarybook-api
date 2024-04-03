@@ -26,3 +26,4 @@ recipeRoute.delete("/step/delete/:stepId", isAuth, isVerifiedAccount, recipeCont
 recipeRoute.get("/saved/get", isAuth, isVerifiedAccount, recipeController.getSavedRecipes);
 recipeRoute.get("/popular/recipes", recipeController.getPopularRecipes);
 recipeRoute.get("/", recipeController.getRecipesByTitle);
+recipeRoute.get("/my/recipes", isAuth, isVerifiedAccount, recipeController.getMyRecipes);

@@ -99,6 +99,14 @@ class RecipeService {
     });
   };
 
+  public async getRecipesByUserId(userId: string) {
+    return await prisma.recipe.findMany({
+      where: {
+        ownerId: userId,
+      },
+    });
+  };
+
   public async createVisitedRecipe(data: Omit<ICreateVisitedRedcipe, "id">) {
     return await prisma.visited.create({ data });
   };
