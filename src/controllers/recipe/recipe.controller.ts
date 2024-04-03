@@ -75,21 +75,37 @@ class RecipeController {
   public async getMyRecipes(request: Request, response: Response) {
     const user    = request.user as User;
     const sortBy  = request.query.sortBy;
-    const recipes = await recipeService.getRecipesByUserId(user.id, sortBy as 'asc' | 'desc');
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
 
-    const recipesDTO = recipes.map(recipe => new RecipePreviewDTO(recipe));
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
+
+    const recipes          = await recipeService.getRecipesByUserId(user.id, sortBy as 'asc' | 'desc');
+    const paginatedRecipes = recipes.slice(startIndex, endIndex);
+
+    const recipesDTO = paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe));
     response.send(recipesDTO);
   };
 
   public async getLikedRecipes(request: Request, response: Response) {
     const user    = request.user as User;
-    const recipes = await recipeService.getLikedRecipesByUserId(user.id);
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
 
-    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
+
+    const recipes          = await recipeService.getLikedRecipesByUserId(user.id);
+    const paginatedRecipes = recipes.slice(startIndex, endIndex);
+
+    response.send(paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
   public async getRecommendedRecipes(request: Request, response: Response) {
-    const user = request.user as User;
+    const user  = request.user as User;
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
 
     const likedRecipes   = await recipeService.getLikedRecipesByUserId(user.id);
     const savedRecipes   = await recipeService.getSavedRecipesByUserId(user.id);
@@ -152,7 +168,12 @@ class RecipeController {
       }
     })
 
-    response.send(findedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
+
+    const paginatedRecipes = findedRecipes.slice(startIndex, endIndex);
+
+    response.send(paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
   public async getVisitedRecipes(request: Request, response: Response) {
@@ -241,13 +262,23 @@ class RecipeController {
   };
 
   public async getSavedRecipes(request: Request, response: Response) {
-    const user         = request.user as User;
-    const savedRecipes = await recipeService.getSavedRecipesByUserId(user.id);
+    const user  = request.user as User;
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
 
-    response.send(savedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
+
+    const savedRecipes     = await recipeService.getSavedRecipesByUserId(user.id);
+    const paginatedRecipes = savedRecipes.slice(startIndex, endIndex);
+
+    response.send(paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
   public async getPopularRecipes(request: Request, response: Response) {
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
+
     const recipes = await recipeService.getAllRecipes();
 
     const recipesIds = recipes.map(recipe => recipe.id);
@@ -276,7 +307,12 @@ class RecipeController {
       return calculateScore(b.id) - calculateScore(a.id);
     });
 
-    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
+
+    const paginatedRecipes = recipes.slice(startIndex, endIndex);
+
+    response.send(paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
   public async getRecipesByTitle(request: Request, response: Response) {
