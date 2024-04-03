@@ -22,6 +22,7 @@ export const CommentSchema = z.object({
   authorImage   : z.string(),
   commentText   : z.string().min(1).max(600),
   grade         : z.number().min(1).max(5),
+  userId        : z.string(),
   createdAt     : z.date().default(() => new Date())
 });
 

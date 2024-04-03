@@ -2,6 +2,7 @@ import { type Request, type Response } from "express";
 import { User }                        from "@prisma/client";
 import { saveService }                 from "../../services/recipe/save.service";
 import { recipeService }               from "../../services/recipe/recipe.service";
+import { notificationService }         from "../../services/user/notification.service";
 
 class SaveController {
   public async save(request: Request, response: Response) {
@@ -27,6 +28,11 @@ class SaveController {
     }
 
     await saveService.createSave({ userId: user.id, recipeId: recipeId });
+
+    if (user.id !== recipe.ownerId) {
+      await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "save", noficationData: "", recipeId: recipe.id, createdAt: new Date })
+    }
+
     response.send("Saved!");
   };
 

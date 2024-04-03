@@ -25,6 +25,8 @@ model User {
   visited          Visited[]
   saved            Saved[]
   commentReply     CommentReply[]
+  notification     Notification[]
+  comment          Comment[]
 }
 
 model VerificationCode {
@@ -93,15 +95,17 @@ model Step {
 }
 
 model Comment {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  recipeId       String   @db.ObjectId
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId       String          @db.ObjectId
   authorUsername String
   authorImage    String
   commentText    String
+  userId         String          @db.ObjectId
   grade          Int
-  recipe         Recipe   @relation(fields: [recipeId], references: [id])
-  createdAt      DateTime @default(now()) @map("createdAt")
+  recipe         Recipe          @relation(fields: [recipeId], references: [id])
+  createdAt      DateTime        @default(now()) @map("createdAt")
   commentReply   CommentReply[]
+  user           User            @relation(fields: [userId], references: [id])
 }
 
 model CommentReply {
@@ -112,4 +116,16 @@ model CommentReply {
   user        User    @relation(fields: [userId], references: [id])
   comment     Comment @relation(fields: [commentId], references: [id])
   createdAt   DateTime @default(now()) @map("createdAt")
+}
+
+model Notification {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  type                 String
+  noficationData       String?  @default("")
+  isRead               Boolean  @default(false)
+  userId               String   @db.ObjectId
+  noficitaionCreatorId String   @db.ObjectId
+  recipeId             String?  @default("")
+  createdAt            DateTime @default(now()) @map("createdAt")
+  user                 User     @relation(fields: [userId], references: [id])
 }
