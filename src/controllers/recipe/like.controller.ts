@@ -37,7 +37,7 @@ class LikeController {
   };
 
   public async removeLike(request: Request, response: Response) {
-    const user   = request.user as User;
+    const user     = request.user as User;
     const recipeId = request.params.recipeId as string;
 
     const like = await likeService.getLikeByIds({ userId: user.id, recipeId: recipeId });
@@ -57,6 +57,10 @@ class LikeController {
     }
 
     await likeService.removeLike({ userId: user.id, recipeId: recipeId });
+
+    const notification = await notificationService.getRecipeNotification(user.id, recipeId, 'like');
+    
+    notification && await notificationService.deleteNotification(notification.id)
 
     response.send("Like removed!");
   };

@@ -46,6 +46,10 @@ class FollowController {
 
     await followService.deleteFollow(follow.id);
 
+    const notification = await notificationService.getFollowNotification(user.id, follow.userId, "follow");
+
+    notification && await notificationService.deleteNotification(notification.id);
+
     response.send("You unfollowing!");
   };
 
