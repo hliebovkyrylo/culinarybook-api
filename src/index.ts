@@ -1,21 +1,22 @@
 import express, { 
   type Response, 
   type Request 
-}                       from "express";
-import { PrismaClient } from "@prisma/client";
-import { authRoute }    from "./routes/auth.route";
-import cors             from "cors";
-import dotenv           from "dotenv";
-import bodyParser       from "body-parser";
-import serverError      from "./middleware/serverError";
-import { userRoute }    from "./routes/user.route";
-import { followRoute }  from "./routes/follow.route";
-import { recipeRoute }  from "./routes/recipe.route";
-import { likeRoute }    from "./routes/like.route";
-import { saveRoute }    from "./routes/save.route";
-import { commentRoute } from "./routes/comment.route";
-import fs               from "fs";
-import swaggerUi        from "swagger-ui-express";
+}                            from "express";
+import { PrismaClient }      from "@prisma/client";
+import { authRoute }         from "./routes/auth.route";
+import cors                  from "cors";
+import dotenv                from "dotenv";
+import bodyParser            from "body-parser";
+import serverError           from "./middleware/serverError";
+import { userRoute }         from "./routes/user.route";
+import { followRoute }       from "./routes/follow.route";
+import { recipeRoute }       from "./routes/recipe.route";
+import { likeRoute }         from "./routes/like.route";
+import { saveRoute }         from "./routes/save.route";
+import { commentRoute }      from "./routes/comment.route";
+import fs                    from "fs";
+import swaggerUi             from "swagger-ui-express";
+import { notificationRoute } from "./routes/notification.route";
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ app.use('/recipe', recipeRoute);
 app.use('/like', likeRoute);
 app.use('/save', saveRoute);
 app.use('/comment', commentRoute);
+app.use('/notification', notificationRoute);
 
 app.use(serverError);
 
