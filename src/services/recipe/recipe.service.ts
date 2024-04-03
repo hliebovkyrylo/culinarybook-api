@@ -99,11 +99,14 @@ class RecipeService {
     });
   };
 
-  public async getRecipesByUserId(userId: string) {
+  public async getRecipesByUserId(userId: string, sortBy: 'asc' | 'desc') {
     return await prisma.recipe.findMany({
       where: {
         ownerId: userId,
       },
+      orderBy: {
+        createdAt: sortBy
+      }
     });
   };
 

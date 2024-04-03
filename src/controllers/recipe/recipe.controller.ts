@@ -73,8 +73,9 @@ class RecipeController {
   };
 
   public async getMyRecipes(request: Request, response: Response) {
-    const user = request.user as User;
-    const recipes = await recipeService.getRecipesByUserId(user.id);
+    const user    = request.user as User;
+    const sortBy  = request.query.sortBy;
+    const recipes = await recipeService.getRecipesByUserId(user.id, sortBy as 'asc' | 'desc');
 
     const recipesDTO = recipes.map(recipe => new RecipePreviewDTO(recipe));
     response.send(recipesDTO);
