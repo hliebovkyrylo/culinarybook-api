@@ -72,6 +72,14 @@ class RecipeController {
     response.send("Recipe deleted!");
   };
 
+  public async getMyRecipes(request: Request, response: Response) {
+    const user = request.user as User;
+    const recipes = await recipeService.getRecipesByUserId(user.id);
+
+    const recipesDTO = recipes.map(recipe => new RecipePreviewDTO(recipe));
+    response.send(recipesDTO);
+  };
+
   public async getLikedRecipes(request: Request, response: Response) {
     const user    = request.user as User;
     const recipes = await recipeService.getLikedRecipesByUserId(user.id);
