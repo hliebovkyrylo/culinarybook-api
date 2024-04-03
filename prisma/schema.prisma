@@ -54,6 +54,7 @@ model Recipe {
   typeOfFood   String
   ingradients  String
   isPublic     Boolean
+  createdAt    DateTime @default(now())
   owner        User @relation(fields: [ownerId], references: [id])
   like         Like[]
   visited      Visited[]

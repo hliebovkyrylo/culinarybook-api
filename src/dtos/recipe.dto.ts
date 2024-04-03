@@ -9,6 +9,7 @@ export class RecipePreviewDTO implements IPreviewRecipeDTO {
   public coockingTime: string;
   public complexity  : string;
   public typeOfFood  : string;
+  public createdAt   : Date;
 
   constructor (data: IPreviewRecipeDTO) {
     this.id           = data.id,
@@ -17,5 +18,6 @@ export class RecipePreviewDTO implements IPreviewRecipeDTO {
     this.coockingTime = data.coockingTime,
     this.complexity   = data.complexity,
     this.typeOfFood   = data.typeOfFood
+    this.createdAt    = data.createdAt
   };
 };
