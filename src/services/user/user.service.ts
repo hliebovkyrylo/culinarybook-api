@@ -59,14 +59,18 @@ class UserService {
     })
   };
 
-  public async searchUsersByUsername(username: string) {
+  public async searchUsersByUsername(username: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
     return await prisma.user.findMany({
+      skip,
       where: {
         username: {
           contains: username,
           mode    : "insensitive",
         },
       },
+      take: limit,
     });
   };
 

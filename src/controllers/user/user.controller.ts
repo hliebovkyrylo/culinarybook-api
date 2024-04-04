@@ -32,7 +32,10 @@ class UserController {
 
   public async searchUserByUsername(request: Request, response: Response) {
     const username = request.query.username as string;
-    const users    = await userService.searchUsersByUsername(username);
+    const page     = parseInt(request.query.page as string) || 1;
+    const limit    = parseInt(request.query.limit as string ) || 10;
+
+    const users = await userService.searchUsersByUsername(username, page, limit);
 
     response.send(users.map(user => new UserPreviewDTO(user)));
   };
