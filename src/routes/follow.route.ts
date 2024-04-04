@@ -12,3 +12,5 @@ followRoute.get('/getMyFollowers', isAuth, isVerifiedAccount, followController.g
 followRoute.get('/:userId/followers', isPrivateAccount, followController.getUserFollowers);
 followRoute.get('/my/followings', isAuth, isVerifiedAccount, followController.getMyFollowings);
 followRoute.get('/:userId/followings', isPrivateAccount, followController.getUserFollowings);
+followRoute.post('/:userId/follow-request', isAuth, isVerifiedAccount, followController.requestFollow);
+followRoute.delete('/:userId/cancel-request', isAuth, isVerifiedAccount, followController.cancelFollowRequest);

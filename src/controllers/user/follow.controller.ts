@@ -3,18 +3,28 @@ import { type Request, type Response } from "express";
 import { followService }               from "../../services/user/follow.service";
 import { notificationService }         from "../../services/user/notification.service";
 import { UserPreviewDTO }              from "../../dtos/user.dto";
+import { userService }                 from "../../services/user/user.service";
 
 class FollowController {
   public async follow(request: Request, response: Response) {
-    const user       = request.user as User;
-    const followUser = request.params.userId as string;
+    const user            = request.user as User;
+    const requestedUserId = request.params.userId as string;
 
-    const isFollowed = await followService.isAlreadyFollowed(followUser, user.id);
+    const requestedUser = await userService.getUserById(requestedUserId);
 
-    if (user.id.toString() === followUser) {
+    const isFollowed = await followService.isAlreadyFollowed(requestedUserId, user.id);
+
+    if (user.id.toString() === requestedUserId) {
       return response.status(409).send({
         code   : "cant-follow",
         message: "You can't follow your account!"
+      });
+    }
+
+    if (requestedUser === null) {
+      return response.status(404).send({
+        code   : "user-not-found",
+        message: "User not found!",
       });
     }
 
@@ -25,11 +35,80 @@ class FollowController {
       });
     }
 
-    await followService.createFollow({ followerId: user.id, userId: followUser });
+    const isUserPrivate = requestedUser.isPrivate;
 
-    await notificationService.craeteNotification({ userId: followUser, noficitaionCreatorId: user.id, type: "follow", noficationData: "", recipeId: "", createdAt: new Date })
+    const notificationType = isUserPrivate ? "follow-request" : "follow";
 
-    response.send("You following!");
+    if (isUserPrivate) {
+      const followRequest = await followService.getFollowRequestByIds(user.id, requestedUserId);
+
+      if (followRequest) {
+        return response.status(409).send({
+          code   : "already-sent",
+          message: "Follow request has already been sent!"
+        });
+      }
+
+      await followService.createFollowRequest({ requesterId: user.id, requestedId: requestedUserId });
+      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, type: notificationType, noficationData: "", recipeId: "", createdAt: new Date })
+    } else {
+      await followService.createFollow({ followerId: user.id, userId: requestedUserId });
+      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, type: notificationType, noficationData: "", recipeId: "", createdAt: new Date })
+    }
+
+    const message = isUserPrivate
+      ? "Your follow request has been sent!"
+      : "You are now following the user!";
+    
+    response.send(message);
+  };
+
+  public async requestFollow(request: Request, response: Response) {
+    const user       = request.user as User;
+    const followerId = request.params.userId;
+    const data       = request.body.allowed as boolean;
+
+    const followRequest = await followService.getFollowRequestByIds(followerId, user.id);
+
+    if (followRequest === null) {
+      return response.status(404).send({
+        code   : "follow-request-not-found",
+        message: "Follow request not found!",
+      });
+    }
+
+    if (data) {
+      await followService.createFollow({ followerId: followerId, userId: user.id });
+
+      await notificationService.craeteNotification({ userId: followerId, noficitaionCreatorId: user.id, type: "follow-allowed", noficationData: "", recipeId: "", createdAt: new Date });
+    } 
+
+    await followService.deleteFollowRequestById(followRequest.id);
+    const followRequestNotification = await notificationService.getFollowNotification(followerId, user.id, "follow-request");
+    followRequestNotification && await notificationService.deleteNotification(followRequestNotification.id);
+
+    const message = data 
+      ? "Follow allowed!"
+      : "Follow rejected!"
+
+    response.send(message);
+  };
+
+  public async cancelFollowRequest(request: Request, response: Response) {
+    const user            = request.user as User;
+    const requestedUserId = request.params.userId;
+
+    const followRequest = await followService.getFollowRequestByIds(user.id, requestedUserId);
+
+    if (followRequest === null) {
+      return response.status(404).send({
+        code   : "request-not-found",
+        message: "Follow request not found!",
+      });
+    }
+
+    await followService.deleteFollowRequestById(followRequest.id);
+    response.send("Follow request canceled!");
   };
 
   public async unfollow(request: Request, response: Response) {
@@ -48,8 +127,10 @@ class FollowController {
     await followService.deleteFollow(follow.id);
 
     const notification = await notificationService.getFollowNotification(user.id, follow.userId, "follow");
-
     notification && await notificationService.deleteNotification(notification.id);
+
+    const followRequestNotification = await notificationService.getFollowNotification(followUser, user.id, "follow-request");
+    followRequestNotification && await notificationService.deleteNotification(followRequestNotification.id);
 
     response.send("You unfollowing!");
   };
