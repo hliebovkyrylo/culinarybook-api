@@ -12,5 +12,11 @@ export const FollowSchema = z.object({
   userId    : z.string(),
 });
 
-export type IUpdateUserInfoSchema = z.infer<typeof UdpateUserInfoSchema>;
-export type IFollowSchema         = z.infer<typeof FollowSchema>;
+export const CreateFollowRequest = z.object({
+  requesterId: z.string(),
+  requestedId: z.string(),
+});
+
+export type IUpdateUserInfoSchema      = z.infer<typeof UdpateUserInfoSchema>;
+export type IFollowSchema              = z.infer<typeof FollowSchema>;
+export type ICreateFollowRequestSchema = z.infer<typeof CreateFollowRequest>;

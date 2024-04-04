@@ -1,5 +1,5 @@
 import { prisma }        from "../..";
-import { IFollowSchema } from "../../schemas/user.schema";
+import { ICreateFollowRequestSchema, IFollowSchema } from "../../schemas/user.schema";
 
 class FollowService {
   public async createFollow(data: Omit<IFollowSchema, "id">) {
@@ -94,7 +94,28 @@ class FollowService {
     );
   
     return followStatus;
-  }
+  };
+
+  public async createFollowRequest(data: Omit<ICreateFollowRequestSchema, "id">) {
+    return await prisma.followRequest.create({ data });
+  };
+
+  public async getFollowRequestByIds(requesterId: string, requestedId: string) {
+    return await prisma.followRequest.findFirst({
+      where: {
+        requestedId: requestedId,
+        requesterId: requesterId,
+      },
+    });
+  };
+
+  public async deleteFollowRequestById(followRequestId: string) {
+    return await prisma.followRequest.delete({
+      where: {
+        id: followRequestId,
+      },
+    });
+  };
 };
 
 export const followService = new FollowService();

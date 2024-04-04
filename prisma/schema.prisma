@@ -130,3 +130,9 @@ model Notification {
   createdAt            DateTime @default(now()) @map("createdAt")
   user                 User     @relation(fields: [userId], references: [id])
 }
+
+model FollowRequest {
+  id          String @id @db.ObjectId @default(auto()) @map("_id") 
+  requesterId String @db.ObjectId
+  requestedId String @db.ObjectId
+}
