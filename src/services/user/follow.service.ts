@@ -32,11 +32,15 @@ class FollowService {
     });
   };
 
-  public async getUserFollowers(userId: string) {
+  public async getUserFollowers(userId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
     return await prisma.follow.findMany({
+      skip,
       where: {
         followerId: userId,
       },
+      take: limit,
     });
   };
 };

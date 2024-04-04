@@ -54,15 +54,21 @@ class FollowController {
   };
 
   public async getMyFollowers(request: Request, response: Response) {
-    const user      = request.user as User;
-    const followers = await followService.getUserFollowers(user.id);
+    const user  = request.user as User;
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
+
+    const followers = await followService.getUserFollowers(user.id, page, limit);
 
     response.send(followers);
   };
 
   public async getUserFollowers(request: Request, response: Response) {
-    const user = request.params.userId as string;
-    const followers = await followService.getUserFollowers(user);
+    const user  = request.params.userId as string;
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
+
+    const followers = await followService.getUserFollowers(user, page, limit);
 
     response.send(followers);
   };
