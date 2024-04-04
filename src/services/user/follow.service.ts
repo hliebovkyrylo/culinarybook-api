@@ -35,14 +35,66 @@ class FollowService {
   public async getUserFollowers(userId: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
 
-    return await prisma.follow.findMany({
+    const followers = await prisma.follow.findMany({
+      skip,
+      where: {
+        userId: userId,
+      },
+      take: limit,
+    });
+
+    const followersIds = followers.map(following => following.followerId);
+
+    return await prisma.user.findMany({
+      where: {
+        id: {
+          in: followersIds,
+        },
+      },
+    });
+  };
+
+  public async getFollowingsByUserId(userId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const followings = await prisma.follow.findMany({
       skip,
       where: {
         followerId: userId,
       },
       take: limit,
     });
+
+    const followingsIds = followings.map(following => following.userId);
+
+    return await prisma.user.findMany({
+      where: {
+        id: {
+          in: followingsIds,
+        },
+      },
+    });
   };
+
+  public async getFollowStatus(userId: string, followerIds: string[]): Promise<boolean[]> {
+    const followStatusData = await prisma.follow.findMany({
+      where: {
+        followerId: userId,
+        userId: {
+          in: followerIds,
+        },
+      },
+      select: {
+        userId: true,
+      },
+    });
+  
+    const followStatus = followerIds.map((followerId) =>
+      followStatusData.some((follow) => follow.userId === followerId)
+    );
+  
+    return followStatus;
+  }
 };
 
 export const followService = new FollowService();

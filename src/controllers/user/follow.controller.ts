@@ -2,6 +2,7 @@ import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
 import { followService }               from "../../services/user/follow.service";
 import { notificationService }         from "../../services/user/notification.service";
+import { UserPreviewDTO }              from "../../dtos/user.dto";
 
 class FollowController {
   public async follow(request: Request, response: Response) {
@@ -59,8 +60,18 @@ class FollowController {
     const limit = parseInt(request.query.limit as string ) || 10;
 
     const followers = await followService.getUserFollowers(user.id, page, limit);
+    const followersDTO = followers.map(follower => new UserPreviewDTO(follower));
 
-    response.send(followers);
+    const followerIds = followers.map(follower => follower.id);
+
+    const followStatus = await followService.getFollowStatus(user.id, followerIds);
+
+    const followersWithStatus = followersDTO.map((followerDTO, index) => ({
+      ...followerDTO,
+      isFollowed: followStatus[index]
+    }));
+
+    response.send(followersWithStatus);
   };
 
   public async getUserFollowers(request: Request, response: Response) {
@@ -69,9 +80,41 @@ class FollowController {
     const limit = parseInt(request.query.limit as string ) || 10;
 
     const followers = await followService.getUserFollowers(user, page, limit);
+    const followersDTO = followers.map(follower => new UserPreviewDTO(follower));
 
-    response.send(followers);
+    const followerIds = followers.map(follower => follower.id);
+
+    const followStatus = await followService.getFollowStatus(user, followerIds);
+
+    const followersWithStatus = followersDTO.map((followerDTO, index) => ({
+      ...followerDTO,
+      isFollowed: followStatus[index]
+    }));
+
+    response.send(followersWithStatus);
   };
+
+  public async getMyFollowings(request: Request, response: Response) {
+    const user  = request.user as User;
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string ) || 10;
+
+    const followings = await followService.getFollowingsByUserId(user.id, page, limit);
+    const followingsDTO = followings.map(following => new UserPreviewDTO(following));
+
+    response.send(followingsDTO);
+  };
+
+  public async getUserFollowings(request: Request, response: Response) {
+    const userId = request.params.userId as string;
+    const page   = parseInt(request.query.page as string) || 1;
+    const limit  = parseInt(request.query.limit as string ) || 10;
+
+    const followings = await followService.getFollowingsByUserId(userId, page, limit);
+    const followingsDTO = followings.map(following => new UserPreviewDTO(following));
+
+    response.send(followingsDTO);
+  }
 };
 
 export const followController = new FollowController();

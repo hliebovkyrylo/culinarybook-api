@@ -8,4 +8,6 @@ export const followRoute = Router();
 followRoute.post('/:userId', isAuth, isVerifiedAccount, followController.follow);
 followRoute.delete('/:userId/unfollow', isAuth, isVerifiedAccount, followController.unfollow);
 followRoute.get('/getMyFollowers', isAuth, isVerifiedAccount, followController.getMyFollowers);
-followRoute.get('/getUserFollowers', followController.getUserFollowers);
+followRoute.get('/:userId/followers', followController.getUserFollowers);
+followRoute.get('/my/followings', isAuth, isVerifiedAccount, followController.getMyFollowings);
+followRoute.get('/:userId/followings', followController.getUserFollowings);
