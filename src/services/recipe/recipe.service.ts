@@ -69,7 +69,32 @@ class RecipeService {
     });
   }  
 
-  public async getLikedRecipesByUserId(userId: string) {
+  public async getLikedRecipesByUserId(userId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const liked = await prisma.like.findMany({
+      skip,
+      where: {
+        userId: userId,
+      },
+      select: {
+        recipeId: true,
+      },
+      take: limit,
+    });
+
+    const recipeIds = liked.map(id => id.recipeId);
+
+    return await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: recipeIds,
+        },
+      },
+    });
+  };
+
+  public async getAllLikedRecipesByUserId(userId: string) {
     const liked = await prisma.like.findMany({
       where: {
         userId: userId,
@@ -99,14 +124,18 @@ class RecipeService {
     });
   };
 
-  public async getRecipesByUserId(userId: string, sortBy: 'asc' | 'desc') {
+  public async getRecipesByUserId(userId: string, sortBy: 'asc' | 'desc', page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
     return await prisma.recipe.findMany({
+      skip,
       where: {
         ownerId: userId,
       },
       orderBy: {
         createdAt: sortBy
-      }
+      },
+      take: limit,
     });
   };
 
@@ -131,7 +160,27 @@ class RecipeService {
     });
   };
 
-  public async getVisitedRecipesByUserId(userId: string) {
+  public async getVisitedRecipesByUserId(userId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const visited = await prisma.visited.findMany({
+      skip,
+      where: {
+        userId: userId,
+      },
+      take: limit,
+    });
+
+    return await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: visited.map(visit => visit.recipeId),
+        },
+      },
+    });
+  };
+
+  public async getAllVisitedRecipesByUserId(userId: string) {
     const visited = await prisma.visited.findMany({
       where: {
         userId: userId,
@@ -157,7 +206,32 @@ class RecipeService {
     });
   };
 
-  public async getSavedRecipesByUserId(userId: string) {
+  public async getSavedRecipesByUserId(userId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const saved = await prisma.saved.findMany({
+      skip,
+      where: {
+        userId: userId,
+      },
+      select: {
+        recipeId: true,
+      },
+      take: limit,
+    });
+
+    const recipesIds = saved.map(save => save.recipeId);
+
+    return await prisma.recipe.findMany({
+      where: {
+        id: {
+          in: recipesIds,
+        },
+      },
+    });
+  };
+
+  public async getAllSavedRecipesByUserId(userId: string) {
     const saved = await prisma.saved.findMany({
       where: {
         userId: userId,
@@ -178,15 +252,18 @@ class RecipeService {
     });
   };
 
-  public async findRecipesByTitle(recipeTitle: string) {
+  public async findRecipesByTitle(recipeTitle: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
     return await prisma.recipe.findMany({
+      skip,
       where: {
         title: {
           contains: recipeTitle,
           mode    : "insensitive",
         },
       },
-      take: 16,
+      take: limit,
     });
   };
 };
