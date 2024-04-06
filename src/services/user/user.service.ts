@@ -97,6 +97,14 @@ class UserService {
       },
     });
   };
+
+  public async getAllUsers() {
+    return await prisma.user.findMany({
+      where: {
+        isPrivate: false,
+      },
+    });
+  };
 };
 
 export const userService = new UserService();

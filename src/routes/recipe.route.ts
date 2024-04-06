@@ -9,6 +9,7 @@ import { recipeController }   from "../controllers/recipe/recipe.controller";
 import { validate }           from "../utils/validate";
 import { accessToRecipe }     from "../middleware/recipe/accessToRecipe";
 import { isRecipeOwner }      from "../middleware/recipe/isRecipeOwner";
+import { isPrivateAccount } from "../middleware/isPrivateAccount";
 
 export const recipeRoute = Router();
 
@@ -27,3 +28,4 @@ recipeRoute.get("/saved/get", isAuth, isVerifiedAccount, recipeController.getSav
 recipeRoute.get("/popular/recipes", recipeController.getPopularRecipes);
 recipeRoute.get("/", recipeController.getRecipesByTitle);
 recipeRoute.get("/my/recipes", isAuth, isVerifiedAccount, recipeController.getMyRecipes);
+recipeRoute.get("/:userId/recipes", isPrivateAccount, recipeController.getUserRecipes);

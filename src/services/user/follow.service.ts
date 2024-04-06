@@ -54,6 +54,14 @@ class FollowService {
     });
   };
 
+  public async getAllFollowersByUserId(userId: string) {
+    return await prisma.follow.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+  }
+
   public async getFollowingsByUserId(userId: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
 

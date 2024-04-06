@@ -46,6 +46,16 @@ class LikeService {
     });
   };
 
+  public async getLikesByRecipseIds(recipeId: string[]) {
+    return await prisma.like.findMany({
+      where: {
+        recipeId: {
+          in: recipeId
+        },
+      },
+    });
+  };
+
   public async deleteLikes(likeId: string[]) {
     return await prisma.like.deleteMany({
       where: {
