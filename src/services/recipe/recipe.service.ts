@@ -124,7 +124,7 @@ class RecipeService {
     });
   };
 
-  public async getRecipesByUserId(userId: string, sortBy: 'asc' | 'desc', page: number, limit: number) {
+  public async getMyRecipesByUserId(userId: string, sortBy: 'asc' | 'desc', page: number, limit: number) {
     const skip = (page - 1) * limit;
 
     return await prisma.recipe.findMany({
@@ -136,6 +136,15 @@ class RecipeService {
         createdAt: sortBy
       },
       take: limit,
+    });
+  };
+
+  public async getRecipesByUserId(userId: string) {
+    return await prisma.recipe.findMany({
+      where: {
+        ownerId : userId,
+        isPublic: true,
+      },
     });
   };
 

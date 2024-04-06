@@ -78,7 +78,7 @@ class RecipeController {
     const page    = parseInt(request.query.page as string) || 1;
     const limit   = parseInt(request.query.limit as string ) || 10;
 
-    const recipes = await recipeService.getRecipesByUserId(user.id, sortBy, page, limit);
+    const recipes = await recipeService.getMyRecipesByUserId(user.id, sortBy, page, limit);
 
     const recipesDTO = recipes.map(recipe => new RecipePreviewDTO(recipe));
     response.send(recipesDTO);
@@ -314,6 +314,14 @@ class RecipeController {
     const recipes = await recipeService.findRecipesByTitle(recipeTitle, page, limit);
 
     response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
+  };
+
+  public async getUserRecipes(request: Request, response: Response) {
+    const userId  = request.params.userId;
+    const recipes = await recipeService.getRecipesByUserId(userId);
+
+    const recipesDTO = recipes.map(recipe => new RecipePreviewDTO(recipe));
+    response.send(recipesDTO);
   };
 };
 
