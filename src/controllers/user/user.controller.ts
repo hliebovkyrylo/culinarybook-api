@@ -7,8 +7,8 @@ import { Recipe, User }               from "@prisma/client";
 import { userService }                from "../../services/user/user.service";
 import { IUpdateUserInfoSchema }      from "../../schemas/user.schema";
 import { recipeService }              from "../../services/recipe/recipe.service";
-import { followService } from "../../services/user/follow.service";
-import { likeService } from "../../services/recipe/like.service";
+import { followService }              from "../../services/user/follow.service";
+import { likeService }                from "../../services/recipe/like.service";
 
 class UserController {
   public async getMe(request: Request, response: Response) {
@@ -76,12 +76,17 @@ class UserController {
   }
 
   public async getRecommendedUsers(request: Request, response: Response) {
-    const user = request.user as User;
+    const user  = request.user as User;
+    const page  = parseInt(request.query.page as  string) || 1;
+    const limit = parseInt(request.query.limit as string) || 10;
   
     const likedRecipes   = await recipeService.getAllLikedRecipesByUserId(user.id);
     const savedRecipes   = await recipeService.getAllSavedRecipesByUserId(user.id);
     const visitedRecipes = await recipeService.getAllVisitedRecipesByUserId(user.id);
     const userRecipes    = likedRecipes.concat(savedRecipes, visitedRecipes);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
 
     async function getKeywordsFromRecipes(recipes: Recipe[]) {
       const recipeWords: string[] = recipes.flatMap(recipe => recipe.title.split(' '));
@@ -111,15 +116,18 @@ class UserController {
         const likes      = await likeService.getLikesByRecipseIds(recipes.map(recipe => recipe.id))
         const followers  = await followService.getAllFollowersByUserId(user.id);
 
-        const totalLikes = likes.length;
+        const totalLikes     = likes.length;
         const followerWeight = 2;
         
         return { user, ratio: (followers.length * followerWeight) / totalLikes };
       }));
       
       userLikesAndFollowers.sort((a, b) => b.ratio - a.ratio);
+
+      const usersPreviewDTO = userLikesAndFollowers.map(user => new UserPreviewDTO(user.user));
+      const paginatedUsers  = usersPreviewDTO.slice(startIndex, endIndex);
       
-      response.send(userLikesAndFollowers.map(user => new UserPreviewDTO(user.user)));
+      response.send(paginatedUsers);
     }
   
     const userRecipesWithDetails = await Promise.all(users.map(async (user) => {
@@ -150,8 +158,35 @@ class UserController {
         return 0;
       }
     });
+
+    const paginatedUsers = interestedUsers.slice(startIndex, endIndex);
   
-    response.send(interestedUsers.map(user => new UserPreviewDTO(user.user)));
+    response.send(paginatedUsers.map(user => new UserPreviewDTO(user.user)));
+  };
+
+  public async getPopularUsers(request: Request, response: Response) {
+    const page  = parseInt(request.query.page as string) || 1;
+    const limit = parseInt(request.query.limit as string) || 10;
+    const users = await userService.getAllUsers();
+
+    const userFollowersAndLikes = await Promise.all(users.map(async user => {
+      const recipes   = await recipeService.getRecipesByUserId(user.id);
+      const likes     = await likeService.getLikesByRecipseIds(recipes.map(recipe => recipe.id));
+      const followers = await followService.getAllFollowersByUserId(user.id);
+
+      const totalLikes     = likes.length;
+      const followerWeight = 2;
+
+      return { user, ratio: (followerWeight * followers.length) / totalLikes }
+    }));
+
+    const startIndex = (page - 1) * limit;
+    const endIndex   = startIndex + limit;
+
+    userFollowersAndLikes.sort((a, b) => b.ratio - a.ratio);
+
+    const paginatedUsers = userFollowersAndLikes.slice(startIndex, endIndex);
+    response.send(paginatedUsers.map(user => new UserPreviewDTO(user.user)));
   };
 };
 
