@@ -766,6 +766,20 @@
               }
             }
           },
+          "403" : {
+            "description" : "Private account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "private-account",
+                    "message" : "This account is private!"
+                  }
+                }
+              }
+            }
+          },
           "404" : {
             "description" : "User not found",
             "content" : {
@@ -1049,6 +1063,349 @@
         }
       }
     },
+    "/follow/{userId}/follow-request" : {
+      "post" : {
+        "tags" : [ "Follow" ],
+        "summary" : "response to a user's subscription request (accept or refuse)",
+        "requestBody" : {
+          "content" : { }
+        },
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Follow allowed or rejected"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "If follow request not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "follow-request-not-found",
+                    "message" : "Follow request not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/recommended/users" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "getting recommended users based on interests",
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "required" : true,
+            "in" : "header",
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+          },
+          {
+            "name" : "page",
+            "required" : false,
+            "in" : "query",
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "required" : false,
+            "in" : "query",
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+      ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "username" : "exampleusername",
+                    "name" : "Example Name",
+                    "image" : ""
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6c",
+                    "username" : "anotherusername",
+                    "name" : "Another Name",
+                    "image" : ""
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/popular/users" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "if the user is not authorized, we get popular users",
+        "parameters" : [ 
+          {
+            "name" : "page",
+            "required" : false,
+            "in" : "query",
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "required" : false,
+            "in" : "query",
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+      ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ {
+                    "id" : "65cc7fb2925b86e5c4814a6b",
+                    "username" : "exampleusername",
+                    "name" : "Example Name",
+                    "image" : ""
+                  }, {
+                    "id" : "65cc7fb2925b86e5c4814a6c",
+                    "username" : "anotherusername",
+                    "name" : "Another Name",
+                    "image" : ""
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/changeType" : {
+      "patch" : {
+        "tags" : [ "User" ],
+        "summary" : "changing the account type (open or closed)",
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "required" : true,
+            "in" : "header",
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+          }
+      ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Account type changed!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "user-not-found",
+                    "message" : "User not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/follow/{userId}/unfollow" : {
       "delete" : {
         "tags" : [ "Follow" ],
@@ -1140,11 +1497,18 @@
         }
       }
     },
-    "/follow/getMyFollowers" : {
-      "get" : {
+    "/follow/{userId}/cancel-request" : {
+      "delete" : {
         "tags" : [ "Follow" ],
-        "summary" : "follow/getMyFollowers",
+        "summary" : "cancel follow request",
         "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
           "name" : "authorization",
           "in" : "header",
           "required" : true,
@@ -1159,16 +1523,8 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "object",
-                  "example" : [ {
-                    "id" : "65e32b2280249d5600f3aa8c",
-                    "userId" : "65e32b2280249h30f3ab3",
-                    "followerId" : "65e32b483gd5600f3bb5"
-                  }, {
-                    "id" : "65e32b2280249d5600f3aa8c",
-                    "userId" : "65e32b2280249h30f3ab3",
-                    "followerId" : "65e32b483gd5600f3bb5"
-                  } ]
+                  "type" : "string",
+                  "example" : "You unfollowing!"
                 }
               }
             }
@@ -1196,6 +1552,422 @@
                   "example" : {
                     "code" : "account-not-verified",
                     "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Follow not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "unfollowed",
+                    "message" : "You are not followed it account!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/follow/getMyFollowers" : {
+      "get" : {
+        "tags" : [ "Follow" ],
+        "summary" : "follow/getMyFollowers",
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "in" : "header",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+          },
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          } 
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername",
+                      "name" : "Example Name",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    }, 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername2",
+                      "name" : "Example Name 2",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    } 
+                  ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/follow/{userId}/followers" : {
+      "get" : {
+        "tags" : [ "Follow" ],
+        "summary" : "getting another user's followers",
+        "parameters" : [ 
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          } 
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername",
+                      "name" : "Example Name",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    }, 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername2",
+                      "name" : "Example Name 2",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    } 
+                  ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Private account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "private-account",
+                    "message" : "This account is private!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "user-not-found",
+                    "message" : "User not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/follow/my/followings" : {
+      "get" : {
+        "tags" : [ "Follow" ],
+        "summary" : "receiving your followings",
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "in" : "header",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+          },
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          } 
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername",
+                      "name" : "Example Name",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    }, 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername2",
+                      "name" : "Example Name 2",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    } 
+                  ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/follow/{userId}/followings" : {
+      "get" : {
+        "tags" : [ "Follow" ],
+        "summary" : "getting another user's followings",
+        "parameters" : [ 
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          } 
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername",
+                      "name" : "Example Name",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    }, 
+                    {
+                      "id" : "65e32b2280249d5600f3aa8c",
+                      "username" : "exampleusername2",
+                      "name" : "Example Name 2",
+                      "image" : "image url",
+                      "backgroundImage" : "backgroundImage url"
+                    } 
+                  ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Private account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "private-account",
+                    "message" : "This account is private!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "user-not-found",
+                    "message" : "User not found!"
                   }
                 }
               }
@@ -1363,6 +2135,20 @@
                     "typeOfFood" : "fastfood",
                     "ingradients" : "ingeradients",
                     "isPublic" : true
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Private recipe",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "fordbidden",
+                    "messge" : "You not have access to this recipe!"
                   }
                 }
               }
@@ -1612,14 +2398,34 @@
       "get" : {
         "tags" : [ "Recipe" ],
         "summary" : "recipe/liked",
-        "parameters" : [ {
-          "name" : "authorization",
-          "in" : "header",
-          "schema" : {
-            "type" : "string"
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "in" : "header",
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
           },
-          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
-        } ],
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+        ],
         "responses" : {
           "200" : {
             "description" : "Successful response",
@@ -1894,15 +2700,35 @@
       "get" : {
         "tags" : [ "Recipe" ],
         "summary" : "recipe/visited",
-        "parameters" : [ {
-          "name" : "authorization",
-          "in" : "header",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "in" : "header",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
           },
-          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
-        } ],
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+      ],
         "responses" : {
           "200" : {
             "description" : "Successful response",
@@ -2689,6 +3515,196 @@
         }
       }
     },
+    "/comment/{commentId}/reply" : {
+      "post" : {
+        "tags" : [ "Comment" ],
+        "summary" : "creating a reply to a comment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "example" : {
+                  "commentText" : "but it didn’t work out for me, can you tell me how you did it?"
+                }
+              }
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "commentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTMyYjIyODAyNDlkNTYwMGYzYWE4YyIsImlhdCI6MTcwOTM4NjUzMCwiZXhwIjoxNzExOTc4NTMwfQ.p9czjit_ZSxyRje0E2kVjZMwMncUUEATVQdTuPsJCV8"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "id" : "65e48ab8309ef4e9fb4fbafb",
+                    "commentText" : "but it didn’t work out for me, can you tell me how you did it?",
+                    "userId" : "55e38ab8309eh4e9fb4fbafb",
+                    "createdAt" : "2024-03-06T15:36:51+00:00"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Comment not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "comment-not-found",
+                    "message" : "Comment not found!"
+                  }
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Same text",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "same-text",
+                    "message" : "You have posted more than 5 comments with the same text, please change it!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/{commentId}/getReplies" : {
+      "get" : {
+        "tags" : [ "Comment" ],
+        "summary" : "creating a reply to a comment",
+        "parameters" : [ {
+          "name" : "commentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [
+                    {
+                      "id" : "65e48ab8309ef4e9fb4fbafb",
+                      "commentText" : "but it didn’t work out for me, can you tell me how you did it?",
+                      "userId" : "55e38ab8309eh4e9fb4fbafb",
+                      "createdAt" : "2024-03-06T15:36:51+00:00"
+                    },
+                    {
+                      "id" : "75e48ah5301ef4e9fb4flahb",
+                      "commentText" : "I agree, the recipe is very good",
+                      "userId" : "55e38ab8309eh4e9fb4fbafb",
+                      "createdAt" : "2024-03-06T15:36:51+00:00"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Comment not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "comment-not-found",
+                    "message" : "Comment not found!"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/comment/getComments/{recipeId}" : {
       "get" : {
         "tags" : [ "Comment" ],
@@ -2849,6 +3865,97 @@
         }
       }
     },
+    "/comment/reply/{commentReplyId}/delete" : {
+      "delete" : {
+        "tags" : [ "Comment" ],
+        "summary" : "deleting a reply to a comment",
+        "parameters" : [ {
+          "name" : "commentReplyId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authorization",
+          "in" : "header",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "example" : "Comment deleted!"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account or not your comment",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Comment or comment reply not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/like/{recipeId}/getAll" : {
       "get" : {
         "tags" : [ "Like" ],
@@ -2916,15 +4023,35 @@
       "get" : {
         "tags" : [ "Recipe" ],
         "summary" : "recipe/saved",
-        "parameters" : [ {
-          "name" : "authorization",
-          "in" : "header",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "in" : "header",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
           },
-          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
-        } ],
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+        ],
         "responses" : {
           "200" : {
             "description" : "Successful response",
@@ -3000,15 +4127,35 @@
       "get" : {
         "tags" : [ "Recipe" ],
         "summary" : "recipe/recommended",
-        "parameters" : [ {
-          "name" : "authorization",
-          "in" : "header",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
+        "parameters" : [ 
+          {
+            "name" : "authorization",
+            "in" : "header",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
           },
-          "example" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Y2M3ZmIyOTI1Yjg2ZTVjNDgxNGE2YiIsImlhdCI6MTcwNzkwMDg1MCwiZXhwIjoxNzEwNDkyODUwfQ.jjbphPgnusxMWCuq1Daplv_imeGka74geGdmdrj49sI"
-        } ],
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+        ],
         "responses" : {
           "200" : {
             "description" : "Selected according to user interests",
@@ -3091,6 +4238,26 @@
       "get" : {
         "tags" : [ "Recipe" ],
         "summary" : "recipe/popular/recipes",
+        "parameters": [
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+        ],
         "responses" : {
           "200" : {
             "description" : "Selected popular recipes",
@@ -3145,15 +4312,35 @@
       "get" : {
         "tags" : [ "Recipe" ],
         "summary" : "recipe?title=pizza",
-        "parameters" : [ {
-          "name" : "title",
-          "in" : "query",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
+        "parameters" : [ 
+          {
+            "name" : "title",
+            "in" : "query",
+            "required" : true,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : "example"
           },
-          "example" : "example"
-        } ],
+          {
+            "name" : "page",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 1
+          },
+          {
+            "name" : "limit",
+            "in" : "query",
+            "required" : false,
+            "schema" : {
+              "type" : "string"
+            },
+            "example" : 16
+          }
+        ],
         "responses" : {
           "200" : {
             "description" : "Successful response",
@@ -3176,6 +4363,128 @@
                     "complexity" : "hard",
                     "typeOfFood" : "fastfood"
                   } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal server error",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "internal",
+                    "message" : "Server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification/getAll" : {
+      "get" : {
+        "tags" : [ "Notification" ],
+        "summary" : "receiving notifications",
+        "responses" : {
+          "200" : {
+            "description" : "Successful response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : [ 
+                    {
+                      "id" : "65e32b2280449d5600f3aa8c",
+                      "type" : "follow",
+                      "noficationData" : "",
+                      "isRead" : false,
+                      "userId" : "45g32b2280449d5600f3aa8c",
+                      "noficitaionCreatorId" : "32g32b2280449d5600f3aa8c",
+                      "recipeId": "",
+                      "createdAt": "2024-03-06T15:36:51+00:00"
+                    }, 
+                    {
+                      "id" : "65e32b2280449d5600f3aa8c",
+                      "type" : "like",
+                      "noficationData" : "",
+                      "isRead" : false,
+                      "userId" : "45g32b2280449d5600f3aa8c",
+                      "noficitaionCreatorId" : "32g32b2280449d5600f3aa8c",
+                      "recipeId": "56g32b2280549d5600f3aa8c",
+                      "createdAt": "2024-03-06T15:36:51+00:00"
+                    },
+                    {
+                      "id" : "65e32b2280449d5600f3aa8c",
+                      "type" : "comment",
+                      "noficationData" : "Nice recipe!",
+                      "isRead" : false,
+                      "userId" : "45g32b2280449d5600f3aa8c",
+                      "noficitaionCreatorId" : "32g32b2280449d5600f3aa8c",
+                      "recipeId": "56g32b2280549d5600f3aa8c",
+                      "createdAt": "2024-03-06T15:36:51+00:00"
+                    },
+                    {
+                      "id" : "65e32b2280449d5600f3aa8c",
+                      "type" : "save",
+                      "noficationData" : "",
+                      "isRead" : false,
+                      "userId" : "45g32b2280449d5600f3aa8c",
+                      "noficitaionCreatorId" : "32g32b2280449d5600f3aa8c",
+                      "recipeId": "56g32b2280549d5600f3aa8c",
+                      "createdAt": "2024-03-06T15:36:51+00:00"
+                    },
+                    {
+                      "id" : "65e32b2280449d5600f3aa8c",
+                      "type" : "follow-request",
+                      "noficationData" : "",
+                      "isRead" : false,
+                      "userId" : "45g32b2280449d5600f3aa8c",
+                      "noficitaionCreatorId" : "32g32b2280449d5600f3aa8c",
+                      "recipeId": "",
+                      "createdAt": "2024-03-06T15:36:51+00:00"
+                    },
+                    {
+                      "id" : "65e32b2280449d5600f3aa8c",
+                      "type" : "comment-reply",
+                      "noficationData" : "Yep, it's really nice recipe",
+                      "isRead" : false,
+                      "userId" : "45g32b2280449d5600f3aa8c",
+                      "noficitaionCreatorId" : "32g32b2280449d5600f3aa8c",
+                      "recipeId": "56g32b2280549d5600f3aa8c",
+                      "createdAt": "2024-03-06T15:36:51+00:00"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "error-code-message",
+                    "message" : "Error message"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Not verificated account",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "example" : {
+                    "code" : "account-not-verified",
+                    "message" : "Youre account not verified!"
+                  }
                 }
               }
             }
