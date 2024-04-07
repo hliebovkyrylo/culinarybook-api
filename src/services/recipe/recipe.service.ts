@@ -271,6 +271,7 @@ class RecipeService {
           contains: recipeTitle,
           mode    : "insensitive",
         },
+        isPublic: true,
       },
       take: limit,
     });
