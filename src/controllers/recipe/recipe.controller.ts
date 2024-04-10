@@ -69,7 +69,7 @@ class RecipeController {
     
     await recipeService.deleteRecipe(recipeId);
 
-    response.send("Recipe deleted!");
+    response.send({ message: "Recipe deleted!" });
   };
 
   public async getMyRecipes(request: Request, response: Response) {
@@ -253,7 +253,7 @@ class RecipeController {
 
     await stepService.deleteStepById(stepId);
 
-    response.send("Step deleted!")
+    response.send({ message: "Step deleted!" })
   };
 
   public async getSavedRecipes(request: Request, response: Response) {

@@ -85,7 +85,7 @@ class CommentController {
     
     notification && await notificationService.deleteNotification(notification.id)
 
-    response.send("Comment deleted!");
+    response.send({ message: "Comment deleted!" });
   };
 
   public async createCommentReply(request: Request, response: Response) {
@@ -170,7 +170,7 @@ class CommentController {
 
     await commentService.deleteCommentReply(commentReplyId);
 
-    response.send("Comment deleted!");
+    response.send({ message: "Comment deleted!" });
   }
 };
 

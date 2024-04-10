@@ -72,7 +72,7 @@ class UserController {
     const user = request.user as User;
     await userService.changeAccountType(user.id, user.isPrivate);
 
-    response.send("Account type changed!");
+    response.send({ message: "Account type changed!" });
   }
 
   public async getRecommendedUsers(request: Request, response: Response) {

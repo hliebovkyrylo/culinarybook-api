@@ -60,7 +60,7 @@ class FollowController {
       ? "Your follow request has been sent!"
       : "You are now following the user!";
     
-    response.send(message);
+    response.send({ message: message });
   };
 
   public async requestFollow(request: Request, response: Response) {
@@ -91,7 +91,7 @@ class FollowController {
       ? "Follow allowed!"
       : "Follow rejected!"
 
-    response.send(message);
+    response.send({ message: message });
   };
 
   public async cancelFollowRequest(request: Request, response: Response) {
@@ -108,7 +108,7 @@ class FollowController {
     }
 
     await followService.deleteFollowRequestById(followRequest.id);
-    response.send("Follow request canceled!");
+    response.send({ message: "Follow request canceled!" });
   };
 
   public async unfollow(request: Request, response: Response) {
@@ -132,7 +132,7 @@ class FollowController {
     const followRequestNotification = await notificationService.getFollowNotification(followUser, user.id, "follow-request");
     followRequestNotification && await notificationService.deleteNotification(followRequestNotification.id);
 
-    response.send("You unfollowing!");
+    response.send({ message: "You unfollowing!" });
   };
 
   public async getMyFollowers(request: Request, response: Response) {

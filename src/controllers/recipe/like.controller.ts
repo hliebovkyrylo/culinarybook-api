@@ -33,7 +33,7 @@ class LikeController {
       await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "like", noficationData: "", recipeId: recipe.id, createdAt: new Date })
     }
 
-    response.send("You liked it!")
+    response.send({ message: "You liked it!" })
   };
 
   public async removeLike(request: Request, response: Response) {
@@ -62,7 +62,7 @@ class LikeController {
     
     notification && await notificationService.deleteNotification(notification.id)
 
-    response.send("Like removed!");
+    response.send({ message: "Like removed!" });
   };
 
   public async getRecipeLikes(request: Request, response: Response) {

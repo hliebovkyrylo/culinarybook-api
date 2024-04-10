@@ -28,7 +28,7 @@ class AuthService {
   };
 
   public async SendCode(email: string, code: string) {
-    const templatePath = path.resolve(__dirname, '../../views/confirmationCode.ejs');
+    const templatePath = path.resolve(__dirname, '../../../views/confirmationCode.ejs');
     const html = await ejs.renderFile(templatePath, { code, email });
 
     let transporter = nodemailer.createTransport({

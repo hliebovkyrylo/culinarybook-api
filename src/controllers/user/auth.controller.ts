@@ -86,7 +86,7 @@ class AuthController {
     await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime: expiryTime.getTime() });
     await authService.SendCode(user.email, code);
 
-    response.send("Code sent!");
+    response.send({ message: "Code sent!" });
   };
 
   public async resendConfirmationCode(request: Request, response: Response) {
@@ -112,7 +112,7 @@ class AuthController {
     await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime: expiryTime.getDate() });
     await authService.SendCode(user.email, code);
 
-    response.send("Code sent!");
+    response.send({ message: "Code sent!" });
   };
 
   public async verifyEmail(request: Request, response: Response) {
@@ -148,7 +148,7 @@ class AuthController {
     await authService.UpdateEmailStatus(user.id);
     await authService.DeleteVerficationCode(trueVerificationCode.id);
 
-    response.send("Your account is verified!");
+    response.send({message: "Your account is verified!"});
   };
 
   public async changePassword(request: Request, response: Response) {
@@ -168,7 +168,7 @@ class AuthController {
 
     await userService.updatePassword(user.id, hashedNewPassword);
 
-    response.send("Password changed!");
+    response.send({ message: "Password changed!" });
   };
 
   public async canResetPassword(request: Request, response: Response) {
@@ -196,7 +196,7 @@ class AuthController {
     await userService.allowResetPassword(user.id);
     await authService.DeleteVerficationCode(trueCode.id);
 
-    response.send("The code is correct!");
+    response.send({ message: "The code is correct!" });
   };
 
   public async resetPassword(request: Request, response: Response) {
@@ -215,7 +215,7 @@ class AuthController {
     await userService.updatePassword(user.id, hashedNewPassword);
     await userService.prohibitResetPassword(user.id);
 
-    response.send("Password successfully restored");
+    response.send({ message: "Password successfully restored" });
   };
 };
 

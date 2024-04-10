@@ -33,7 +33,7 @@ class SaveController {
       await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "save", noficationData: "", recipeId: recipe.id, createdAt: new Date })
     }
 
-    response.send("Saved!");
+    response.send({ message: "Saved!" });
   };
 
   public async removeSave(request: Request, response: Response) {
@@ -62,7 +62,7 @@ class SaveController {
     
     notification && await notificationService.deleteNotification(notification.id)
 
-    response.send("Removed from saved!");
+    response.send({ message: "Removed from saved!" });
   };
 };
 
