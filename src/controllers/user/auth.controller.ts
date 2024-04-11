@@ -171,9 +171,47 @@ class AuthController {
     response.send({ message: "Password changed!" });
   };
 
+  public async forgotPassword(request: Request, response: Response) {
+    const email = request.body.email as string;
+
+    const user = await userService.getUserByEmail(email);
+
+    if (user === null) {
+      return response.status(404).send({
+        code   : "user-not-found",
+        message: "User not found"
+      });
+    }
+
+    const isCodeAlreadyExist = await authService.GetVerificationCodeByUserId(user.id);
+
+    if (isCodeAlreadyExist !== null) {
+      await authService.DeleteVerficationCode(isCodeAlreadyExist.id);
+    }
+
+    const code       = crypto.randomInt(100000, 999999).toString();
+    const hashedCode = await bcrypt.hash(code, 8);
+
+    const expiryTime = new Date();
+    expiryTime.setMinutes(expiryTime.getMinutes() + 10);
+
+    await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime: expiryTime.getDate() });
+
+    response.send({ message: "Code has been sent to your email!" });
+  };
+
   public async canResetPassword(request: Request, response: Response) {
-    const user = request.user as User;
-    const code = request.body.code as string;
+    const email = request.params.email as string
+    const code  = request.body.code as string;
+
+    const user = await userService.getUserByEmail(email);
+
+    if (user === null) {
+      return response.status(404).send({
+        code   : "user-not-found",
+        message: "User not found!"
+      });
+    }
 
     const trueCode = user && await authService.GetVerificationCodeByUserId(user.id);
 
@@ -200,8 +238,17 @@ class AuthController {
   };
 
   public async resetPassword(request: Request, response: Response) {
-    const user     = request.user as User;
-    const password = request.body.password;
+    const email                         = request.params.email;
+    const { password, confirmPassword } = request.body;
+
+    const user = await userService.getUserByEmail(email);
+
+    if (user === null) {
+      return response.status(404).send({
+        code   : "user-not-found",
+        message: "User not found!"
+      });
+    }
   
     const hashedNewPassword = await bcrypt.hash(password, 8);
 
@@ -209,6 +256,13 @@ class AuthController {
       return response.status(403).send({
         code   : "Forbidden",
         message: "No rights to reset password!",
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return response.status(409).send({
+        code   : "password-mismatch",
+        message: "Password mismatch!"
       });
     }
 
