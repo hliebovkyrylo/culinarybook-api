@@ -22,14 +22,14 @@ class AuthController {
     const userWithSuchUsername = await userService.getUserByUsername(data.username);
 
     if (userWithSuchEmail !== null) {
-      response.status(409).send({
+      return response.status(409).send({
         code   : "email-already-exist",
         message: "Such email already exist!"
       });
     }
 
     if (userWithSuchUsername !== null) {
-      response.status(409).send({
+      return response.status(409).send({
         code   : "username-already-exist",
         message: "Such username already exist!"
       });
@@ -48,7 +48,7 @@ class AuthController {
     const user = await userService.getUserByEmail(data.email);
 
     if (user === null) {
-      response.status(404).send({
+      return response.status(404).send({
         code   : "user-not-found",
         message: "This account was not found!"
       })
@@ -57,7 +57,7 @@ class AuthController {
     const isCorrectPassword = user && (await bcrypt.compare(data.password, user.password));
 
     if (!isCorrectPassword) {
-      response.status(401).send({
+      return response.status(401).send({
         code   : "wrong-data",
         message: "The entered data is not valid"
       });
@@ -226,7 +226,7 @@ class AuthController {
     const isMatch = await bcrypt.compare(code, trueCode.code);
 
     if (isMatch === false) {
-      response.status(401).send({
+      return response.status(401).send({
         code   : "code-mismatch",
         message: "Code missmatch!",
       });
