@@ -196,6 +196,7 @@ class AuthController {
     expiryTime.setMinutes(expiryTime.getMinutes() + 10);
 
     await authService.CreateCode({ userId: user.id, code: hashedCode, expiryTime: expiryTime.getDate() });
+    await authService.SendCode(email, code);
 
     response.send({ message: "Code has been sent to your email!" });
   };
