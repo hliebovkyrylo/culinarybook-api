@@ -6,7 +6,7 @@ import {
 import { authService } from "../../services/user/auth.service";
 import { userService } from "../../services/user/user.service";
 
-export const isCodeExprired = async (
+export const isForgotPasswordCodeExpired = async (
   request : Request,
   response: Response,
   next    : NextFunction,
