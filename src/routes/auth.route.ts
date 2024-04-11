@@ -18,5 +18,5 @@ authRoute.post('/verify-email', isAuth, isCodeExprired, authController.verifyEma
 authRoute.post('/forgot-password', authController.forgotPassword);
 authRoute.post('/resent-code', isAuth, authController.resendConfirmationCode);
 authRoute.patch('/change-password', isAuth, validate(ChangePasswordSchema), authController.changePassword);
-authRoute.patch('/canReset-password', isAuth, isCodeExprired, authController.canResetPassword);
-authRoute.patch('/reset-password', isAuth, authController.resetPassword);
+authRoute.patch('/canReset-password/:email', isCodeExprired, authController.canResetPassword);
+authRoute.patch('/reset-password/:email', authController.resetPassword);
