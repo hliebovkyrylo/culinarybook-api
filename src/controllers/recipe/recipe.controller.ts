@@ -98,47 +98,50 @@ class RecipeController {
     const user  = request.user as User;
     const page  = parseInt(request.query.page as string) || 1;
     const limit = parseInt(request.query.limit as string ) || 10;
-
+  
     const likedRecipes   = await recipeService.getAllLikedRecipesByUserId(user.id);
     const savedRecipes   = await recipeService.getAllSavedRecipesByUserId(user.id);
     const visitedRecipes = await recipeService.getAllVisitedRecipesByUserId(user.id);
-
+  
     const recipes = likedRecipes.concat(savedRecipes, visitedRecipes);
-
+  
     let keywords: string[] = [];
-
+  
     let recipeWords = recipes.map(recipe => {
       return new Set(recipe.title.split(' '));
     });
-    
-    keywords = [...recipeWords[0]].filter(word => {
-      return recipeWords.every(set => set.has(word));
-    });
-
+  
+    if (recipeWords.length > 0) {
+      keywords = [...recipeWords[0]].filter(word => {
+        return recipeWords.every(set => set.has(word));
+      });
+    }
+  
     const findedRecipes = (await recipeService.getAllRecipes()).filter(recipe => recipe.ownerId !== user.id);
-
+  
     function containsWord(recipe: Recipe) {
       for (let word of keywords) {
         if (recipe.title.includes(word)) {
           return true;
         }
       };
+      return false;
     };
-
+  
     const recipesIds = recipes.map(recipe => recipe.id);
-
+  
     const likes = await Promise.all(recipesIds.map(recipeId => {
       return likeService.getLikesByRecipeId(recipeId);
     }));
-
+  
     const views = await Promise.all(recipesIds.map(recipeId => {
       return recipeService.getRecipeVisitsByRecipeId(recipeId);
     }));
-
+  
     const comments = await Promise.all(recipesIds.map(recipeId => {
       return commentService.getCommentsByRecipeId(recipeId);
     }));
-
+  
     function calculateScore(recipeId: string) {
       const likesCount    = likes.flat().filter(like => like.recipeId === recipeId).length;
       const viewsCount    = views.flat().filter(view => view.recipeId === recipeId).length;
@@ -146,11 +149,11 @@ class RecipeController {
     
       return 1 * commentsCount + 2 * viewsCount + 3 * likesCount;
     };
-
+  
     findedRecipes.sort((a, b) => {
       let aContainsWord = containsWord(a);
       let bContainsWord = containsWord(b);
-
+  
       if (aContainsWord && !bContainsWord) {
         return -1;
       } else if (!aContainsWord && bContainsWord) {
@@ -159,14 +162,14 @@ class RecipeController {
         return calculateScore(b.id) - calculateScore(a.id);
       }
     })
-
+  
     const startIndex = (page - 1) * limit;
     const endIndex   = startIndex + limit;
-
+  
     const paginatedRecipes = findedRecipes.slice(startIndex, endIndex);
-
+  
     response.send(paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
-  };
+  };  
 
   public async getVisitedRecipes(request: Request, response: Response) {
     const user           = request.user as User;
