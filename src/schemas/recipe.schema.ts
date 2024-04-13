@@ -8,7 +8,7 @@ export const CreateRecipeSchema = z.object({
   complexity  : z.string(),
   typeOfFood  : z.string(),
   ingradients : z.string(),
-  isPublic    : z.boolean().default(true),
+  isPublic    : z.boolean(),
 });
 
 export const UpdateRecipeSchema = z.object({
@@ -18,6 +18,7 @@ export const UpdateRecipeSchema = z.object({
   complexity  : z.string(),
   typeOfFood  : z.string(),
   ingradients : z.string(),
+  isPublic    : z.boolean(),
 });
 
 export const CreateVisitedRecipe = z.object({
