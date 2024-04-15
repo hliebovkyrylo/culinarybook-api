@@ -91,6 +91,9 @@ class RecipeService {
           in: recipeIds,
         },
       },
+      include: {
+        owner: true
+      }
     });
   };
 
@@ -120,7 +123,9 @@ class RecipeService {
       where: {
         isPublic: true,
       },
-      take: 16,
+      include: {
+        owner: true
+      }
     });
   };
 
@@ -136,6 +141,9 @@ class RecipeService {
         createdAt: sortBy
       },
       take: limit,
+      include: {
+        owner: true
+      }
     });
   };
 
@@ -145,6 +153,9 @@ class RecipeService {
         ownerId : userId,
         isPublic: true,
       },
+      include: {
+        owner: true
+      }
     });
   };
 
@@ -186,6 +197,9 @@ class RecipeService {
           in: visited.map(visit => visit.recipeId),
         },
       },
+      include: {
+        owner: true
+      }
     });
   };
 
@@ -226,7 +240,7 @@ class RecipeService {
       select: {
         recipeId: true,
       },
-      take: limit,
+      take: limit
     });
 
     const recipesIds = saved.map(save => save.recipeId);
@@ -237,6 +251,9 @@ class RecipeService {
           in: recipesIds,
         },
       },
+      include: {
+        owner: true
+      }
     });
   };
 
@@ -274,6 +291,9 @@ class RecipeService {
         isPublic: true,
       },
       take: limit,
+      include: {
+        owner: true
+      }
     });
   };
 };
