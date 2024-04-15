@@ -62,7 +62,7 @@ class UserService {
   public async searchUsersByUsername(username: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
 
-    return await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       skip,
       where: {
         username: {
@@ -71,7 +71,43 @@ class UserService {
         },
       },
       take: limit,
+      include: {
+        _count: {
+          select: {
+            follow: true,
+            recipe: true,
+          },
+        },
+      },
     });
+
+    const followerCounts = await prisma.follow.groupBy({
+      by: ['userId'],
+      _count: { userId: true },
+    });
+  
+    const recipeCounts = await prisma.user.findMany({
+      select: {
+        id: true,
+        _count: {
+          select: { recipe: true },
+        },
+      },
+    });
+  
+    const usersWithCounts = users.map((user) => {
+      const followerCount = followerCounts.find(
+        (count) => count.userId === user.id
+      )?._count.userId ?? 0;
+  
+      const recipeCount = recipeCounts.find(
+        (count) => count.id === user.id
+      )?._count.recipe ?? 0;
+  
+      return { ...user, followerCount, recipeCount };
+    });
+  
+    return usersWithCounts;
   };
 
   public async updateUserInfo(userId: string, data: IUpdateUserInfoSchema) {
@@ -99,12 +135,46 @@ class UserService {
   };
 
   public async getAllUsers() {
-    return await prisma.user.findMany({
-      where: {
-        isPrivate: false,
+    const users = await prisma.user.findMany({
+      where: { isPrivate: false },
+      include: {
+        _count: {
+          select: {
+            follow: true,
+            recipe: true,
+          },
+        },
       },
     });
-  };
+  
+    const followerCounts = await prisma.follow.groupBy({
+      by: ['userId'],
+      _count: { userId: true },
+    });
+  
+    const recipeCounts = await prisma.user.findMany({
+      select: {
+        id: true,
+        _count: {
+          select: { recipe: true },
+        },
+      },
+    });
+  
+    const usersWithCounts = users.map((user) => {
+      const followerCount = followerCounts.find(
+        (count) => count.userId === user.id
+      )?._count.userId ?? 0;
+  
+      const recipeCount = recipeCounts.find(
+        (count) => count.id === user.id
+      )?._count.recipe ?? 0;
+  
+      return { ...user, followerCount, recipeCount };
+    });
+  
+    return usersWithCounts;
+  }
 };
 
 export const userService = new UserService();

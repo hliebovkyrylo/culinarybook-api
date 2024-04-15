@@ -2,7 +2,7 @@ import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
 import { followService }               from "../../services/user/follow.service";
 import { notificationService }         from "../../services/user/notification.service";
-import { UserPreviewDTO }              from "../../dtos/user.dto";
+import { UserFollowPreviewDTO, UserPreviewDTO }              from "../../dtos/user.dto";
 import { userService }                 from "../../services/user/user.service";
 
 class FollowController {
@@ -141,7 +141,7 @@ class FollowController {
     const limit = parseInt(request.query.limit as string ) || 10;
 
     const followers = await followService.getUserFollowers(user.id, page, limit);
-    const followersDTO = followers.map(follower => new UserPreviewDTO(follower));
+    const followersDTO = followers.map(follower => new UserFollowPreviewDTO(follower));
 
     const followerIds = followers.map(follower => follower.id);
 
@@ -161,7 +161,7 @@ class FollowController {
     const limit = parseInt(request.query.limit as string ) || 10;
 
     const followers = await followService.getUserFollowers(user, page, limit);
-    const followersDTO = followers.map(follower => new UserPreviewDTO(follower));
+    const followersDTO = followers.map(follower => new UserFollowPreviewDTO(follower));
 
     const followerIds = followers.map(follower => follower.id);
 
@@ -181,7 +181,7 @@ class FollowController {
     const limit = parseInt(request.query.limit as string ) || 10;
 
     const followings = await followService.getFollowingsByUserId(user.id, page, limit);
-    const followingsDTO = followings.map(following => new UserPreviewDTO(following));
+    const followingsDTO = followings.map(following => new UserFollowPreviewDTO(following));
 
     response.send(followingsDTO);
   };
@@ -192,7 +192,7 @@ class FollowController {
     const limit  = parseInt(request.query.limit as string ) || 10;
 
     const followings = await followService.getFollowingsByUserId(userId, page, limit);
-    const followingsDTO = followings.map(following => new UserPreviewDTO(following));
+    const followingsDTO = followings.map(following => new UserFollowPreviewDTO(following));
 
     response.send(followingsDTO);
   }
