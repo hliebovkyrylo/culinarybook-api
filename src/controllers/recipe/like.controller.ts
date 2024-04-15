@@ -71,6 +71,25 @@ class LikeController {
 
     response.send(likes);
   };
+
+  public async getLikeState(request: Request, response: Response) {
+    const user     = request.user as User;
+    const recipeId = request.params.recipeId;
+
+    const recipe = await recipeService.getRecipeById(recipeId);
+
+    if (recipe === null) {
+      return response.status(404).send({
+        code   : "recipe-not-found",
+        message: "Recipe not found!"
+      });
+    }
+
+    const like    = await likeService.getLikeByIds({ userId: user.id, recipeId: recipeId });
+    const isLiked = !!like;
+
+    response.send({ isLiked });
+  }
 };
 
 export const likeController = new LikeController();
