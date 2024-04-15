@@ -76,93 +76,98 @@ class UserController {
   }
 
   public async getRecommendedUsers(request: Request, response: Response) {
-    const user  = request.user as User;
-    const page  = parseInt(request.query.page as  string) || 1;
+    const user = request.user as User;
+    const page = parseInt(request.query.page as string) || 1;
     const limit = parseInt(request.query.limit as string) || 10;
   
-    const likedRecipes   = await recipeService.getAllLikedRecipesByUserId(user.id);
-    const savedRecipes   = await recipeService.getAllSavedRecipesByUserId(user.id);
+    const likedRecipes = await recipeService.getAllLikedRecipesByUserId(user.id);
+    const savedRecipes = await recipeService.getAllSavedRecipesByUserId(user.id);
     const visitedRecipes = await recipeService.getAllVisitedRecipesByUserId(user.id);
-    const userRecipes    = likedRecipes.concat(savedRecipes, visitedRecipes);
-
+    const userRecipes = likedRecipes.concat(savedRecipes, visitedRecipes);
+  
     const startIndex = (page - 1) * limit;
-    const endIndex   = startIndex + limit;
-
+    const endIndex = startIndex + limit;
+  
     async function getKeywordsFromRecipes(recipes: Recipe[]) {
       const recipeWords: string[] = recipes.flatMap(recipe => recipe.title.split(' '));
-    
+  
       if (recipeWords.length === 0) {
         return [];
       }
-    
+  
       const wordFrequency = new Map<string, number>();
       recipeWords.forEach(word => {
         wordFrequency.set(word, (wordFrequency.get(word) || 0) + 1);
       });
-    
+  
       const keywords = Array.from(wordFrequency.entries())
         .filter(([word, count]) => count > 1)
         .map(([word, count]) => word);
-    
+  
       return keywords;
     }
-    
+  
     const keywords = await getKeywordsFromRecipes(userRecipes);
-    const users    = await userService.getAllUsers();
-
+    const users = await userService.getAllUsers();
+  
+    let paginatedUsers = [];
+  
     if (keywords.length === 0) {
-      const userLikesAndFollowers = await Promise.all(users.map(async (user) => {
-        const recipes    = await recipeService.getRecipesByUserId(user.id);
-        const likes      = await likeService.getLikesByRecipseIds(recipes.map(recipe => recipe.id))
-        const followers  = await followService.getAllFollowersByUserId(user.id);
-
-        const totalLikes     = likes.length;
-        const followerWeight = 2;
-        
-        return { user, ratio: (followers.length * followerWeight) / totalLikes };
-      }));
-      
+      const userLikesAndFollowers = await Promise.all(
+        users.map(async (user) => {
+          const recipes = await recipeService.getRecipesByUserId(user.id);
+          const likes = await likeService.getLikesByRecipseIds(recipes.map(recipe => recipe.id))
+          const followers = await followService.getAllFollowersByUserId(user.id);
+  
+          const totalLikes = likes.length;
+          const followerWeight = 2;
+  
+          return { user, ratio: (followers.length * followerWeight) / totalLikes };
+        })
+      );
+  
       userLikesAndFollowers.sort((a, b) => b.ratio - a.ratio);
-
-      const usersPreviewDTO = userLikesAndFollowers.map(user => new UserPreviewDTO(user.user));
-      const paginatedUsers  = usersPreviewDTO.slice(startIndex, endIndex);
-      
-      response.send(paginatedUsers);
+  
+      const usersPreviewDTO = userLikesAndFollowers.map((user) => new UserPreviewDTO(user.user));
+      paginatedUsers = usersPreviewDTO.slice(startIndex, endIndex);
+      return response.send(paginatedUsers);
     }
   
-    const userRecipesWithDetails = await Promise.all(users.map(async (user) => {
-      const recipes = await recipeService.getRecipesByUserId(user.id);
-      return { user, recipes };
-    }));
-
+    const userRecipesWithDetails = await Promise.all(
+      users.map(async (user) => {
+        const recipes = await recipeService.getRecipesByUserId(user.id);
+        return { user, recipes };
+      })
+    );
+  
     function checkKeywords(recipe: Recipe, keywords: string[]) {
       return keywords.some(keyword => recipe.title.includes(keyword));
     }
-    
+  
     const interestedUsers = userRecipesWithDetails
-    .map(({ user, recipes }) => {
-      const containsKeywords = recipes.some(recipe => checkKeywords(recipe, keywords));
-      return { user, containsKeywords };
-    })
-    .filter(({ user, containsKeywords }) => {
-      const shouldInclude = user.id !== request.user?.id && containsKeywords;
-      return shouldInclude;
-    });
+      .map(({ user, recipes }) => {
+        const containsKeywords = recipes.some(recipe => checkKeywords(recipe, keywords));
+        return { user, containsKeywords };
+      })
+      .filter(({ user, containsKeywords }) => {
+        const shouldInclude = user.id !== request.user?.id && containsKeywords;
+        return shouldInclude;
+      });
   
     interestedUsers.sort((a, b) => {
       if (a.containsKeywords && !b.containsKeywords) {
-        return -1; 
+        return -1;
       } else if (!a.containsKeywords && b.containsKeywords) {
         return 1;
       } else {
         return 0;
       }
     });
-
-    const paginatedUsers = interestedUsers.slice(startIndex, endIndex);
   
-    response.send(paginatedUsers.map(user => new UserPreviewDTO(user.user)));
-  };
+    paginatedUsers = interestedUsers.slice(startIndex, endIndex).map((user) => new UserPreviewDTO(user.user));
+  
+    response.send(paginatedUsers);
+  }
 
   public async getPopularUsers(request: Request, response: Response) {
     const page  = parseInt(request.query.page as string) || 1;
