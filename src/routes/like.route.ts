@@ -9,3 +9,4 @@ export const likeRoute = Router();
 likeRoute.post("/create/:recipeId", isAuth, isVerifiedAccount, accessToRecipe, likeController.createLike);
 likeRoute.delete("/:likeId/remove", isAuth, isVerifiedAccount, likeController.removeLike);
 likeRoute.get("/:recipeId/getAll", accessToRecipe, likeController.getRecipeLikes);
+likeRoute.get("/recipe/:recipeId/isLiked", isAuth, isVerifiedAccount, likeController.getLikeState);
