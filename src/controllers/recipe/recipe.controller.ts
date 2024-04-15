@@ -264,7 +264,7 @@ class RecipeController {
     const page  = parseInt(request.query.page as string) || 1;
     const limit = parseInt(request.query.limit as string ) || 10;
 
-    const savedRecipes     = await recipeService.getSavedRecipesByUserId(user.id, page, limit);
+    const savedRecipes = await recipeService.getSavedRecipesByUserId(user.id, page, limit);
 
     response.send(savedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
