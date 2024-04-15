@@ -64,6 +64,25 @@ class SaveController {
 
     response.send({ message: "Removed from saved!" });
   };
+
+  public async getSaveState(request: Request, response: Response) {
+    const user     = request.user as User;
+    const recipeId = request.params.recipeId;
+
+    const recipe = await recipeService.getRecipeById(recipeId);
+
+    if (recipe === null) {
+      response.status(404).send({
+        code   : "recipe-not-found",
+        message: "Recipe not found!"
+      })
+    }
+
+    const save    = await saveService.getSavedByIds({ userId: user.id, recipeId: recipeId });
+    const isSaved = !!save;
+
+    response.send({ isSaved });
+  }
 };
 
 export const saveController = new SaveController();
