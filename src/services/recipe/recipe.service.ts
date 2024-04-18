@@ -2,12 +2,12 @@ import {
   ICreateRecipeSchema,
   ICreateVisitedRedcipe,
   IUpdateRecipeSchema
-}                         from "../../schemas/recipe.schema";
-import { prisma }         from "../..";
-import { likeService }    from "./like.service";
-import { saveService }    from "./save.service";
-import { stepService }    from "./step.service";
-import { commentService } from "./comment.service";
+}                              from "../../schemas/recipe.schema";
+import { prisma }              from "../..";
+import { likeService }         from "./like.service";
+import { saveService }         from "./save.service";
+import { stepService }         from "./step.service";
+import { commentService }      from "./comment.service";
 import { notificationService } from "../user/notification.service";
 
 class RecipeService {

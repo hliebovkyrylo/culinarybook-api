@@ -45,22 +45,23 @@ model Follow {
 }
 
 model Recipe {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  ownerId      String @db.ObjectId
-  title        String
-  image        String
-  coockingTime String
-  complexity   String
-  typeOfFood   String
-  ingradients  String
-  isPublic     Boolean
-  createdAt    DateTime @default(now())
-  owner        User @relation(fields: [ownerId], references: [id])
-  like         Like[]
-  visited      Visited[]
-  saved        Saved[]
-  step         Step[]
-  comment      Comment[]
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId         String @db.ObjectId
+  title           String
+  image           String
+  coockingTime    String
+  complexity      String
+  typeOfFood      String
+  ingradients     String
+  isPublic        Boolean
+  createdAt       DateTime @default(now())
+  applyBackground Boolean
+  owner           User @relation(fields: [ownerId], references: [id])
+  like            Like[]
+  visited         Visited[]
+  saved           Saved[]
+  step            Step[]
+  comment         Comment[]
 }
 
 model Like {
