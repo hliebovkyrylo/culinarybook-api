@@ -1,22 +1,23 @@
 import express, { 
   type Response, 
   type Request 
-}                            from "express";
-import { PrismaClient }      from "@prisma/client";
-import { authRoute }         from "./routes/auth.route";
-import cors                  from "cors";
-import dotenv                from "dotenv";
-import bodyParser            from "body-parser";
-import serverError           from "./middleware/serverError";
-import { userRoute }         from "./routes/user.route";
-import { followRoute }       from "./routes/follow.route";
-import { recipeRoute }       from "./routes/recipe.route";
-import { likeRoute }         from "./routes/like.route";
-import { saveRoute }         from "./routes/save.route";
-import { commentRoute }      from "./routes/comment.route";
-import fs                    from "fs";
-import swaggerUi             from "swagger-ui-express";
-import { notificationRoute } from "./routes/notification.route";
+}                                    from "express";
+import { PrismaClient }              from "@prisma/client";
+import { authRoute }                 from "./routes/auth.route";
+import cors                          from "cors";
+import dotenv                        from "dotenv";
+import bodyParser                    from "body-parser";
+import serverError                   from "./middleware/serverError";
+import { userRoute }                 from "./routes/user.route";
+import { followRoute }               from "./routes/follow.route";
+import { recipeRoute }               from "./routes/recipe.route";
+import { likeRoute }                 from "./routes/like.route";
+import { saveRoute }                 from "./routes/save.route";
+import { commentRoute }              from "./routes/comment.route";
+import fs                            from "fs";
+import swaggerUi                     from "swagger-ui-express";
+import { notificationRoute }         from "./routes/notification.route";
+import { handleEntityTooLargeError } from "./utils/largeFileError";
 
 dotenv.config();
 
@@ -25,7 +26,9 @@ export const prisma = new PrismaClient();
 export const port   = process.env.PORT as string;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '1mb' }));
+app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
+app.use(handleEntityTooLargeError);
 
 const existAPISwaggerJson = fs.existsSync("./api-swagger.json");
 
