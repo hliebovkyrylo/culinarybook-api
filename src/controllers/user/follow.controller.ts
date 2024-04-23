@@ -196,6 +196,15 @@ class FollowController {
 
     response.send(followingsDTO);
   }
+
+  public async getFollowState(request: Request, response: Response) {
+    const follower = request.user as User;
+    const userId   = request.params.userId;
+
+    const follow = await followService.isAlreadyFollowed(userId, follower.id);
+
+    response.send({ isFollowed: !!follow });
+  }
 };
 
 export const followController = new FollowController();
