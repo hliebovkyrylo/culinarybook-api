@@ -155,6 +155,21 @@ class RecipeService {
       },
       include: {
         owner: true
+      },
+    });
+  };
+
+  public async getRecipesByUserIdWithSort(userId: string, sortBy: 'asc' | 'desc') {
+    return await prisma.recipe.findMany({
+      where: {
+        ownerId : userId,
+        isPublic: true,
+      },
+      include: {
+        owner: true
+      },
+      orderBy: {
+        createdAt: sortBy
       }
     });
   };
