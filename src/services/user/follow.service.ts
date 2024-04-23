@@ -1,4 +1,4 @@
-import { prisma }        from "../..";
+import { prisma }                                    from "../..";
 import { ICreateFollowRequestSchema, IFollowSchema } from "../../schemas/user.schema";
 
 class FollowService {
@@ -123,7 +123,7 @@ class FollowService {
         id: followRequestId,
       },
     });
-  };
+  }; 
 };
 
 export const followService = new FollowService();
