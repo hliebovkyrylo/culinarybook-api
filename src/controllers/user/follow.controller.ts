@@ -4,6 +4,7 @@ import { followService }               from "../../services/user/follow.service"
 import { notificationService }         from "../../services/user/notification.service";
 import { UserFollowPreviewDTO, UserPreviewDTO }              from "../../dtos/user.dto";
 import { userService }                 from "../../services/user/user.service";
+import { verifyToken } from "../../utils/token";
 
 class FollowController {
   public async follow(request: Request, response: Response) {
@@ -135,37 +136,27 @@ class FollowController {
     response.send({ message: "You unfollowing!" });
   };
 
-  public async getMyFollowers(request: Request, response: Response) {
-    const user  = request.user as User;
-    const page  = parseInt(request.query.page as string) || 1;
-    const limit = parseInt(request.query.limit as string ) || 10;
-
-    const followers = await followService.getUserFollowers(user.id, page, limit);
-    const followersDTO = followers.map(follower => new UserFollowPreviewDTO(follower));
-
-    const followerIds = followers.map(follower => follower.id);
-
-    const followStatus = await followService.getFollowStatus(user.id, followerIds);
-
-    const followersWithStatus = followersDTO.map((followerDTO, index) => ({
-      ...followerDTO,
-      isFollowed: followStatus[index]
-    }));
-
-    response.send(followersWithStatus);
-  };
-
   public async getUserFollowers(request: Request, response: Response) {
-    const user  = request.params.userId as string;
+    const userId   = request.params.userId as string;
+    const username = request.query.username as string;
+
+    const accessToken = request.headers.authorization;
+
     const page  = parseInt(request.query.page as string) || 1;
     const limit = parseInt(request.query.limit as string ) || 10;
 
-    const followers = await followService.getUserFollowers(user, page, limit);
-    const followersDTO = followers.map(follower => new UserFollowPreviewDTO(follower));
+    const followers    = await followService.getUserFollowers(userId, username, page, limit);
+    const followersDTO = followers.map(follow => new UserFollowPreviewDTO(follow.follower));
 
-    const followerIds = followers.map(follower => follower.id);
+    const followerIds = followersDTO.map(follower => follower.id);
 
-    const followStatus = await followService.getFollowStatus(user, followerIds);
+    let followStatus: boolean[];
+
+    if (accessToken) {
+      const userMeId = verifyToken(accessToken);
+
+      followStatus = await followService.getFollowStatus(userMeId, followerIds);
+    }
 
     const followersWithStatus = followersDTO.map((followerDTO, index) => ({
       ...followerDTO,
@@ -173,28 +164,36 @@ class FollowController {
     }));
 
     response.send(followersWithStatus);
-  };
-
-  public async getMyFollowings(request: Request, response: Response) {
-    const user  = request.user as User;
-    const page  = parseInt(request.query.page as string) || 1;
-    const limit = parseInt(request.query.limit as string ) || 10;
-
-    const followings = await followService.getFollowingsByUserId(user.id, page, limit);
-    const followingsDTO = followings.map(following => new UserFollowPreviewDTO(following));
-
-    response.send(followingsDTO);
   };
 
   public async getUserFollowings(request: Request, response: Response) {
-    const userId = request.params.userId as string;
+    const userId   = request.params.userId as string;
+    const username = request.query.username as string;
+
+    const accessToken = request.headers.authorization;
+
     const page   = parseInt(request.query.page as string) || 1;
     const limit  = parseInt(request.query.limit as string ) || 10;
 
-    const followings = await followService.getFollowingsByUserId(userId, page, limit);
-    const followingsDTO = followings.map(following => new UserFollowPreviewDTO(following));
+    const followings    = await followService.getFollowingsByUserId(userId, username, page, limit);
+    const followingsDTO = followings.map(following => new UserFollowPreviewDTO(following.user));
 
-    response.send(followingsDTO);
+    const followingsIds = followingsDTO.map(following => following.id);
+
+    let followStatus: boolean[];
+
+    if (accessToken) {
+      const userMeId = verifyToken(accessToken);
+
+      followStatus = await followService.getFollowStatus(userMeId, followingsIds);
+    }
+
+    const followigsWithDto = followingsDTO.map((followingsDTO, index) => ({
+      ...followingsDTO,
+      isFollowed: followStatus[index]
+    }));
+
+    response.send(followigsWithDto);
   }
 
   public async getFollowState(request: Request, response: Response) {
@@ -204,6 +203,15 @@ class FollowController {
     const follow = await followService.isAlreadyFollowed(userId, follower.id);
 
     response.send({ isFollowed: !!follow });
+  };
+
+  public async getFollowRequestState(request: Request, response: Response) {
+    const userMe      = request.user as User;
+    const requestedId = request.params.userId as string;
+
+    const followRequest = await followService.getFollowRequestByIds(userMe.id, requestedId);
+
+    response.send({ isFollowRequestSent: !!followRequest });
   }
 };
 

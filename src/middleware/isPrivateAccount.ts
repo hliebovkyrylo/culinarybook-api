@@ -4,6 +4,8 @@ import {
   type Response 
 }                      from "express";
 import { userService } from "../services/user/user.service";
+import { verifyToken } from "../utils/token";
+import { followService } from "../services/user/follow.service";
 
 export const isPrivateAccount = async (request: Request, response: Response, next: NextFunction) => {
   const userId = request.params.userId;
@@ -12,9 +14,21 @@ export const isPrivateAccount = async (request: Request, response: Response, nex
 
   if (user === null) {
     return response.status(404).send({
-      code   : "user-not-found",
+      code   : "user-not-found", 
       message: "User nor found!"
     });
+  }
+
+  const accessToken = request.headers.authorization;
+
+  if (accessToken) {
+    const id = verifyToken(accessToken);
+
+    const isFollowed = followService.getFollowerByIds(id, userId);
+
+    if (isFollowed !== null) {
+      return next();
+    }
   }
 
   if (user.isPrivate === true) {

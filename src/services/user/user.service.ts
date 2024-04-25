@@ -74,7 +74,7 @@ class UserService {
       include: {
         _count: {
           select: {
-            follow: true,
+            follows: true,
             recipe: true,
           },
         },
@@ -140,7 +140,7 @@ class UserService {
       include: {
         _count: {
           select: {
-            follow: true,
+            follows: true,
             recipe: true,
           },
         },

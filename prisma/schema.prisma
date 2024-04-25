@@ -19,7 +19,8 @@ model User {
   password         String
   isPrivate        Boolean             @default(false)
   vereficationCode VerificationCode[]
-  follow           Follow[]
+  follows          Follow[] @relation("UserFollows")
+  followed         Follow[] @relation("UserFollowed")
   recipe           Recipe[]
   like             Like[]
   visited          Visited[]
@@ -41,7 +42,8 @@ model Follow {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   userId     String @db.ObjectId
   followerId String @db.ObjectId
-  follower   User   @relation(fields: [followerId], references: [id])
+  user       User   @relation("UserFollows", fields: [userId], references: [id])
+  follower   User   @relation("UserFollowed", fields: [followerId], references: [id])
 }
 
 model Recipe {
