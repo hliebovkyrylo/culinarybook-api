@@ -32,25 +32,24 @@ class FollowService {
     });
   };
 
-  public async getUserFollowers(userId: string, page: number, limit: number) {
+  public async getUserFollowers(userId: string, username: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
 
-    const followers = await prisma.follow.findMany({
+    return await prisma.follow.findMany({
       skip,
       where: {
         userId: userId,
+        follower: {
+          username: {
+            contains: username,
+            mode    : "insensitive",
+          }
+        }
+      },
+      include: {
+        follower: true
       },
       take: limit,
-    });
-
-    const followersIds = followers.map(following => following.followerId);
-
-    return await prisma.user.findMany({
-      where: {
-        id: {
-          in: followersIds,
-        },
-      },
     });
   };
 
@@ -62,25 +61,24 @@ class FollowService {
     });
   }
 
-  public async getFollowingsByUserId(userId: string, page: number, limit: number) {
+  public async getFollowingsByUserId(userId: string, username: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
 
-    const followings = await prisma.follow.findMany({
+    return await prisma.follow.findMany({
       skip,
       where: {
         followerId: userId,
+        user: {
+          username: {
+            contains: username,
+            mode    : "insensitive",
+          }
+        }
+      },
+      include: {
+        user: true
       },
       take: limit,
-    });
-
-    const followingsIds = followings.map(following => following.userId);
-
-    return await prisma.user.findMany({
-      where: {
-        id: {
-          in: followingsIds,
-        },
-      },
     });
   };
 
@@ -124,6 +122,29 @@ class FollowService {
       },
     });
   }; 
+
+  public async findFollowersByUsername(userId: string, username: string) {
+    return await prisma.follow.findMany({
+      where: {
+        userId: userId,
+        follower: {
+          username: username
+        }
+      },
+      include: {
+        follower: true
+      }
+    })
+  };
+
+  public async getFollowerByIds(followerId: string, userId: string) {
+    return await prisma.follow.findFirst({
+      where: {
+        userId    : userId,
+        followerId: followerId,
+      },
+    });
+  };
 };
 
 export const followService = new FollowService();
