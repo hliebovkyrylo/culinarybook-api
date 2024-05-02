@@ -15,5 +15,4 @@ commentRoute.post("/create/:recipeId", isAuth, isVerifiedAccount, validate(Creat
 commentRoute.get("/getComments/:recipeId", accessToRecipe, commentController.getComments);
 commentRoute.delete("/:commentId/delete", isAuth, isVerifiedAccount, commentController.deleteComment);
 commentRoute.post("/:commentId/reply", isAuth, validate(CreateCommentReplySchema), commentController.createCommentReply);
-commentRoute.get("/:commentId/getReplies", commentController.getCommentReplies);
 commentRoute.delete("/reply/:commentReplyId/delete", isAuth, commentController.deleteCommentReply);

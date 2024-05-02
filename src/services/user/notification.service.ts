@@ -14,6 +14,10 @@ class NotificationService {
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        notificationCreator: true,
+        recipe             : true
+      }
     });
   };
 
@@ -72,6 +76,15 @@ class NotificationService {
     return await prisma.notification.delete({
       where: {
         id: notificationId,
+      },
+    });
+  };
+
+  public async getUnreadedNotifications(userId: string) {
+    return await prisma.notification.findMany({
+      where: {
+        userId: userId,
+        isRead: false,
       },
     });
   };

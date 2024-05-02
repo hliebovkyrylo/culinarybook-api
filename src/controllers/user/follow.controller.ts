@@ -2,9 +2,9 @@ import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
 import { followService }               from "../../services/user/follow.service";
 import { notificationService }         from "../../services/user/notification.service";
-import { UserFollowPreviewDTO, UserPreviewDTO }              from "../../dtos/user.dto";
+import { UserFollowPreviewDTO }        from "../../dtos/user.dto";
 import { userService }                 from "../../services/user/user.service";
-import { verifyToken } from "../../utils/token";
+import { verifyToken }                 from "../../utils/token";
 
 class FollowController {
   public async follow(request: Request, response: Response) {
@@ -51,10 +51,10 @@ class FollowController {
       }
 
       await followService.createFollowRequest({ requesterId: user.id, requestedId: requestedUserId });
-      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, type: notificationType, noficationData: "", recipeId: "", createdAt: new Date })
+      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, recipeId: null, type: notificationType, noficationData: "", createdAt: new Date })
     } else {
       await followService.createFollow({ followerId: user.id, userId: requestedUserId });
-      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, type: notificationType, noficationData: "", recipeId: "", createdAt: new Date })
+      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, recipeId: null, type: notificationType, noficationData: "", createdAt: new Date })
     }
 
     const message = isUserPrivate
@@ -81,7 +81,7 @@ class FollowController {
     if (data) {
       await followService.createFollow({ followerId: followerId, userId: user.id });
 
-      await notificationService.craeteNotification({ userId: followerId, noficitaionCreatorId: user.id, type: "follow-allowed", noficationData: "", recipeId: "", createdAt: new Date });
+      await notificationService.craeteNotification({ userId: followerId, recipeId: null, noficitaionCreatorId: user.id, type: "follow-allowed", noficationData: "", createdAt: new Date });
     } 
 
     await followService.deleteFollowRequestById(followRequest.id);
@@ -190,7 +190,7 @@ class FollowController {
 
     const followigsWithDto = followingsDTO.map((followingsDTO, index) => ({
       ...followingsDTO,
-      isFollowed: followStatus[index]
+      isFollowed: followStatus[index] || false
     }));
 
     response.send(followigsWithDto);

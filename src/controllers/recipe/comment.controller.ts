@@ -13,9 +13,9 @@ class CommentController {
     const recipeId = request.params.recipeId;
     const data     = request.body as Omit<ICommentSchema, "authorUsername" | "authorImage">;
 
-    const comments = await commentService.getCommentsByText(data.commentText, recipeId);
+    const comments = await commentService.getCommentsByText(user.id, data.commentText, recipeId);
 
-    if (comments.length > 4) {
+    if (comments.length > 5) {
       return response.status(409).send({
         code   : "same-text",
         message: "You have posted more than 5 comments with the same text, please change it!"
@@ -24,10 +24,8 @@ class CommentController {
 
     const comment = await commentService.createComment(
       { 
-        ...data, 
-        authorImage   : user.image, 
+        ...data,
         recipeId      : recipeId,
-        authorUsername: user.username,
         userId        : user.id
       }
     );
@@ -45,7 +43,7 @@ class CommentController {
       await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "comment", noficationData: data.commentText, recipeId: recipe.id, createdAt: new Date })
     }
 
-    const commentDTO = new CommentDTO(comment);
+    const commentDTO = new CommentDTO({ ...comment, user });
 
     response.send(commentDTO);
   };
@@ -70,7 +68,7 @@ class CommentController {
       });
     }
 
-    const commentAuthor = await userService.getUserByUsername(comment.authorUsername) as User;
+    const commentAuthor = await userService.getUserByUsername(comment.user.username) as User;
 
     if (user.id.toString() !== commentAuthor.id.toString()) {
       return response.status(403).send({
@@ -103,7 +101,7 @@ class CommentController {
     }
 
     const commentReply    = await commentService.createCommentReply({ ...data, userId: user.id, commentId });
-    const commentReplyDTO = new CommentReplyDTO(commentReply);
+    const commentReplyDTO = new CommentReplyDTO({ ...commentReply, user });
 
     const comment = await commentService.getCommentById(commentId);
 
@@ -119,15 +117,6 @@ class CommentController {
     }
 
     response.send(commentReplyDTO);
-  };
-
-  public async getCommentReplies(request: Request, response: Response) {
-    const commentId = request.params.commentId as string;
-    const commentReplies = await commentService.getCommentRepliesByCommentId(commentId);
-
-    const commentRepliesDTO = commentReplies.map(commentReply => new CommentReplyDTO(commentReply));
-
-    response.send(commentRepliesDTO);
   };
 
   public async deleteCommentReply(request: Request, response: Response) {

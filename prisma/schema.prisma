@@ -8,26 +8,27 @@ datasource db {
 }
 
 model User {
-  id               String              @id @default(auto()) @map("_id") @db.ObjectId
-  email            String              @unique
-  username         String              @unique
-  name             String
-  image            String
-  backgroundImage  String
-  isVerified       Boolean
-  canResetPassword Boolean
-  password         String
-  isPrivate        Boolean             @default(false)
-  vereficationCode VerificationCode[]
-  follows          Follow[] @relation("UserFollows")
-  followed         Follow[] @relation("UserFollowed")
-  recipe           Recipe[]
-  like             Like[]
-  visited          Visited[]
-  saved            Saved[]
-  commentReply     CommentReply[]
-  notification     Notification[]
-  comment          Comment[]
+  id                   String              @id @default(auto()) @map("_id") @db.ObjectId
+  email                String              @unique
+  username             String              @unique
+  name                 String
+  image                String
+  backgroundImage      String
+  isVerified           Boolean
+  canResetPassword     Boolean
+  password             String
+  isPrivate            Boolean             @default(false)
+  vereficationCode     VerificationCode[]
+  follows              Follow[] @relation("UserFollows")
+  followed             Follow[] @relation("UserFollowed")
+  recipe               Recipe[]
+  like                 Like[]
+  visited              Visited[]
+  saved                Saved[]
+  commentReply         CommentReply[]
+  notifications        Notification[]  @relation("UserNotifications")
+  createdNotifications Notification[] @relation("NotificationCreators")
+  comment              Comment[]
 }
 
 model VerificationCode {
@@ -64,6 +65,7 @@ model Recipe {
   saved           Saved[]
   step            Step[]
   comment         Comment[]
+  notifications   Notification[]
 }
 
 model Like {
@@ -101,8 +103,6 @@ model Step {
 model Comment {
   id             String          @id @default(auto()) @map("_id") @db.ObjectId
   recipeId       String          @db.ObjectId
-  authorUsername String
-  authorImage    String
   commentText    String
   userId         String          @db.ObjectId
   grade          Int
@@ -129,9 +129,11 @@ model Notification {
   isRead               Boolean  @default(false)
   userId               String   @db.ObjectId
   noficitaionCreatorId String   @db.ObjectId
-  recipeId             String?  @default("")
+  recipeId             String?  @default("") @db.ObjectId
   createdAt            DateTime @default(now()) @map("createdAt")
-  user                 User     @relation(fields: [userId], references: [id])
+  user                 User     @relation("UserNotifications", fields: [userId], references: [id])
+  notificationCreator  User     @relation("NotificationCreators", fields: [noficitaionCreatorId], references: [id])
+  recipe               Recipe?  @relation(fields: [recipeId], references: [id])
 }
 
 model FollowRequest {

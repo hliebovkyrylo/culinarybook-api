@@ -6,9 +6,10 @@ class CommentService {
     return await prisma.comment.create({ data });
   };
 
-  public async getCommentsByText(commentText: string, recipeId: string) {
+  public async getCommentsByText(userId: string, commentText: string, recipeId: string) {
     return await prisma.comment.findMany({
       where: {
+        userId: userId,
         recipeId: recipeId,
         commentText: {
           contains: commentText,
@@ -22,6 +23,14 @@ class CommentService {
     return await prisma.comment.findMany({
       where: {
         recipeId: recipeId,
+      },
+      include: {
+        user        : true,
+        commentReply: {
+          include: {
+            user: true
+          }
+        }
       },
       orderBy: {
         createdAt: "desc"
@@ -48,6 +57,9 @@ class CommentService {
       where: {
         id: commentId,
       },
+      include: {
+        user: true
+      }
     });
   };
 
@@ -82,6 +94,9 @@ class CommentService {
     return await prisma.commentReply.findMany({
       where: {
         commentId: commentId,
+      },
+      include: {
+        user: true
       },
       orderBy: {
         createdAt: "desc"

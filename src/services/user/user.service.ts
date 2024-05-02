@@ -116,9 +116,11 @@ class UserService {
         id: userId,
       },
       data: {
-        username: data.username,
-        name    : data.name,
-        image   : data.image,
+        username       : data.username,
+        name           : data.name,
+        image          : data.image,
+        isPrivate      : data.isPrivate,
+        backgroundImage: data.backgroundImage
       },
     });
   };
