@@ -6,3 +6,4 @@ import { notificationController } from "../controllers/user/notification.control
 export const notificationRoute = Router();
 
 notificationRoute.get('/getAll', isAuth, isVerifiedAccount, notificationController.getAll);
+notificationRoute.get('/unreaded/count', isAuth, isVerifiedAccount, notificationController.getUnreadedNotificationCount);

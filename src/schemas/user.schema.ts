@@ -5,6 +5,7 @@ export const UdpateUserInfoSchema = z.object({
   name           : z.string().max(32),
   image          : z.string(),
   backgroundImage: z.string(),
+  isPrivate      : z.boolean(),
 });
 
 export const FollowSchema = z.object({

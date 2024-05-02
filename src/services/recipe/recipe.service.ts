@@ -33,34 +33,12 @@ class RecipeService {
   };
 
   public async deleteRecipe(recipeId: string) {
-    const [recipeLikes, recipeSaved, recipeSteps, recipeComments, notifications] = await Promise.all([
-      likeService.getLikesByRecipeId(recipeId),
-      saveService.getSavedByRecipeId(recipeId),
-      stepService.getStepsByRecipeId(recipeId),
-      commentService.getCommentsByRecipeId(recipeId),
-      notificationService.getNotificationsByRecipeId(recipeId),
-    ]);
-  
-    if (recipeLikes) {
-      await likeService.deleteLikes(recipeLikes.map(like => like.id));
-    }
-  
-    if (recipeSaved) {
-      await saveService.deleteAllSavedById(recipeSaved.map(save => save.id));
-    }
-  
-    if (recipeSteps) {
-      await stepService.deleteStepsByIds(recipeSteps.map(step => step.id));
-    }
-  
-    if (recipeComments) {
-      await commentService.deleteCommentsByIds(recipeComments.map(comment => comment.id));
-    }
-
-    if (notifications) {
-      const recipeIds = notifications.map(notification => notification.recipeId).filter(id => id !== null) as string[];
-      await notificationService.deleteNotificationsByRecipeId(recipeIds);
-    }    
+    await prisma.like.deleteMany({ where: { recipeId: recipeId } });
+    await prisma.saved.deleteMany({ where: { recipeId: recipeId } });
+    await prisma.step.deleteMany({ where: { recipeId: recipeId } });
+    await prisma.comment.deleteMany({ where: { recipeId: recipeId } });
+    await prisma.notification.deleteMany({ where: { recipeId: recipeId } });    
+    await prisma.visited.deleteMany({ where: { recipeId: recipeId } });
   
     return await prisma.recipe.delete({
       where: {

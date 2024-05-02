@@ -13,6 +13,13 @@ class NotificationController {
     
     response.send(notifications);
   };
+
+  public async getUnreadedNotificationCount(request: Request, response: Response) {
+    const user                  = request.user as User;
+    const unreadedNotifications = await notificationService.getUnreadedNotifications(user.id);
+
+    response.send({ unreadedNotifications: unreadedNotifications.length });
+  };
 };
 
 export const notificationController = new NotificationController();
