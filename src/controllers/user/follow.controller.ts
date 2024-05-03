@@ -154,8 +154,9 @@ class FollowController {
 
     if (accessToken) {
       const userMeId = verifyToken(accessToken);
-
       followStatus = await followService.getFollowStatus(userMeId, followerIds);
+    } else {
+      followStatus = new Array(followersDTO.length).fill(false);
     }
 
     const followersWithStatus = followersDTO.map((followerDTO, index) => ({
@@ -184,16 +185,17 @@ class FollowController {
 
     if (accessToken) {
       const userMeId = verifyToken(accessToken);
-
       followStatus = await followService.getFollowStatus(userMeId, followingsIds);
+    } else {
+      followStatus = new Array(followingsDTO.length).fill(false);
     }
 
-    const followigsWithDto = followingsDTO.map((followingsDTO, index) => ({
-      ...followingsDTO,
-      isFollowed: followStatus[index] || false
+    const followersWithStatus = followingsDTO.map((followerDTO, index) => ({
+      ...followerDTO,
+      isFollowed: followStatus[index]
     }));
 
-    response.send(followigsWithDto);
+    response.send(followersWithStatus);
   }
 
   public async getFollowState(request: Request, response: Response) {
