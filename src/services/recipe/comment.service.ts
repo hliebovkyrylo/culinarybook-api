@@ -119,6 +119,24 @@ class CommentService {
       },
     });
   };
+
+  public async deleteCommentRepliesByRecipeId(recipeId: string) {
+    const parentComments = await prisma.comment.findMany({
+      where: {
+        recipeId: recipeId,
+      },
+    });
+
+    const parentCommentsIds = parentComments.map((comment) => comment.id);
+
+    return await prisma.commentReply.deleteMany({
+      where: {
+        commentId: {
+          in: parentCommentsIds
+        }
+      }
+    });
+  }
 };
 
 export const commentService = new CommentService();

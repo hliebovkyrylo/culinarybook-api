@@ -35,6 +35,7 @@ class RecipeService {
   public async deleteRecipe(recipeId: string) {
     await prisma.like.deleteMany({ where: { recipeId: recipeId } });
     await prisma.saved.deleteMany({ where: { recipeId: recipeId } });
+    await commentService.deleteCommentRepliesByRecipeId(recipeId);
     await prisma.step.deleteMany({ where: { recipeId: recipeId } });
     await prisma.comment.deleteMany({ where: { recipeId: recipeId } });
     await prisma.notification.deleteMany({ where: { recipeId: recipeId } });    
