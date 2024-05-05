@@ -1,13 +1,13 @@
 import { Router }              from "express";
-import { isAuth }              from "../middleware/auth/isAuth";
-import { isVerifiedAccount }   from "../middleware/auth/isVerified";
+import { isAuth }              from "../middleware/isAuth";
+import { isVerifiedAccount }   from "../middleware/isVerified";
 import { validate }            from "../utils/validate";
 import { 
   CreateCommentReplySchema, 
   CreateCommentSchema 
 }                              from "../schemas/comment.schema";
-import { commentController }   from "../controllers/recipe/comment.controller";
-import { accessToRecipe }      from "../middleware/recipe/accessToRecipe";
+import { commentController }   from "../controllers/comment.controller";
+import { accessToRecipe }      from "../middleware/accessToRecipe";
 
 export const commentRoute = Router();
 

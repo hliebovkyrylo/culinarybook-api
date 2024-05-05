@@ -1,5 +1,5 @@
-import { prisma }                from "../..";
-import { IUpdateUserInfoSchema } from "../../schemas/user.schema";
+import { prisma }                from "..";
+import { IUpdateUserInfoSchema } from "../schemas/user.schema";
 
 class UserService {
   public async getUserByEmail(email: string) {

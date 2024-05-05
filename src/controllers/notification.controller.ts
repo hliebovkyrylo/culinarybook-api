@@ -1,6 +1,6 @@
 import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
-import { notificationService }         from "../../services/user/notification.service";
+import { notificationService }         from "../services/notification.service";
 
 class NotificationController {
   public async getAll(request: Request, response: Response) {

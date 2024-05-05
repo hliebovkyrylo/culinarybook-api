@@ -1,7 +1,7 @@
 import { Router }            from "express";
-import { followController }  from "../controllers/user/follow.controller";
-import { isAuth }            from "../middleware/auth/isAuth";
-import { isVerifiedAccount } from "../middleware/auth/isVerified";
+import { followController }  from "../controllers/follow.controller";
+import { isAuth }            from "../middleware/isAuth";
+import { isVerifiedAccount } from "../middleware/isVerified";
 import { isPrivateAccount }  from "../middleware/isPrivateAccount";
 
 export const followRoute = Router();

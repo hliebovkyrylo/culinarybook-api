@@ -1,17 +1,17 @@
 import { Recipe, User }                 from "@prisma/client";
 import { type Request, type Response  } from "express";
-import { recipeService }                from "../../services/recipe/recipe.service";
+import { recipeService }                from "../services/recipe.service";
 import { 
   ICreateRecipeSchema, 
   ICreateStepSchema, 
   IUpdateRecipeSchema, 
   IUpdateStepSchema
-}                                       from "../../schemas/recipe.schema";
-import { RecipePreviewDTO }             from "../../dtos/recipe.dto";
-import { verifyToken }                  from "../../utils/token";
-import { stepService }                  from "../../services/recipe/step.service";
-import { likeService }                  from "../../services/recipe/like.service";
-import { commentService }               from "../../services/recipe/comment.service";
+}                                       from "../schemas/recipe.schema";
+import { RecipePreviewDTO }             from "../dtos/recipe.dto";
+import { verifyToken }                  from "../utils/token";
+import { stepService }                  from "../services/step.service";
+import { likeService }                  from "../services/like.service";
+import { commentService }               from "../services/comment.service";
 
 class RecipeController {
   public async create(request: Request, response: Response) {

@@ -1,5 +1,5 @@
-import { prisma }      from "../..";
-import { ILikeSchema } from "../../schemas/like.schema";
+import { prisma }      from "..";
+import { ILikeSchema } from "../schemas/like.schema";
 
 class SaveService {
   public async createSave(data: Omit<ILikeSchema, "id">) {

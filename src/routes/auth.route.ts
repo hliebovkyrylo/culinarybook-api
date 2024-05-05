@@ -1,14 +1,14 @@
 import { Router }                      from "express";
-import { authController }              from "../controllers/user/auth.controller";
+import { authController }              from "../controllers/auth.controller";
 import { validate }                    from "../utils/validate";
 import {
   ChangePasswordSchema,
   SignInSchema,
   SignUpSchema
 }                                      from "../schemas/auth.schema";
-import { isAuth }                      from "../middleware/auth/isAuth";
-import { isCodeExprired }              from "../middleware/auth/isCodeExpired";
-import { isForgotPasswordCodeExpired } from "../middleware/auth/isForgotPasswordCodeExpired";
+import { isAuth }                      from "../middleware/isAuth";
+import { isCodeExprired }              from "../middleware/isCodeExpired";
+import { isForgotPasswordCodeExpired } from "../middleware/isForgotPasswordCodeExpired";
 
 export const authRoute = Router();
 

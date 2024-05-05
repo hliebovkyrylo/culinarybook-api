@@ -3,8 +3,8 @@ import {
   type Response, 
   type NextFunction 
 }                      from "express";
-import { authService } from "../../services/user/auth.service";
-import { userService } from "../../services/user/user.service";
+import { authService } from "../services/auth.service";
+import { userService } from "../services/user.service";
 
 export const isForgotPasswordCodeExpired = async (
   request : Request,
