@@ -1,5 +1,5 @@
-import { prisma }         from "../..";
-import { ICommentReplySchema, ICommentSchema } from "../../schemas/comment.schema";
+import { prisma }         from "..";
+import { ICommentReplySchema, ICommentSchema } from "../schemas/comment.schema";
 
 class CommentService {
   public async createComment(data: Omit<ICommentSchema, "id">) {

@@ -3,9 +3,9 @@ import {
   type Request, 
   type Response 
 }                      from "express";
-import { userService } from "../services/user/user.service";
+import { userService } from "../services/user.service";
 import { verifyToken } from "../utils/token";
-import { followService } from "../services/user/follow.service";
+import { followService } from "../services/follow.service";
 
 export const isPrivateAccount = async (request: Request, response: Response, next: NextFunction) => {
   const userId = request.params.userId;

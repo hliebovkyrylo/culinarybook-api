@@ -1,10 +1,10 @@
 import { User }                        from "@prisma/client";
 import { type Request, type Response } from "express";
-import { followService }               from "../../services/user/follow.service";
-import { notificationService }         from "../../services/user/notification.service";
-import { UserFollowPreviewDTO }        from "../../dtos/user.dto";
-import { userService }                 from "../../services/user/user.service";
-import { verifyToken }                 from "../../utils/token";
+import { followService }               from "../services/follow.service";
+import { notificationService }         from "../services/notification.service";
+import { UserFollowPreviewDTO }        from "../dtos/user.dto";
+import { userService }                 from "../services/user.service";
+import { verifyToken }                 from "../utils/token";
 
 class FollowController {
   public async follow(request: Request, response: Response) {

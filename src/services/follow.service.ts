@@ -1,5 +1,5 @@
-import { prisma }                                    from "../..";
-import { ICreateFollowRequestSchema, IFollowSchema } from "../../schemas/user.schema";
+import { prisma }                                    from "..";
+import { ICreateFollowRequestSchema, IFollowSchema } from "../schemas/user.schema";
 
 class FollowService {
   public async createFollow(data: Omit<IFollowSchema, "id">) {

@@ -4,7 +4,7 @@ import {
   type NextFunction 
 }                        from "express";
 import { User }          from "@prisma/client";
-import { recipeService } from "../../services/recipe/recipe.service";
+import { recipeService } from "../services/recipe.service";
 
 export const isRecipeOwner = async (
   request : Request, 

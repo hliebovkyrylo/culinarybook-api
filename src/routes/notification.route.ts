@@ -1,7 +1,7 @@
 import { Router }                 from "express";
-import { isAuth }                 from "../middleware/auth/isAuth";
-import { isVerifiedAccount }      from "../middleware/auth/isVerified";
-import { notificationController } from "../controllers/user/notification.controller";
+import { isAuth }                 from "../middleware/isAuth";
+import { isVerifiedAccount }      from "../middleware/isVerified";
+import { notificationController } from "../controllers/notification.controller";
 
 export const notificationRoute = Router();
 

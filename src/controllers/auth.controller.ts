@@ -8,10 +8,10 @@ import {
   IChangePasswordSchema,
   ISignInSchema, 
   ISignUpSchema 
-}                            from "../../schemas/auth.schema";
-import { userService }       from "../../services/user/user.service";
-import { authService }       from "../../services/user/auth.service";
-import { createAccessToken } from "../../utils/token";
+}                            from "../schemas/auth.schema";
+import { userService }       from "../services/user.service";
+import { authService }       from "../services/auth.service";
+import { createAccessToken } from "../utils/token";
 import { User }              from "@prisma/client";
 
 class AuthController {

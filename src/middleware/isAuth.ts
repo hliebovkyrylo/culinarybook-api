@@ -7,8 +7,8 @@ import {
   JsonWebTokenError, 
   TokenExpiredError 
 }                      from "jsonwebtoken";
-import { verifyToken } from "../../utils/token";
-import { userService } from "../../services/user/user.service";
+import { verifyToken } from "../utils/token";
+import { userService } from "../services/user.service";
 
 
 export const isAuth = async (

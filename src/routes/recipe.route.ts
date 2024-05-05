@@ -3,12 +3,12 @@ import {
   UpdateRecipeSchema
 }                             from "../schemas/recipe.schema";
 import { Router }             from "express";
-import { isAuth }             from "../middleware/auth/isAuth";
-import { isVerifiedAccount }  from "../middleware/auth/isVerified";
-import { recipeController }   from "../controllers/recipe/recipe.controller";
+import { isAuth }             from "../middleware/isAuth";
+import { isVerifiedAccount }  from "../middleware/isVerified";
+import { recipeController }   from "../controllers/recipe.controller";
 import { validate }           from "../utils/validate";
-import { accessToRecipe }     from "../middleware/recipe/accessToRecipe";
-import { isRecipeOwner }      from "../middleware/recipe/isRecipeOwner";
+import { accessToRecipe }     from "../middleware/accessToRecipe";
+import { isRecipeOwner }      from "../middleware/isRecipeOwner";
 import { isPrivateAccount } from "../middleware/isPrivateAccount";
 
 export const recipeRoute = Router();

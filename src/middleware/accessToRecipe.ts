@@ -3,8 +3,8 @@ import {
   type Response, 
   type NextFunction 
 }                        from "express";
-import { recipeService } from "../../services/recipe/recipe.service";
-import { verifyToken }   from "../../utils/token";
+import { recipeService } from "../services/recipe.service";
+import { verifyToken }   from "../utils/token";
 
 export const accessToRecipe = async (request: Request, response: Response, next: NextFunction) => {
   let userId: string = "";

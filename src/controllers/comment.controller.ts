@@ -1,11 +1,11 @@
 import { User }                                      from "@prisma/client";
 import { type Request, type Response }               from "express";
-import { ICommentSchema, ICreateCommentReplySchema } from "../../schemas/comment.schema";
-import { commentService }                            from "../../services/recipe/comment.service";
-import { CommentDTO, CommentReplyDTO }               from "../../dtos/comment.dto";
-import { userService }                               from "../../services/user/user.service";
-import { recipeService }                             from "../../services/recipe/recipe.service";
-import { notificationService }                       from "../../services/user/notification.service";
+import { ICommentSchema, ICreateCommentReplySchema } from "../schemas/comment.schema";
+import { commentService }                            from "../services/comment.service";
+import { CommentDTO, CommentReplyDTO }               from "../dtos/comment.dto";
+import { userService }                               from "../services/user.service";
+import { recipeService }                             from "../services/recipe.service";
+import { notificationService }                       from "../services/notification.service";
 
 class CommentController {
   public async create(request: Request, response: Response) {

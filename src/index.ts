@@ -18,6 +18,7 @@ import fs                            from "fs";
 import swaggerUi                     from "swagger-ui-express";
 import { notificationRoute }         from "./routes/notification.route";
 import { handleEntityTooLargeError } from "./utils/largeFileError";
+import { uploadImageRoute }          from "./routes/upload-image.route";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ export const app    = express();
 export const prisma = new PrismaClient();
 export const port   = process.env.PORT as string;
 
+app.use('/uploads', express.static('uploads'));
 app.use(cors());
 app.use(bodyParser.json({ limit: '1mb' }));
 app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
@@ -59,6 +61,7 @@ app.use('/like', likeRoute);
 app.use('/save', saveRoute);
 app.use('/comment', commentRoute);
 app.use('/notification', notificationRoute);
+app.use('/upload', uploadImageRoute);
 
 app.use(serverError);
 
