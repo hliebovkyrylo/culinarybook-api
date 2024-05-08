@@ -1,6 +1,6 @@
-import fs from "fs";
+import fs                              from "fs";
 import { type Request, type Response } from "express";
-import multer from "multer";
+import multer                          from "multer";
 
 const storage = multer.diskStorage({
   destination: (_, __, callback) => {

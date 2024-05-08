@@ -3,7 +3,13 @@ import { ICreateNotificationSchema } from "../schemas/notification.schema";
 
 class NotificationService {
   public async craeteNotification(data: Omit<ICreateNotificationSchema, "id">) {
-    return await prisma.notification.create({ data });
+    return await prisma.notification.create({ 
+      data,
+      include: {
+        notificationCreator: true,
+        recipe             : true
+      }
+    });
   };
 
   public async getNotificationsByUserId(userId: string) {
