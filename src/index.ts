@@ -16,18 +16,36 @@ import { saveRoute }                 from "./routes/save.route";
 import { commentRoute }              from "./routes/comment.route";
 import fs                            from "fs";
 import swaggerUi                     from "swagger-ui-express";
-import { notificationRoute }         from "./routes/notification.route";
 import { handleEntityTooLargeError } from "./utils/largeFileError";
 import { uploadImageRoute }          from "./routes/upload-image.route";
+import { Server }                    from "socket.io";
+import http                          from "http";
+import { socket }                    from "./socket";
 
 dotenv.config();
 
-export const app    = express();
+export const port      = process.env.PORT as string;
+export const clientUrl = process.env.CLIENT_URL as string;
+
+export const app = express();
+const server     = http.createServer(app);
+export const io  = new Server(server, {
+  cors: {
+    origin     : clientUrl,
+    methods    : '*',
+    credentials: true
+  }
+});
 export const prisma = new PrismaClient();
-export const port   = process.env.PORT as string;
+
 
 app.use('/uploads', express.static('uploads'));
-app.use(cors());
+app.use(cors({
+  origin     : clientUrl,
+  methods    : '*',
+  credentials: true
+}));
+
 app.use(bodyParser.json({ limit: '1mb' }));
 app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
 app.use(handleEntityTooLargeError);
@@ -53,6 +71,8 @@ app.get('/', async (request: Request, response: Response) => {
   }
 });
 
+socket(io);
+
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
 app.use('/follow', followRoute);
@@ -60,11 +80,10 @@ app.use('/recipe', recipeRoute);
 app.use('/like', likeRoute);
 app.use('/save', saveRoute);
 app.use('/comment', commentRoute);
-app.use('/notification', notificationRoute);
 app.use('/upload', uploadImageRoute);
 
 app.use(serverError);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("Server started");
 });
