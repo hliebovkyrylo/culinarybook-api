@@ -20,7 +20,7 @@ import { handleEntityTooLargeError } from "./utils/largeFileError";
 import { uploadImageRoute }          from "./routes/upload-image.route";
 import { Server }                    from "socket.io";
 import http                          from "http";
-import { socket }                    from "./socket";
+import { socket }                    from "./socket/socket.notification";
 
 dotenv.config();
 
@@ -32,17 +32,14 @@ const server     = http.createServer(app);
 export const io  = new Server(server, {
   cors: {
     origin     : clientUrl,
-    methods    : '*',
     credentials: true
   }
 });
 export const prisma = new PrismaClient();
 
-
 app.use('/uploads', express.static('uploads'));
 app.use(cors({
   origin     : clientUrl,
-  methods    : '*',
   credentials: true
 }));
 

@@ -3,6 +3,8 @@ import { User }                        from "@prisma/client";
 import { saveService }                 from "../services/save.service";
 import { recipeService }               from "../services/recipe.service";
 import { notificationService }         from "../services/notification.service";
+import { userSockets }                 from "../socket/socket.notification";
+import { io }                          from "..";
 
 class SaveController {
   public async save(request: Request, response: Response) {
@@ -30,7 +32,10 @@ class SaveController {
     await saveService.createSave({ userId: user.id, recipeId: recipeId });
 
     if (user.id !== recipe.ownerId) {
-      await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "save", noficationData: "", recipeId: recipe.id, createdAt: new Date })
+      const notification = await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "save", noficationData: "", recipeId: recipe.id, createdAt: new Date })
+    
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("notification", notification);
     }
 
     response.send({ message: "Saved!" });
@@ -59,8 +64,13 @@ class SaveController {
     await saveService.removeSave({ userId: user.id, recipeId: recipeId });
 
     const notification = await notificationService.getRecipeNotification(user.id, save.recipeId, 'save');
-    
-    notification && await notificationService.deleteNotification(notification.id)
+
+    if (notification) {
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("removeNotification", notification.id);
+
+      await notificationService.deleteNotification(notification.id)
+    }
 
     response.send({ message: "Removed from saved!" });
   };

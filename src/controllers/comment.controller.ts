@@ -6,6 +6,8 @@ import { CommentDTO, CommentReplyDTO }               from "../dtos/comment.dto";
 import { userService }                               from "../services/user.service";
 import { recipeService }                             from "../services/recipe.service";
 import { notificationService }                       from "../services/notification.service";
+import { userSockets }                               from "../socket/socket.notification";
+import { io }                                        from "..";
 
 class CommentController {
   public async create(request: Request, response: Response) {
@@ -25,8 +27,8 @@ class CommentController {
     const comment = await commentService.createComment(
       { 
         ...data,
-        recipeId      : recipeId,
-        userId        : user.id
+        recipeId: recipeId,
+        userId  : user.id
       }
     );
 
@@ -39,11 +41,14 @@ class CommentController {
       });
     }
 
-    if (user.id !== recipe.ownerId) {
-      await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "comment", noficationData: data.commentText, recipeId: recipe.id, createdAt: new Date })
-    }
-
     const commentDTO = new CommentDTO({ ...comment, user });
+
+    if (user.id !== recipe.ownerId) {
+      const notification = await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "comment", noficationData: data.commentText, recipeId: recipe.id, createdAt: new Date })
+    
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("notification", notification);
+    }
 
     response.send(commentDTO);
   };
@@ -81,21 +86,27 @@ class CommentController {
 
     const notification = await notificationService.getRecipeNotification(user.id, comment.recipeId, 'comment');
     
-    notification && await notificationService.deleteNotification(notification.id)
+    if (notification) {
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("removeNotification", notification.id);
+
+      await notificationService.deleteNotification(notification.id)
+    }
 
     response.send({ message: "Comment deleted!" });
   };
 
   public async createCommentReply(request: Request, response: Response) {
-    const user      = request.user as User;
+    const user      = request.user             as User;
     const commentId = request.params.commentId as string;
-    const data      = request.body as ICreateCommentReplySchema;
+    const userId    = request.params.userId    as string;
+    const data      = request.body             as ICreateCommentReplySchema;
 
     const commentReplies = await commentService.getCommentRepliesByText(data.commentText, commentId, user.id);
 
-    if (commentReplies.length > 4) {
+    if (commentReplies.length > 5) {
       return response.status(409).send({
-        code: "same-text",
+        code   : "same-text",
         message: "You have posted more than 5 comments with the same text, please change it!"
       });
     }
@@ -112,15 +123,18 @@ class CommentController {
       });
     }
 
-    if (user.id !== comment.userId) {
-      await notificationService.craeteNotification({ userId: comment.userId, noficitaionCreatorId: user.id, type: "comment-reply", noficationData: data.commentText, recipeId: comment.recipeId, createdAt: new Date })
+    if (user.id !== userId) {
+      const notification = await notificationService.craeteNotification({ userId: userId, noficitaionCreatorId: user.id, type: "comment-reply", noficationData: data.commentText, recipeId: comment.recipeId, createdAt: new Date })
+      
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("notification", notification);
     }
 
     response.send(commentReplyDTO);
   };
 
   public async deleteCommentReply(request: Request, response: Response) {
-    const user = request.user as User;
+    const user           = request.user as User;
     const commentReplyId = request.params.commentReplyId as string;
 
     const commentReply = await commentService.getCommentReplyById(commentReplyId);
@@ -152,12 +166,21 @@ class CommentController {
 
     if ((user.id.toString() !== commentReply.userId.toString()) && (user.id.toString() !== recipe.ownerId.toString())) {
       return response.status(403).send({
-        code: "have-no-comment-access",
+        code   : "have-no-comment-access",
         message: "You can't manage other people's comments"
       });
     }
 
     await commentService.deleteCommentReply(commentReplyId);
+
+    const notification = await notificationService.getRecipeNotification(user.id, recipe.id, 'comment-reply');
+
+    if (notification) {
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("removeNotification", notification.id);
+
+      await notificationService.deleteNotification(notification.id)
+    }
 
     response.send({ message: "Comment deleted!" });
   }

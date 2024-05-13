@@ -1,11 +1,11 @@
-import { Server }         from "socket.io";
-import { SocketWithUser } from "../typings/socket";
+import { Server, Socket }      from "socket.io";
 import { notificationService } from "../services/notification.service";
+import { isAuthSocket }        from "../middleware/isAuthSocket";
 
 export const userSockets: Record<string, string> = {};
 
 export const socket = (io: Server) => {
-  io.on('connection', (socket: SocketWithUser) => {
+  io.use(isAuthSocket).on('connection', (socket: Socket) => {
     socket.on('userConnect', (userId: string) => {
       userSockets[userId] = socket.id;
     });
@@ -23,7 +23,6 @@ export const socket = (io: Server) => {
       socket.emit('loading_start');
 
       let notifications = await notificationService.getNotificationsByUserId(userId);
-    
       await notificationService.changeNotificationReadStatus(notifications.map(notification => notification.id));
 
       notifications = await notificationService.getNotificationsByUserId(userId);

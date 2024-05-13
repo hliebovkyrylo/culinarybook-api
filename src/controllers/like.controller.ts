@@ -4,7 +4,7 @@ import { likeService }                 from "../services/like.service";
 import { recipeService }               from "../services/recipe.service";
 import { notificationService }         from "../services/notification.service";
 import { io }                          from "..";
-import { userSockets }                 from "../socket";
+import { userSockets }                 from "../socket/socket.notification";
 
 class LikeController {
   public async createLike(request: Request, response: Response) {
