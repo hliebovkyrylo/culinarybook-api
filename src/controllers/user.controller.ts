@@ -33,7 +33,15 @@ class UserController {
     }
 
     const userDTO = new ProfileDTO(user);
-    response.send({ ...userDTO });
+
+    const userFollowersCount  = (await followService.getAllFollowersByUserId(userId)).length;
+    const userFollowingsCount = (await followService.getAllFollowingsByUserId(userId)).length;
+    
+    response.send({ 
+      ...userDTO,
+      followersCount : userFollowersCount,
+      followingsCount: userFollowingsCount,  
+    });
   };
 
   public async searchUserByUsername(request: Request, response: Response) {
