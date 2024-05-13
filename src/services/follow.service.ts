@@ -123,6 +123,16 @@ class FollowService {
     });
   }; 
 
+  public async deleteFollowRequestsByIds(followIds: string[]) {
+    return await prisma.followRequest.deleteMany({
+      where: {
+        id: {
+          in: followIds,
+        },
+      },
+    });
+  };
+
   public async findFollowersByUsername(userId: string, username: string) {
     return await prisma.follow.findMany({
       where: {
@@ -142,6 +152,14 @@ class FollowService {
       where: {
         userId    : userId,
         followerId: followerId,
+      },
+    });
+  };
+
+  public async getFollowRequestsByUserId(userId: string) {
+    return await prisma.followRequest.findMany({
+      where: {
+        requestedId: userId,
       },
     });
   };
