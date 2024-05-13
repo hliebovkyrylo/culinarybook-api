@@ -9,6 +9,9 @@ import { IUpdateUserInfoSchema }      from "../schemas/user.schema";
 import { recipeService }              from "../services/recipe.service";
 import { followService }              from "../services/follow.service";
 import { likeService }                from "../services/like.service";
+import { notificationService }        from "../services/notification.service";
+import { userSockets }                from "../socket/socket.notification";
+import { io }                         from "..";
 
 class UserController {
   public async getMe(request: Request, response: Response) {
@@ -30,7 +33,15 @@ class UserController {
     }
 
     const userDTO = new ProfileDTO(user);
-    response.send({ ...userDTO });
+
+    const userFollowersCount  = (await followService.getAllFollowersByUserId(userId)).length;
+    const userFollowingsCount = (await followService.getAllFollowingsByUserId(userId)).length;
+    
+    response.send({ 
+      ...userDTO,
+      followersCount : userFollowersCount,
+      followingsCount: userFollowingsCount,  
+    });
   };
 
   public async searchUserByUsername(request: Request, response: Response) {
@@ -58,6 +69,28 @@ class UserController {
     const updatedUser    = await userService.updateUserInfo(user.id, data);
     const updatedUserDTO = new ProfileDTO(updatedUser);
 
+    if (updatedUserDTO.isPrivate === false) {
+      const followRequests = await followService.getFollowRequestsByUserId(user.id);
+  
+      if (followRequests) {
+        for (let request of followRequests) {
+          await followService.createFollow({
+            userId    : request.requestedId,
+            followerId: request.requesterId
+          });
+
+          const followRequestNotification = await notificationService.getFollowNotification(request.requesterId, user.id, "follow-request");
+
+          if (followRequestNotification) {
+            const recipientSocketId = userSockets[followRequestNotification.userId];
+            io.to(recipientSocketId).emit("removeNotification", followRequestNotification.id);
+      
+            await notificationService.deleteNotification(followRequestNotification.id);
+          }
+        }
+      }
+    }
+  
     response.send({ ...updatedUserDTO });
   };
 
