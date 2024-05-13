@@ -5,6 +5,8 @@ import { notificationService }         from "../services/notification.service";
 import { UserFollowPreviewDTO }        from "../dtos/user.dto";
 import { userService }                 from "../services/user.service";
 import { verifyToken }                 from "../utils/token";
+import { userSockets } from "../socket/socket.notification";
+import { io } from "..";
 
 class FollowController {
   public async follow(request: Request, response: Response) {
@@ -51,10 +53,16 @@ class FollowController {
       }
 
       await followService.createFollowRequest({ requesterId: user.id, requestedId: requestedUserId });
-      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, recipeId: null, type: notificationType, noficationData: "", createdAt: new Date })
+      const notification =  await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, recipeId: null, type: notificationType, noficationData: "", createdAt: new Date })
+    
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("notification", notification);
     } else {
       await followService.createFollow({ followerId: user.id, userId: requestedUserId });
-      await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, recipeId: null, type: notificationType, noficationData: "", createdAt: new Date })
+      const notification = await notificationService.craeteNotification({ userId: requestedUserId, noficitaionCreatorId: user.id, recipeId: null, type: notificationType, noficationData: "", createdAt: new Date })
+    
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("notification", notification);
     }
 
     const message = isUserPrivate
@@ -81,12 +89,21 @@ class FollowController {
     if (data) {
       await followService.createFollow({ followerId: followerId, userId: user.id });
 
-      await notificationService.craeteNotification({ userId: followerId, recipeId: null, noficitaionCreatorId: user.id, type: "follow-allowed", noficationData: "", createdAt: new Date });
+      const notification = await notificationService.craeteNotification({ userId: followerId, recipeId: null, noficitaionCreatorId: user.id, type: "follow-allowed", noficationData: "", createdAt: new Date });
+    
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("notification", notification);
     } 
 
     await followService.deleteFollowRequestById(followRequest.id);
     const followRequestNotification = await notificationService.getFollowNotification(followerId, user.id, "follow-request");
-    followRequestNotification && await notificationService.deleteNotification(followRequestNotification.id);
+
+    if (followRequestNotification) {
+      const recipientSocketId = userSockets[followRequestNotification.userId];
+      io.to(recipientSocketId).emit("removeNotification", followRequestNotification.id);
+
+      await notificationService.deleteNotification(followRequestNotification.id);
+    }
 
     const message = data 
       ? "Follow allowed!"
@@ -106,6 +123,15 @@ class FollowController {
         code   : "request-not-found",
         message: "Follow request not found!",
       });
+    }
+
+    const followRequestNotification = await notificationService.getFollowNotification(followRequest.requestedId, user.id, "follow-request");
+
+    if (followRequestNotification) {
+      const recipientSocketId = userSockets[followRequestNotification.userId];
+      io.to(recipientSocketId).emit("removeNotification", followRequestNotification.id);
+
+      await notificationService.deleteNotification(followRequestNotification.id);
     }
 
     await followService.deleteFollowRequestById(followRequest.id);
@@ -128,10 +154,22 @@ class FollowController {
     await followService.deleteFollow(follow.id);
 
     const notification = await notificationService.getFollowNotification(user.id, follow.userId, "follow");
-    notification && await notificationService.deleteNotification(notification.id);
+
+    if (notification) {
+      const recipientSocketId = userSockets[notification.userId];
+      io.to(recipientSocketId).emit("removeNotification", notification.id);
+
+      await notificationService.deleteNotification(notification.id);
+    }
 
     const followRequestNotification = await notificationService.getFollowNotification(followUser, user.id, "follow-request");
-    followRequestNotification && await notificationService.deleteNotification(followRequestNotification.id);
+
+    if (followRequestNotification) {
+      const recipientSocketId = userSockets[followRequestNotification.userId];
+      io.to(recipientSocketId).emit("removeNotification", followRequestNotification.id);
+
+      await notificationService.deleteNotification(followRequestNotification.id);
+    }
 
     response.send({ message: "You unfollowing!" });
   };
