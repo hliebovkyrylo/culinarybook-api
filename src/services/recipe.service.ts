@@ -165,6 +165,16 @@ class RecipeService {
     });
   }; 
 
+  public async getRecipeVisitsByRecipeIds(recipeIds: string[]) {
+    return await prisma.visited.findMany({
+      where: {
+        recipeId: {
+          in: recipeIds,
+        },
+      },
+    });
+  };
+
   public async getRecipeVisitsByRecipeId(recipeId: string) {
     return await prisma.visited.findMany({
       where: {
