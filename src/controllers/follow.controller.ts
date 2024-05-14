@@ -5,8 +5,8 @@ import { notificationService }         from "../services/notification.service";
 import { UserFollowPreviewDTO }        from "../dtos/user.dto";
 import { userService }                 from "../services/user.service";
 import { verifyToken }                 from "../utils/token";
-import { userSockets } from "../socket/socket.notification";
-import { io } from "..";
+import { userSockets }                 from "../socket/socket.notification";
+import { io }                          from "..";
 
 class FollowController {
   public async follow(request: Request, response: Response) {

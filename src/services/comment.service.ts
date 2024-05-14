@@ -136,7 +136,17 @@ class CommentService {
         }
       }
     });
-  }
+  };
+
+  public async getCommentsByRecipeIds(recipeIds: string[]) {
+    return await prisma.comment.findMany({
+      where: {
+        recipeId: {
+          in: recipeIds,
+        },
+      },
+    });
+  };
 };
 
 export const commentService = new CommentService();

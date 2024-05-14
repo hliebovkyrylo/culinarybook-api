@@ -94,16 +94,18 @@ class RecipeController {
     response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
-  public async getRecommendedRecipes(request: Request, response: Response) {
+  public async getRecommendedRecipes(request: Request, response: Response): Promise<void> {
     const user  = request.user as User;
     const page  = parseInt(request.query.page as string) || 1;
     const limit = parseInt(request.query.limit as string ) || 10;
   
-    const likedRecipes   = await recipeService.getAllLikedRecipesByUserId(user.id);
-    const savedRecipes   = await recipeService.getAllSavedRecipesByUserId(user.id);
-    const visitedRecipes = await recipeService.getAllVisitedRecipesByUserId(user.id);
+    const [likedRecipes, savedRecipes, visitedRecipes] = await Promise.all([
+      recipeService.getAllLikedRecipesByUserId(user.id),
+      recipeService.getAllSavedRecipesByUserId(user.id),
+      recipeService.getAllVisitedRecipesByUserId(user.id)
+    ]);
   
-    const recipes = likedRecipes.concat(savedRecipes, visitedRecipes);
+    const recipes = [...likedRecipes, ...savedRecipes, ...visitedRecipes];
   
     let keywords: string[] = [];
   
@@ -117,8 +119,6 @@ class RecipeController {
       });
     }
   
-    const findedRecipes = (await recipeService.getAllRecipes()).filter(recipe => recipe.ownerId !== user.id);
-  
     function containsWord(recipe: Recipe) {
       for (let word of keywords) {
         if (recipe.title.includes(word)) {
@@ -130,38 +130,33 @@ class RecipeController {
   
     const recipesIds = recipes.map(recipe => recipe.id);
   
-    const likes = await Promise.all(recipesIds.map(recipeId => {
-      return likeService.getLikesByRecipeId(recipeId);
-    }));
-  
-    const views = await Promise.all(recipesIds.map(recipeId => {
-      return recipeService.getRecipeVisitsByRecipeId(recipeId);
-    }));
-  
-    const comments = await Promise.all(recipesIds.map(recipeId => {
-      return commentService.getCommentsByRecipeId(recipeId);
-    }));
+    const [likes, views, comments, findedRecipes] = await Promise.all([
+      likeService.getLikesByRecipeIds(recipesIds),
+      recipeService.getRecipeVisitsByRecipeIds(recipesIds),
+      commentService.getCommentsByRecipeIds(recipesIds),
+      recipeService.getAllRecipes()
+    ]);
+
+    findedRecipes.filter(recipe => recipe.ownerId !== user.id);
   
     function calculateScore(recipeId: string) {
-      const likesCount    = likes.flat().filter(like => like.recipeId === recipeId).length;
-      const viewsCount    = views.flat().filter(view => view.recipeId === recipeId).length;
-      const commentsCount = comments.flat().filter(comment => comment.recipeId === recipeId).length;
+      const likesCount    = likes.filter(like => like.recipeId === recipeId).length;
+      const viewsCount    = views.filter(view => view.recipeId === recipeId).length;
+      const commentsCount = comments.filter(comment => comment.recipeId === recipeId).length;
     
       return 1 * commentsCount + 2 * viewsCount + 3 * likesCount;
     };
   
     findedRecipes.sort((a, b) => {
-      let aContainsWord = containsWord(a);
-      let bContainsWord = containsWord(b);
+      const aScore = calculateScore(a.id);
+      const bScore = calculateScore(b.id);
+      const aContainsWord = containsWord(a);
+      const bContainsWord = containsWord(b);
   
-      if (aContainsWord && !bContainsWord) {
-        return -1;
-      } else if (!aContainsWord && bContainsWord) {
-        return 1;
-      } else {
-        return calculateScore(b.id) - calculateScore(a.id);
-      }
-    })
+      if (aContainsWord && !bContainsWord) return -1;
+      if (!aContainsWord && bContainsWord) return 1;
+      return bScore - aScore;
+    });
   
     const startIndex = (page - 1) * limit;
     const endIndex   = startIndex + limit;
@@ -169,7 +164,7 @@ class RecipeController {
     const paginatedRecipes = findedRecipes.slice(startIndex, endIndex);
   
     response.send(paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
-  };  
+  };
 
   public async getVisitedRecipes(request: Request, response: Response) {
     const user           = request.user as User;
@@ -269,7 +264,7 @@ class RecipeController {
     response.send(savedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
-  public async getPopularRecipes(request: Request, response: Response) {
+  public async getPopularRecipes(request: Request, response: Response): Promise<void> {
     const page  = parseInt(request.query.page as string) || 1;
     const limit = parseInt(request.query.limit as string ) || 10;
 
@@ -277,29 +272,21 @@ class RecipeController {
 
     const recipesIds = recipes.map(recipe => recipe.id);
 
-    const likes = await Promise.all(recipesIds.map(recipeId => {
-      return likeService.getLikesByRecipeId(recipeId);
-    }));
+    const [likes, views, comments] = await Promise.all([
+      likeService.getLikesByRecipeIds(recipesIds),
+      recipeService.getRecipeVisitsByRecipeIds(recipesIds),
+      commentService.getCommentsByRecipeIds(recipesIds)
+    ]);
 
-    const views = await Promise.all(recipesIds.map(recipeId => {
-      return recipeService.getRecipeVisitsByRecipeId(recipeId);
-    }));
-
-    const comments = await Promise.all(recipesIds.map(recipeId => {
-      return commentService.getCommentsByRecipeId(recipeId);
-    }));
-
-    function calculateScore(recipeId: string) {
-      const likesCount    = likes.flat().filter(like => like.recipeId === recipeId).length;
-      const viewsCount    = views.flat().filter(view => view.recipeId === recipeId).length;
-      const commentsCount = comments.flat().filter(comment => comment.recipeId === recipeId).length;
+    function calculateScore(recipeId: string): number {
+      const likesCount    = likes.filter(like => like.recipeId === recipeId).length;
+      const viewsCount    = views.filter(view => view.recipeId === recipeId).length;
+      const commentsCount = comments.filter(comment => comment.recipeId === recipeId).length;
     
       return 1 * commentsCount + 2 * viewsCount + 3 * likesCount;
     };
 
-    recipes.sort((a, b) => {
-      return calculateScore(b.id) - calculateScore(a.id);
-    });
+    recipes.sort((a: Recipe, b: Recipe) => calculateScore(b.id) - calculateScore(a.id));
 
     const startIndex = (page - 1) * limit;
     const endIndex   = startIndex + limit;
