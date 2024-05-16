@@ -24,8 +24,9 @@ export const CreateVerificationCodeSchema = z.object({
 });
 
 export const ChangePasswordSchema = z.object({
-  oldPassword: z.string(),
-  newPassword: z.string().min(8).max(32),
+  oldPassword       : z.string(),
+  newPassword       : z.string().min(8).max(32),
+  confirmNewPassword: z.string().min(8).max(32),
 });
 
 export type ISignUpSchema                 = z.infer<typeof SignUpSchema>;

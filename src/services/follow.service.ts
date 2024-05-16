@@ -141,20 +141,6 @@ class FollowService {
     });
   };
 
-  public async findFollowersByUsername(userId: string, username: string) {
-    return await prisma.follow.findMany({
-      where: {
-        userId: userId,
-        follower: {
-          username: username
-        }
-      },
-      include: {
-        follower: true
-      }
-    })
-  };
-
   public async getFollowerByIds(followerId: string, userId: string) {
     return await prisma.follow.findFirst({
       where: {

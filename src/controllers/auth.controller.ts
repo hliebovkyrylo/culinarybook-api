@@ -155,12 +155,19 @@ class AuthController {
     const user = request.user as User;
     const data = request.body as IChangePasswordSchema;
 
-    const isMatch = await bcrypt.compare(data.oldPassword, user.password);
+    const isMatchOldPassword = await bcrypt.compare(data.oldPassword, user.password);
 
-    if (!isMatch) {
+    if (!isMatchOldPassword) {
       return response.status(401).send({
         code   : "password-mismatch",
         message: "Password mismatch!",
+      });
+    }
+
+    if (data.newPassword !== data.confirmNewPassword) {
+      return response.status(409).send({
+        code   : "passwords-missmatch",
+        message: "Passwords missmatch",
       });
     }
 
