@@ -95,9 +95,10 @@ class RecipeController {
   };
 
   public async getRecommendedRecipes(request: Request, response: Response): Promise<void> {
-    const user  = request.user as User;
-    const page  = parseInt(request.query.page as string) || 1;
-    const limit = parseInt(request.query.limit as string ) || 10;
+    const user       = request.user as User;
+    const page       = parseInt(request.query.page as string) || 1;
+    const limit      = parseInt(request.query.limit as string ) || 10;
+    const recipeName = request.query.title as string;
   
     const [likedRecipes, savedRecipes, visitedRecipes] = await Promise.all([
       recipeService.getAllLikedRecipesByUserId(user.id),
@@ -134,7 +135,7 @@ class RecipeController {
       likeService.getLikesByRecipeIds(recipesIds),
       recipeService.getRecipeVisitsByRecipeIds(recipesIds),
       commentService.getCommentsByRecipeIds(recipesIds),
-      recipeService.getAllRecipes()
+      recipeService.getAllRecipes(recipeName)
     ]);
 
     findedRecipes.filter(recipe => recipe.ownerId !== user.id);
@@ -265,10 +266,11 @@ class RecipeController {
   };
 
   public async getPopularRecipes(request: Request, response: Response): Promise<void> {
-    const page  = parseInt(request.query.page as string) || 1;
-    const limit = parseInt(request.query.limit as string ) || 10;
+    const page       = parseInt(request.query.page as string) || 1;
+    const limit      = parseInt(request.query.limit as string ) || 10;
+    const recipeName = request.query.title as string;
 
-    const recipes = await recipeService.getAllRecipes();
+    const recipes = await recipeService.getAllRecipes(recipeName !== 'undefined' ? recipeName : undefined);
 
     const recipesIds = recipes.map(recipe => recipe.id);
 
@@ -294,16 +296,6 @@ class RecipeController {
     const paginatedRecipes = recipes.slice(startIndex, endIndex);
 
     response.send(paginatedRecipes.map(recipe => new RecipePreviewDTO(recipe)));
-  };
-
-  public async getRecipesByTitle(request: Request, response: Response) {
-    const recipeTitle = request.query.title as string;
-    const page        = parseInt(request.query.page as string) || 1;
-    const limit       = parseInt(request.query.limit as string ) || 10;
-
-    const recipes = await recipeService.findRecipesByTitle(recipeTitle, page, limit);
-
-    response.send(recipes.map(recipe => new RecipePreviewDTO(recipe)));
   };
 
   public async getUserRecipes(request: Request, response: Response) {

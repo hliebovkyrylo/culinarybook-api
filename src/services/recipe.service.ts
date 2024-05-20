@@ -93,10 +93,14 @@ class RecipeService {
     });
   };
 
-  public async getAllRecipes() {
+  public async getAllRecipes(recipeName?: string) {
     return await prisma.recipe.findMany({
       where: {
         isPublic: true,
+        title: {
+          contains: recipeName,
+          mode    : 'insensitive',
+        },
         owner: {
           isPrivate: false,
         },
