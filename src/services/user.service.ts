@@ -136,9 +136,15 @@ class UserService {
     });
   };
 
-  public async getAllUsers() {
+  public async getAllUsers(username?: string) {
     const users = await prisma.user.findMany({
-      where: { isPrivate: false },
+      where: { 
+        isPrivate: false,
+        username: {
+          contains: username,
+          mode    : 'insensitive',
+        } 
+      },
       include: {
         _count: {
           select: {

@@ -9,7 +9,6 @@ export const userRoute = Router();
 
 userRoute.get('/me', isAuth, isVerifiedAccount, userController.getMe);
 userRoute.get('/:userId', userController.getUser);
-userRoute.get('/', userController.searchUserByUsername);
 userRoute.patch('/update', isAuth, isVerifiedAccount, validate(UdpateUserInfoSchema), userController.updateUser);
 userRoute.patch('/changeType', isAuth, isVerifiedAccount, userController.updateAccountType);
 userRoute.get('/recommended/users', isAuth, isVerifiedAccount, userController.getRecommendedUsers);
