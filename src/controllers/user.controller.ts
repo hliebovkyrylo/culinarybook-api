@@ -44,16 +44,6 @@ class UserController {
     });
   };
 
-  public async searchUserByUsername(request: Request, response: Response) {
-    const username = request.query.username as string;
-    const page     = parseInt(request.query.page as string) || 1;
-    const limit    = parseInt(request.query.limit as string ) || 10;
-
-    const users = await userService.searchUsersByUsername(username, page, limit);
-
-    response.send(users.map(user => new UserPreviewDTO(user)));
-  };
-
   public async updateUser(request: Request, response: Response) {
     const user                 = request.user as User;
     const data                 = request.body as IUpdateUserInfoSchema;
@@ -102,15 +92,19 @@ class UserController {
   }
 
   public async getRecommendedUsers(request: Request, response: Response) {
-    const user = request.user as User;
-    const page = parseInt(request.query.page as string) || 1;
-    const limit = parseInt(request.query.limit as string) || 10;
-  
-    const likedRecipes = await recipeService.getAllLikedRecipesByUserId(user.id);
-    const savedRecipes = await recipeService.getAllSavedRecipesByUserId(user.id);
-    const visitedRecipes = await recipeService.getAllVisitedRecipesByUserId(user.id);
+    const user     = request.user as User;
+    const page     = parseInt(request.query.page as string) || 1;
+    const limit    = parseInt(request.query.limit as string) || 10;
+    const username = request.query.username as string;
+
+    const [likedRecipes, savedRecipes, visitedRecipes, users] = await Promise.all([
+      recipeService.getAllLikedRecipesByUserId(user.id),
+      recipeService.getAllSavedRecipesByUserId(user.id),
+      recipeService.getAllVisitedRecipesByUserId(user.id),
+      userService.getAllUsers(username !== 'undefined' ? username : undefined)
+    ]);
+
     const userRecipes = likedRecipes.concat(savedRecipes, visitedRecipes);
-  
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
   
@@ -134,7 +128,6 @@ class UserController {
     }
   
     const keywords = await getKeywordsFromRecipes(userRecipes);
-    const users = await userService.getAllUsers();
   
     let paginatedUsers = [];
   
@@ -196,9 +189,10 @@ class UserController {
   }
 
   public async getPopularUsers(request: Request, response: Response) {
-    const page  = parseInt(request.query.page as string) || 1;
-    const limit = parseInt(request.query.limit as string) || 10;
-    const users = await userService.getAllUsers();
+    const page     = parseInt(request.query.page as string) || 1;
+    const limit    = parseInt(request.query.limit as string) || 10;
+    const username = request.query.username as string;
+    const users    = await userService.getAllUsers(username !== 'undefined' ? username : undefined);
 
     const userFollowersAndLikes = await Promise.all(users.map(async user => {
       const recipes   = await recipeService.getRecipesByUserId(user.id);

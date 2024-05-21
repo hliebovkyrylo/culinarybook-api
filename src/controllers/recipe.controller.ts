@@ -135,7 +135,7 @@ class RecipeController {
       likeService.getLikesByRecipeIds(recipesIds),
       recipeService.getRecipeVisitsByRecipeIds(recipesIds),
       commentService.getCommentsByRecipeIds(recipesIds),
-      recipeService.getAllRecipes(recipeName)
+      recipeService.getAllRecipes(recipeName !== 'undefined' ? recipeName : undefined)
     ]);
 
     findedRecipes.filter(recipe => recipe.ownerId !== user.id);
