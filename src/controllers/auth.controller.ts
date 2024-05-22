@@ -11,7 +11,7 @@ import {
 }                            from "../schemas/auth.schema";
 import { userService }       from "../services/user.service";
 import { authService }       from "../services/auth.service";
-import { createAccessToken } from "../utils/token";
+import { createAccessToken, verifyToken } from "../utils/token";
 import { User }              from "@prisma/client";
 
 class AuthController {
@@ -281,6 +281,28 @@ class AuthController {
 
     response.send({ message: "Password successfully restored" });
   };
+
+  public async checkAuthStatus(request: Request, response: Response) {
+    const accessToken = request.cookies?.access_token;
+  
+    if (!accessToken) {
+      return response.send({ isAuth: false });
+    }
+  
+    try {
+      const id = verifyToken(accessToken);
+      const user = await userService.getUserById(id);
+  
+      if (!user) {
+        return response.send({ isAuth: false });
+      }
+  
+      response.send({ isAuth: true });
+    } catch (err) {
+      console.error(err);
+      return response.send({ isAuth: false });
+    }
+  };  
 };
 
 export const authController = new AuthController();
