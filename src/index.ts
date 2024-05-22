@@ -21,6 +21,7 @@ import { uploadImageRoute }          from "./routes/upload-image.route";
 import { Server }                    from "socket.io";
 import http                          from "http";
 import { socket }                    from "./socket/socket.notification";
+import cookieParser                  from 'cookie-parser';
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(cookieParser());
 app.use(bodyParser.json({ limit: '1mb' }));
 app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
 app.use(handleEntityTooLargeError);

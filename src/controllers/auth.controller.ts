@@ -37,9 +37,10 @@ class AuthController {
 
     const password    = await bcrypt.hash(data.password, 8);
     const user        = await authService.SignUp({ ...data, password });
-    const accessToken = createAccessToken(user.id);
+    const serialized  = createAccessToken(user.id);
 
-    response.send({ accessToken });
+    response.setHeader('Set-Cookie', serialized);
+    response.send({ message: "Authorized" });
   };
 
   public async signIn(request: Request, response: Response) {
@@ -63,9 +64,10 @@ class AuthController {
       });
     }
 
-    const accessToken = user && (createAccessToken(user.id));
+    const serialized  = createAccessToken(user.id);
 
-    response.send({ accessToken });
+    response.setHeader('Set-Cookie', serialized);
+    response.send(user);
   };
 
   public async sendConfirmationCode(request: Request, response: Response) {

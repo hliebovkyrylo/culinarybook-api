@@ -3,7 +3,7 @@ import { verifyToken } from "../utils/token";
 import { userService } from "../services/user.service";
 
 export const isAuthSocket = (socket: Socket, next: (err?: Error) => void) => {
-  const accessToken = socket.handshake.headers.authorization;
+  const accessToken = socket.handshake.headers.cookie;
 
   if (!accessToken) {
     return next(new Error('No jwt provided'));
