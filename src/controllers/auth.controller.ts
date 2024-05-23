@@ -70,6 +70,19 @@ class AuthController {
     response.send(user);
   };
 
+  public async googleAuthCallback(request: Request, response: Response) {
+    const user = request.user as User;
+    const serialized  = createAccessToken(user.id);
+
+    response.setHeader('Set-Cookie', serialized);
+    response.redirect('/');
+  };
+
+  public async signOut(request: Request, response: Response) {
+    response.clearCookie("access_token")
+    response.redirect('/');
+  }
+
   public async sendConfirmationCode(request: Request, response: Response) {
     const user = request.user as User;
 

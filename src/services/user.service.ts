@@ -1,5 +1,6 @@
 import { prisma }                from "..";
 import { IUpdateUserInfoSchema } from "../schemas/user.schema";
+import { authService }           from "./auth.service";
 
 class UserService {
   public async getUserByEmail(email: string) {
@@ -9,6 +10,22 @@ class UserService {
       },
     });
   };
+
+  public async createUserByGoogle(profile: any, hashedPassword: string) {
+    const data = {
+      email: profile.emails[0].value,
+      username: profile.displayName,
+      name: profile.name,
+      image: profile.picture,
+      backgroundImage: '',
+      isVerified: true,
+      canResetPassword: false,
+      password: hashedPassword,
+      isPrivate: false,
+    };
+
+    return await authService.SignUp(data);
+  }
 
   public async getUserByUsername(username: string) {
     return await prisma.user.findFirst({

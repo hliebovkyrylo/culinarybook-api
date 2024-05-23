@@ -9,6 +9,7 @@ import {
 import { isAuth }                      from "../middleware/isAuth";
 import { isCodeExprired }              from "../middleware/isCodeExpired";
 import { isForgotPasswordCodeExpired } from "../middleware/isForgotPasswordCodeExpired";
+import passport                        from "passport";
 
 export const authRoute = Router();
 
@@ -22,3 +23,6 @@ authRoute.patch('/change-password', isAuth, validate(ChangePasswordSchema), auth
 authRoute.patch('/canReset-password/:email', isForgotPasswordCodeExpired, authController.canResetPassword);
 authRoute.patch('/reset-password/:email', authController.resetPassword);
 authRoute.get('/check-auth-status', authController.checkAuthStatus);
+authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'email']}));
+authRoute.get ('/google/callback', passport.authenticate('google', { failureRedirect: 'sign-in' }), authController.googleAuthCallback);
+authRoute.post('/sign-out', isAuth, authController.signOut);

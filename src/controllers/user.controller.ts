@@ -169,7 +169,8 @@ class UserController {
         return { user, containsKeywords };
       })
       .filter(({ user, containsKeywords }) => {
-        const shouldInclude = user.id !== request.user?.id && containsKeywords;
+        const currentUser = request.user as User;
+        const shouldInclude = user.id !== currentUser.id && containsKeywords;
         return shouldInclude;
       });
   
