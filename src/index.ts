@@ -22,11 +22,15 @@ import { Server }                    from "socket.io";
 import http                          from "http";
 import { socket }                    from "./socket/socket.notification";
 import cookieParser                  from 'cookie-parser';
+import passport                      from "passport";
+import session                       from 'express-session';
+import                                    './configs/passport.config'
 
 dotenv.config();
 
-export const port      = process.env.PORT as string;
-export const clientUrl = process.env.CLIENT_URL as string;
+export const port          = process.env.PORT as string;
+export const clientUrl     = process.env.CLIENT_URL as string;
+export const sessionSecret = process.env.SESSION_SECRET as string;
 
 export const app = express();
 const server     = http.createServer(app);
@@ -44,7 +48,15 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(session({
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+}));
+
 app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(bodyParser.json({ limit: '1mb' }));
 app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
 app.use(handleEntityTooLargeError);
@@ -84,5 +96,5 @@ app.use('/upload', uploadImageRoute);
 app.use(serverError);
 
 server.listen(port, () => {
-  console.log("Server started");
+  console.log(`Server started at port: ${port}`);
 });
