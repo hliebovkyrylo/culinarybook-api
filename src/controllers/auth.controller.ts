@@ -11,7 +11,10 @@ import {
 }                            from "../schemas/auth.schema";
 import { userService }       from "../services/user.service";
 import { authService }       from "../services/auth.service";
-import { createAccessToken, verifyToken } from "../utils/token";
+import { 
+  createAccessToken, 
+  verifyToken 
+}                            from "../utils/token";
 import { User }              from "@prisma/client";
 
 class AuthController {
@@ -75,12 +78,12 @@ class AuthController {
     const serialized  = createAccessToken(user.id);
 
     response.setHeader('Set-Cookie', serialized);
-    response.redirect('/');
+    response.redirect(process.env.CLIENT_URL as string);
   };
 
   public async signOut(request: Request, response: Response) {
     response.clearCookie("access_token")
-    response.redirect('/');
+    response.send({ message: "You are succefully sign out!" });
   }
 
   public async sendConfirmationCode(request: Request, response: Response) {
