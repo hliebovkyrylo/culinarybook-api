@@ -12,9 +12,12 @@ class UserService {
   };
 
   public async createUserByGoogle(profile: any, hashedPassword: string) {
+    const email    = profile.emails[0].value;
+    const username = email.split('@')[0];
+
     const data = {
-      email: profile.emails[0].value,
-      username: profile.displayName,
+      email: email,
+      username: username,
       name: profile.name,
       image: profile.picture,
       backgroundImage: '',
