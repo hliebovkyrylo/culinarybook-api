@@ -24,6 +24,7 @@ import { socket }                    from "./socket/socket.notification";
 import cookieParser                  from 'cookie-parser';
 import passport                      from "passport";
 import session                       from 'express-session';
+import MongoStore                    from 'connect-mongo';
 import                                    './configs/passport.config'
 import                                    "express-async-errors";
 
@@ -32,9 +33,10 @@ dotenv.config();
 export const port          = process.env.PORT as string;
 export const clientUrl     = process.env.CLIENT_URL as string;
 export const sessionSecret = process.env.SESSION_SECRET as string;
+export const sessionDBUrl  = process.env.SESSION_DATABASE_URL as string;
 
 export const app = express();
-const server     = http.createServer(app);
+export const server     = http.createServer(app);
 export const io  = new Server(server, {
   cors: {
     origin     : clientUrl,
@@ -53,6 +55,9 @@ app.use(session({
   secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: sessionDBUrl
+  })
 }));
 
 app.use(cookieParser());
