@@ -101,8 +101,19 @@ app.use('/upload', uploadImageRoute);
 
 app.use(serverError);
 
-server.listen(port, () => {
-  console.log(`Server started at port: ${port}`);
-});
+function startServer() {
+  return new Promise<void>((resolve, reject) => {
+    server.listen(port, () => {
+      console.log(`Server started at port: ${port}`);
+      resolve();
+    }).once('error', reject);
+  });
+}
 
-export default server;
+startServer()
+  .then(() => {
+    console.log(`Server started at port: ${port}`);
+  })
+  .catch((err) => {
+    console.error('Failed to start server', err);
+  });
