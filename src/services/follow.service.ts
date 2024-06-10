@@ -32,11 +32,8 @@ class FollowService {
     });
   };
 
-  public async getUserFollowers(userId: string, username: string, page: number, limit: number) {
-    const skip = (page - 1) * limit;
-
+  public async getUserFollowers(userId: string, username: string) {
     return await prisma.follow.findMany({
-      skip,
       where: {
         userId: userId,
         follower: {
@@ -49,7 +46,6 @@ class FollowService {
       include: {
         follower: true
       },
-      take: limit,
     });
   };
 
@@ -69,11 +65,8 @@ class FollowService {
     });
   };
 
-  public async getFollowingsByUserId(userId: string, username: string, page: number, limit: number) {
-    const skip = (page - 1) * limit;
-
+  public async getFollowingsByUserId(userId: string, username: string) {
     return await prisma.follow.findMany({
-      skip,
       where: {
         followerId: userId,
         user: {
@@ -86,7 +79,6 @@ class FollowService {
       include: {
         user: true
       },
-      take: limit,
     });
   };
 

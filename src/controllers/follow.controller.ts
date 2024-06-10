@@ -175,15 +175,13 @@ class FollowController {
   };
 
   public async getUserFollowers(request: Request, response: Response) {
-    const userId   = request.params.userId as string;
-    const username = request.query.username as string;
+    const accessToken = request.cookies.access_token;
+    const userId      = request.params.userId as string;
+    const username    = request.query.username as string;
 
-    const accessToken = request.headers.authorization;
+    const existUsername = username !== 'undefined' ? username : '';
 
-    const page  = parseInt(request.query.page as string) || 1;
-    const limit = parseInt(request.query.limit as string ) || 10;
-
-    const followers    = await followService.getUserFollowers(userId, username, page, limit);
+    const followers    = await followService.getUserFollowers(userId, existUsername);
     const followersDTO = followers.map(follow => new UserFollowPreviewDTO(follow.follower));
 
     const followerIds = followersDTO.map(follower => follower.id);
@@ -209,12 +207,14 @@ class FollowController {
     const userId   = request.params.userId as string;
     const username = request.query.username as string;
 
-    const accessToken = request.headers.authorization;
+    const existUsername = username !== 'undefined' ? username : '';
+
+    const accessToken = request.cookies.access_token;
 
     const page   = parseInt(request.query.page as string) || 1;
     const limit  = parseInt(request.query.limit as string ) || 10;
 
-    const followings    = await followService.getFollowingsByUserId(userId, username, page, limit);
+    const followings    = await followService.getFollowingsByUserId(userId, existUsername);
     const followingsDTO = followings.map(following => new UserFollowPreviewDTO(following.user));
 
     const followingsIds = followingsDTO.map(following => following.id);

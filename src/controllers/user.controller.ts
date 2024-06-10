@@ -12,7 +12,6 @@ import { likeService }                from "../services/like.service";
 import { notificationService }        from "../services/notification.service";
 import { userSockets }                from "../socket/socket.notification";
 import { io }                         from "..";
-import { verifyToken } from "../utils/token";
 
 class UserController {
   public async getMe(request: Request, response: Response) {
@@ -23,23 +22,7 @@ class UserController {
   };
 
   public async getUser(request: Request, response: Response) {
-    const accessToken = request.cookies?.access_token;
     const userId      = request.params.userId;
-    
-    let currentUser;
-    if (accessToken) {
-      const id = verifyToken(accessToken);
-      const findedCurrentUser = await userService.getUserById(id);
-
-      if (findedCurrentUser === null) {
-        return response.status(404).send({
-          code   : "user-not-found", 
-          message: "User not found!",
-        });
-      }
-
-      currentUser = findedCurrentUser;
-    }
 
     const user = await userService.getUserById(userId);
 
@@ -50,22 +33,19 @@ class UserController {
       });
     }
 
-    if (currentUser?.id.toString() !== user.id.toString() && user.isPrivate) {
-      return response.status(403).send({
-        code   : "no-access-to-account",
-        message: "You have no access to this account!",
-      });
-    }
-
     const userDTO = new ProfileDTO(user);
 
-    const userFollowersCount  = (await followService.getAllFollowersByUserId(userId)).length;
-    const userFollowingsCount = (await followService.getAllFollowingsByUserId(userId)).length;
+    const [userFollowers, userFollowings, userRecipes] = await Promise.all([
+      followService.getAllFollowersByUserId(userId),
+      followService.getAllFollowingsByUserId(userId),
+      recipeService.getRecipesByUserId(userId)
+    ]);
     
     response.send({ 
       ...userDTO,
-      followersCount : userFollowersCount,
-      followingsCount: userFollowingsCount,  
+      followersCount : userFollowers.length,
+      followingsCount: userFollowings.length,  
+      recipesCount   : userRecipes.length
     });
   };
 
