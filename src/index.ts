@@ -25,6 +25,7 @@ import cookieParser                  from 'cookie-parser';
 import passport                      from "passport";
 import session                       from 'express-session';
 import                                    './configs/passport.config'
+import                                    "express-async-errors";
 
 dotenv.config();
 
