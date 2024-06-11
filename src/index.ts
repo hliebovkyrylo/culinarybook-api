@@ -1,29 +1,29 @@
-import "express-async-errors";
+import                                               "express-async-errors";
 import express, { type Response, type Request } from "express";
-import { PrismaClient } from "@prisma/client";
-import { authRoute } from "./routes/auth.route";
-import cors from "cors";
-import dotenv from "dotenv";
-import bodyParser from "body-parser";
-import serverError from "./middleware/serverError";
-import { userRoute } from "./routes/user.route";
-import { followRoute } from "./routes/follow.route";
-import { recipeRoute } from "./routes/recipe.route";
-import { likeRoute } from "./routes/like.route";
-import { saveRoute } from "./routes/save.route";
-import { commentRoute } from "./routes/comment.route";
-import fs from "fs";
-import swaggerUi from "swagger-ui-express";
-import { handleEntityTooLargeError } from "./utils/largeFileError";
-import { uploadImageRoute } from "./routes/upload-image.route";
-import { Server } from "socket.io";
-import http from "http";
-import { socket } from "./socket/socket.notification";
-import cookieParser from 'cookie-parser';
-import passport from "passport";
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import './configs/passport.config'
+import { PrismaClient }                         from "@prisma/client";
+import { authRoute }                            from "./routes/auth.route";
+import cors                                     from "cors";
+import dotenv                                   from "dotenv";
+import bodyParser                               from "body-parser";
+import serverError                              from "./middleware/serverError";
+import { userRoute }                            from "./routes/user.route";
+import { followRoute }                          from "./routes/follow.route";
+import { recipeRoute }                          from "./routes/recipe.route";
+import { likeRoute }                            from "./routes/like.route";
+import { saveRoute }                            from "./routes/save.route";
+import { commentRoute }                         from "./routes/comment.route";
+import fs                                       from "fs";
+import swaggerUi                                from "swagger-ui-express";
+import { handleEntityTooLargeError }            from "./utils/largeFileError";
+import { uploadImageRoute }                     from "./routes/upload-image.route";
+import { Server }                               from "socket.io";
+import http                                     from "http";
+import { socket }                               from "./socket/socket.notification";
+import cookieParser                             from 'cookie-parser';
+import passport                                 from "passport";
+import session                                  from 'express-session';
+import MongoStore                               from 'connect-mongo';
+import                                               './configs/passport.config'
 
 dotenv.config();
 
@@ -79,7 +79,7 @@ app.get('/', async (request: Request, response: Response) => {
   }
 });
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: clientUrl,
     credentials: true
