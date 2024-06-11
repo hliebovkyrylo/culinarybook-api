@@ -99,8 +99,6 @@ app.use('/upload', uploadImageRoute);
 
 app.use(serverError);
 
-export default server;
-
 server.listen(port, () => {
   console.log(`Server started at port ${port}!`);
 });
