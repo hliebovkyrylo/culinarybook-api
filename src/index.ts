@@ -27,26 +27,26 @@ import                                               './configs/passport.config'
 
 dotenv.config();
 
-export const port = process.env.PORT as string;
-export const clientUrl = process.env.CLIENT_URL as string;
+export const port          = process.env.PORT as string;
+export const clientUrl     = process.env.CLIENT_URL as string;
 export const sessionSecret = process.env.SESSION_SECRET as string;
-export const sessionDBUrl = process.env.SESSION_DATABASE_URL as string;
+export const sessionDBUrl  = process.env.SESSION_DATABASE_URL as string;
 
-export const app = express();
+export const app    = express();
 export const prisma = new PrismaClient();
-const server = http.createServer(app);
+const server        = http.createServer(app);
 
 app.use('/uploads', express.static('uploads'));
 app.use(cors({
-  origin: clientUrl,
+  origin     : clientUrl,
   credentials: true
 }));
 
 app.use(session({
-  secret: sessionSecret,
-  resave: false,
+  secret           : sessionSecret,
+  resave           : false,
   saveUninitialized: false,
-  store: MongoStore.create({
+  store            : MongoStore.create({
     mongoUrl: sessionDBUrl
   })
 }));
@@ -81,7 +81,7 @@ app.get('/', async (request: Request, response: Response) => {
 
 export const io = new Server(server, {
   cors: {
-    origin: clientUrl,
+    origin     : clientUrl,
     credentials: true
   }
 });
