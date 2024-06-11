@@ -27,9 +27,6 @@
     "zod": "^3.22.4",
     "zod-validation-error": "^3.0.0"
   },
-  "engines": {
-    "node": "18.x"
-  },
   "name": "culinarybook-api",
   "version": "1.0.0",
   "main": "index.js",

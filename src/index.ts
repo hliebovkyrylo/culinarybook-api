@@ -23,18 +23,18 @@ import cookieParser                             from 'cookie-parser';
 import passport                                 from "passport";
 import session                                  from 'express-session';
 import MongoStore                               from 'connect-mongo';
-import                                               './configs/passport.config'
+import                                               './configs/passport.config';
 
 dotenv.config();
 
-export const port          = process.env.PORT as string;
-export const clientUrl     = process.env.CLIENT_URL as string;
-export const sessionSecret = process.env.SESSION_SECRET as string;
-export const sessionDBUrl  = process.env.SESSION_DATABASE_URL as string;
+const port          = process.env.PORT || 4000;
+const clientUrl     = process.env.CLIENT_URL as string;
+const sessionSecret = process.env.SESSION_SECRET as string;
+const sessionDBUrl  = process.env.SESSION_DATABASE_URL as string;
 
-export const app    = express();
+const app           = express();
 export const prisma = new PrismaClient();
-const server        = http.createServer(app);
+export const server = http.createServer(app);
 
 app.use('/uploads', express.static('uploads'));
 app.use(cors({
@@ -62,7 +62,6 @@ const existAPISwaggerJson = fs.existsSync("./api-swagger.json");
 
 if (existAPISwaggerJson) {
   const rawData = fs.readFileSync("./api-swagger.json", "utf-8");
-
   const jsonData = JSON.parse(rawData.replace(/\$\{[A-Z_]+\}/, (match: string) => {
     const env = match.replace(/\${([^}]+)}/, '$1');
     return process.env[env] || '';
@@ -71,11 +70,12 @@ if (existAPISwaggerJson) {
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(jsonData));
 }
 
-app.get('/', async (request: Request, response: Response) => {
+app.get('/', async (_request: Request, response: Response) => {
   try {
-    response.send('API works')
+    response.send('API works');
   } catch (error) {
-    console.log('API error')
+    console.log('API error');
+    response.status(500).send('Internal Server Error');
   }
 });
 
@@ -99,8 +99,10 @@ app.use('/upload', uploadImageRoute);
 
 app.use(serverError);
 
-server.listen(port, () => {
-  console.log(`Server started at port ${port}!`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  server.listen(port, () => {
+    console.log(`Server started at port ${port}!`);
+  });
+}
 
 export default app;
