@@ -1,53 +1,44 @@
-import express, { 
-  type Response, 
-  type Request 
-}                                    from "express";
-import { PrismaClient }              from "@prisma/client";
-import { authRoute }                 from "./routes/auth.route";
-import cors                          from "cors";
-import dotenv                        from "dotenv";
-import bodyParser                    from "body-parser";
-import serverError                   from "./middleware/serverError";
-import { userRoute }                 from "./routes/user.route";
-import { followRoute }               from "./routes/follow.route";
-import { recipeRoute }               from "./routes/recipe.route";
-import { likeRoute }                 from "./routes/like.route";
-import { saveRoute }                 from "./routes/save.route";
-import { commentRoute }              from "./routes/comment.route";
-import fs                            from "fs";
-import swaggerUi                     from "swagger-ui-express";
+import "express-async-errors";
+import express, { type Response, type Request } from "express";
+import { PrismaClient } from "@prisma/client";
+import { authRoute } from "./routes/auth.route";
+import cors from "cors";
+import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import serverError from "./middleware/serverError";
+import { userRoute } from "./routes/user.route";
+import { followRoute } from "./routes/follow.route";
+import { recipeRoute } from "./routes/recipe.route";
+import { likeRoute } from "./routes/like.route";
+import { saveRoute } from "./routes/save.route";
+import { commentRoute } from "./routes/comment.route";
+import fs from "fs";
+import swaggerUi from "swagger-ui-express";
 import { handleEntityTooLargeError } from "./utils/largeFileError";
-import { uploadImageRoute }          from "./routes/upload-image.route";
-import { Server }                    from "socket.io";
-import http                          from "http";
-import { socket }                    from "./socket/socket.notification";
-import cookieParser                  from 'cookie-parser';
-import passport                      from "passport";
-import session                       from 'express-session';
-import MongoStore                    from 'connect-mongo';
-import                                    './configs/passport.config'
-import                                    "express-async-errors";
+import { uploadImageRoute } from "./routes/upload-image.route";
+import { Server } from "socket.io";
+import http from "http";
+import { socket } from "./socket/socket.notification";
+import cookieParser from 'cookie-parser';
+import passport from "passport";
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import './configs/passport.config'
 
 dotenv.config();
 
-export const port          = process.env.PORT as string;
-export const clientUrl     = process.env.CLIENT_URL as string;
+export const port = process.env.PORT as string;
+export const clientUrl = process.env.CLIENT_URL as string;
 export const sessionSecret = process.env.SESSION_SECRET as string;
-export const sessionDBUrl  = process.env.SESSION_DATABASE_URL as string;
+export const sessionDBUrl = process.env.SESSION_DATABASE_URL as string;
 
 export const app = express();
-export const server     = http.createServer(app);
-export const io  = new Server(server, {
-  cors: {
-    origin     : clientUrl,
-    credentials: true
-  }
-});
 export const prisma = new PrismaClient();
+const server = http.createServer(app);
 
 app.use('/uploads', express.static('uploads'));
 app.use(cors({
-  origin     : clientUrl,
+  origin: clientUrl,
   credentials: true
 }));
 
@@ -84,7 +75,14 @@ app.get('/', async (request: Request, response: Response) => {
   try {
     response.send('API works')
   } catch (error) {
-    console.log('API error')    
+    console.log('API error')
+  }
+});
+
+const io = new Server(server, {
+  cors: {
+    origin: clientUrl,
+    credentials: true
   }
 });
 
@@ -101,19 +99,8 @@ app.use('/upload', uploadImageRoute);
 
 app.use(serverError);
 
-function startServer() {
-  return new Promise<void>((resolve, reject) => {
-    server.listen(port, () => {
-      console.log(`Server started at port: ${port}`);
-      resolve();
-    }).once('error', reject);
-  });
-}
+export default server;
 
-startServer()
-  .then(() => {
-    console.log(`Server started at port: ${port}`);
-  })
-  .catch((err) => {
-    console.error('Failed to start server', err);
-  });
+server.listen(port, () => {
+  console.log(`Server started at port ${port}!`);
+});
