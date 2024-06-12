@@ -14,12 +14,11 @@ class UserService {
   public async createUserByGoogle(profile: any, hashedPassword: string) {
     const email    = profile.emails[0].value;
     const username = email.split('@')[0];
-    const fullname = profile.name.givenname + ' ' + profile.name.familyname
 
     const data = {
       email           : email,
       username        : username,
-      name            : fullname,
+      name            : username,
       image           : profile.picture || '',
       backgroundImage : profile.cover ||  '',
       isVerified      : true,
