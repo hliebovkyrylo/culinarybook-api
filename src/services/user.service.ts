@@ -14,17 +14,18 @@ class UserService {
   public async createUserByGoogle(profile: any, hashedPassword: string) {
     const email    = profile.emails[0].value;
     const username = email.split('@')[0];
+    const fullname = profile.name.givenname + ' ' + profile.name.familyname
 
     const data = {
-      email: email,
-      username: username,
-      name: profile.name,
-      image: profile.picture,
-      backgroundImage: '',
-      isVerified: true,
+      email           : email,
+      username        : username,
+      name            : fullname,
+      image           : profile.picture || '',
+      backgroundImage : profile.cover ||  '',
+      isVerified      : true,
       canResetPassword: false,
-      password: hashedPassword,
-      isPrivate: false,
+      password        : hashedPassword,
+      isPrivate       : false,
     };
 
     return await authService.SignUp(data);
