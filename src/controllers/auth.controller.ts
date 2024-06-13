@@ -76,6 +76,7 @@ class AuthController {
     const access_token  = createAccessToken(user.id);
 
     response.send({ access_token });
+    response.redirect(process.env.CLIENT_URL as string);
   };
 
   public async sendConfirmationCode(request: Request, response: Response) {
