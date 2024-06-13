@@ -175,7 +175,7 @@ class FollowController {
   };
 
   public async getUserFollowers(request: Request, response: Response) {
-    const accessToken = request.cookies.access_token;
+    const accessToken = request.headers.authorization;
     const userId      = request.params.userId as string;
     const username    = request.query.username as string;
 
@@ -209,7 +209,7 @@ class FollowController {
 
     const existUsername = username !== 'undefined' ? username : '';
 
-    const accessToken = request.cookies.access_token;
+    const accessToken = request.headers.authorization;
 
     const page   = parseInt(request.query.page as string) || 1;
     const limit  = parseInt(request.query.limit as string ) || 10;

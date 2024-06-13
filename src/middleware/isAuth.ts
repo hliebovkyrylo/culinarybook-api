@@ -17,7 +17,7 @@ export const isAuth = async (
   next    : NextFunction
 ) => {
   try {
-    const accessToken = request.cookies?.access_token;
+    const accessToken = request.headers.authorization;
 
     if (!accessToken) {
       return response.status(401).send({

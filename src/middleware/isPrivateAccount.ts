@@ -9,7 +9,7 @@ import { followService } from "../services/follow.service";``
 
 export const isPrivateAccount = async (request: Request, response: Response, next: NextFunction) => {
   const userId      = request.params.userId;
-  const accessToken = request.cookies?.access_token;
+  const accessToken = request.headers.authorization;
   
   const user = await userService.getUserById(userId);
   let userMe;
