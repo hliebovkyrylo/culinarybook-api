@@ -8,7 +8,7 @@ import { verifyToken }   from "../utils/token";
 
 export const accessToRecipe = async (request: Request, response: Response, next: NextFunction) => {
   let userId: string = "";
-  const accessToken  = request.cookies?.access_token;
+  const accessToken  = request.headers.authorization;
 
   if (accessToken) {
     userId = verifyToken(accessToken)

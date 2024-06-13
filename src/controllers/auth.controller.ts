@@ -40,10 +40,9 @@ class AuthController {
 
     const password    = await bcrypt.hash(data.password, 8);
     const user        = await authService.SignUp({ ...data, password });
-    const serialized  = createAccessToken(user.id);
+    const access_token  = createAccessToken(user.id);
 
-    response.setHeader('Set-Cookie', serialized);
-    response.send({ message: "Authorized" });
+    response.send({ access_token });
   };
 
   public async signIn(request: Request, response: Response) {
@@ -67,24 +66,17 @@ class AuthController {
       });
     }
 
-    const serialized  = createAccessToken(user.id);
+    const access_token = createAccessToken(user.id);
 
-    response.setHeader('Set-Cookie', serialized);
-    response.send(user);
+    response.send({ access_token });
   };
 
   public async googleAuthCallback(request: Request, response: Response) {
-    const user = request.user as User;
-    const serialized  = createAccessToken(user.id);
+    const user          = request.user as User;
+    const access_token  = createAccessToken(user.id);
 
-    response.setHeader('Set-Cookie', serialized);
-    response.redirect(process.env.CLIENT_URL as string);
+    response.send({ access_token });
   };
-
-  public async signOut(request: Request, response: Response) {
-    response.clearCookie("access_token")
-    response.send({ message: "You are succefully sign out!" });
-  }
 
   public async sendConfirmationCode(request: Request, response: Response) {
     const user = request.user as User;
@@ -297,28 +289,6 @@ class AuthController {
 
     response.send({ message: "Password successfully restored" });
   };
-
-  public async checkAuthStatus(request: Request, response: Response) {
-    const accessToken = request.cookies?.access_token;
-  
-    if (!accessToken) {
-      return response.send({ isAuth: false });
-    }
-  
-    try {
-      const id = verifyToken(accessToken);
-      const user = await userService.getUserById(id);
-  
-      if (!user) {
-        return response.send({ isAuth: false });
-      }
-  
-      response.send({ isAuth: true });
-    } catch (err) {
-      console.error(err);
-      return response.send({ isAuth: false });
-    }
-  };  
 };
 
 export const authController = new AuthController();
