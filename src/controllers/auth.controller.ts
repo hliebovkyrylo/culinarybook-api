@@ -38,8 +38,8 @@ class AuthController {
       });
     }
 
-    const password    = await bcrypt.hash(data.password, 8);
-    const user        = await authService.SignUp({ ...data, password });
+    const password      = await bcrypt.hash(data.password, 8);
+    const user          = await authService.SignUp({ ...data, password });
     const access_token  = createAccessToken(user.id);
 
     response.send({ access_token });
