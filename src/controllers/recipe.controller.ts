@@ -25,7 +25,7 @@ class RecipeController {
   public async getRecipe(request: Request, response: Response) {
     const recipeId    = request.params.recipeId as string;
     const recipe      = await recipeService.getRecipeById(recipeId);
-    const accessToken = request.cookies?.access_token;
+    const accessToken = request.headers.authorization;
 
     if (recipe === null) {
       return response.status(404).send({
