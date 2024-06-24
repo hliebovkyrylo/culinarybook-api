@@ -13,6 +13,7 @@ import { userService }       from "../services/user.service";
 import { authService }       from "../services/auth.service";
 import { 
   createAccessToken, 
+  createRefreshToken, 
   verifyToken 
 }                            from "../utils/token";
 import { User }              from "@prisma/client";
@@ -40,9 +41,11 @@ class AuthController {
 
     const password      = await bcrypt.hash(data.password, 8);
     const user          = await authService.SignUp({ ...data, password });
-    const access_token  = createAccessToken(user.id);
 
-    response.send({ access_token });
+    const access_token  = createAccessToken(user.id);
+    const refresh_token  = createRefreshToken(user.id);
+
+    response.send({ access_token, refresh_token });
   };
 
   public async signIn(request: Request, response: Response) {
@@ -66,18 +69,19 @@ class AuthController {
       });
     }
 
-    const access_token = createAccessToken(user.id);
+    const access_token  = createAccessToken(user.id);
+    const refresh_token = createRefreshToken(user.id);
 
-    response.send({ access_token });
+    response.send({ access_token, refresh_token });
   };
 
   public async googleAuthCallback(request: Request, response: Response) {
-    const user          = request.user as User;
-    const access_token  = createAccessToken(user.id);
+    const user = request.user as User;
 
-    response.cookie('access_token', access_token);
+    const access_token = createAccessToken(user.id);
+    const refreshToken = createRefreshToken(user.id);
 
-    response.redirect(process.env.CLIENT_URL as string);
+    response.send({ access_token, refreshToken });
   }
 
   public async sendConfirmationCode(request: Request, response: Response) {
