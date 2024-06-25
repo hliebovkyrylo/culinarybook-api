@@ -13,6 +13,8 @@ import passport                        from "passport";
 
 export const authRoute = Router();
 
+const clientUrl = process.env.CLIENT_URL as string;
+
 authRoute.post('/sign-up', validate(SignUpSchema), authController.signUp);
 authRoute.post('/sign-in', validate(SignInSchema), authController.signIn);
 authRoute.post('/send-code', isAuth, authController.sendConfirmationCode);
@@ -23,4 +25,9 @@ authRoute.patch('/change-password', isAuth, validate(ChangePasswordSchema), auth
 authRoute.patch('/canReset-password/:email', isForgotPasswordCodeExpired, authController.canResetPassword);
 authRoute.patch('/reset-password/:email', authController.resetPassword);
 authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'email']}));
-authRoute.get ('/google/callback', passport.authenticate('google', { failureRedirect: 'sign-in' }), authController.googleAuthCallback);
+authRoute.get ('/google/callback', passport.authenticate('google', { 
+  failureRedirect: `${clientUrl}/sign-in`,
+  successRedirect: `${clientUrl}` 
+}), authController.googleAuthCallback);
+authRoute.post('/refresh-token', authController.refreshToken);
+authRoute.post('/signOut', isAuth, authController.signOut);

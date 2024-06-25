@@ -1,7 +1,7 @@
-import passport from 'passport';
+import passport                       from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { userService } from '../services/user.service';
-import bcrypt from "bcrypt";
+import { userService }                from '../services/user.service';
+import bcrypt                         from "bcrypt";
 
 export const googleClientId     = process.env.GOOGLE_CLIENT_ID as string;
 export const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
@@ -10,9 +10,9 @@ export const googleCallbackUrl  = process.env.GOOGLE_CALLBACK_URL as string;
 passport.use(
   new GoogleStrategy(
     {
-      clientID: googleClientId,
+      clientID    : googleClientId,
       clientSecret: googleClientSecret,
-      callbackURL: googleCallbackUrl,
+      callbackURL : googleCallbackUrl,
     },
     async (accessToken, refreshToken, profile, done) => {
       const existingUser = await userService.getUserByEmail(profile.emails ? profile.emails[0].value : '');
