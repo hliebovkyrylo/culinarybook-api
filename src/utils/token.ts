@@ -1,3 +1,4 @@
+import { serialize } from "cookie";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET             = process.env.JWT_SECRET as string;
@@ -21,7 +22,7 @@ export const createAccessToken = (id: string) => {
 };
 
 export const createRefreshToken = (id: string) => {
-  return jwt.sign(
+  const refreshToken = jwt.sign(
     {
       id
     },
@@ -30,6 +31,16 @@ export const createRefreshToken = (id: string) => {
       expiresIn: JWT_REFRESH_EXPIRES_IN,
     }
   )
+
+  const serialized = serialize('refresh_token', refreshToken, {
+    httpOnly: true,
+    secure: process.env.PRODUCTION === 'true' ? true : false,
+    sameSite: process.env.PRODUCTION === 'true' ? 'strict' : 'lax',
+    maxAge: 60 * 60 * 24 * 31,
+    path: '/'
+  });
+
+  return serialized;
 }
 
 export const verifyToken = (token: string) => {
