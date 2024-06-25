@@ -3,8 +3,6 @@ import { type Request, type Response } from "express";
 import { likeService }                 from "../services/like.service";
 import { recipeService }               from "../services/recipe.service";
 import { notificationService }         from "../services/notification.service";
-import { io }                          from "..";
-import { userSockets }                 from "../socket/socket.notification";
 
 class LikeController {
   public async createLike(request: Request, response: Response) {
@@ -32,10 +30,7 @@ class LikeController {
     await likeService.createlike({ userId: user.id, recipeId: recipeId });
     
     if (user.id !== recipe.ownerId) {
-      const notification = await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "like", noficationData: "", recipeId: recipe.id, createdAt: new Date })
-      
-      const recipientSocketId = userSockets[notification.userId];
-      io.to(recipientSocketId).emit("notification", notification);
+      await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "like", noficationData: "", recipeId: recipe.id, createdAt: new Date })
     }
 
     response.send({ message: "You liked it!" })
@@ -66,9 +61,6 @@ class LikeController {
     const notification = await notificationService.getRecipeNotification(user.id, recipeId, 'like');
 
     if (notification) {
-      const recipientSocketId = userSockets[notification.userId];
-      io.to(recipientSocketId).emit("removeNotification", notification.id);
-
       await notificationService.deleteNotification(notification.id)
     }
 

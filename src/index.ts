@@ -16,9 +16,7 @@ import fs                                       from "fs";
 import swaggerUi                                from "swagger-ui-express";
 import { handleEntityTooLargeError }            from "./utils/largeFileError";
 import { uploadImageRoute }                     from "./routes/upload-image.route";
-import { Server }                               from "socket.io";
 import http                                     from "http";
-import { socket }                               from "./socket/socket.notification";
 import cookieParser                             from 'cookie-parser';
 import passport                                 from "passport";
 import session                                  from 'express-session';
@@ -79,14 +77,20 @@ app.get('/', async (_request: Request, response: Response) => {
   }
 });
 
-export const io = new Server(server, {
-  cors: {
-    origin     : clientUrl,
-    credentials: true
-  }
-});
+/*
+*
+* TODO: make receiving notifications via web sockets
+* 
+*/
 
-socket(io);
+// export const io = new Server(server, {
+//   cors: {
+//     origin     : clientUrl,
+//     credentials: true
+//   }
+// });
+
+// socket(io);
 
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
