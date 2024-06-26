@@ -22,6 +22,7 @@ import passport                                 from "passport";
 import session                                  from 'express-session';
 import MongoStore                               from 'connect-mongo';
 import                                               './configs/passport.config';
+import { notificationRoute }                    from "./routes/notification.route";
 
 dotenv.config();
 
@@ -100,6 +101,7 @@ app.use('/like', likeRoute);
 app.use('/save', saveRoute);
 app.use('/comment', commentRoute);
 app.use('/upload', uploadImageRoute);
+app.use('/notification', notificationRoute);
 
 app.use(serverError);
 
