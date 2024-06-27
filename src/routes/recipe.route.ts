@@ -9,7 +9,7 @@ import { recipeController }   from "../controllers/recipe.controller";
 import { validate }           from "../utils/validate";
 import { accessToRecipe }     from "../middleware/accessToRecipe";
 import { isRecipeOwner }      from "../middleware/isRecipeOwner";
-import { isPrivateAccount } from "../middleware/isPrivateAccount";
+import { isPrivateAccount }   from "../middleware/isPrivateAccount";
 
 export const recipeRoute = Router();
 

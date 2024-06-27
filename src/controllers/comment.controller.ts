@@ -6,8 +6,6 @@ import { CommentDTO, CommentReplyDTO }               from "../dtos/comment.dto";
 import { userService }                               from "../services/user.service";
 import { recipeService }                             from "../services/recipe.service";
 import { notificationService }                       from "../services/notification.service";
-import { userSockets }                               from "../socket/socket.notification";
-import { io }                                        from "..";
 
 class CommentController {
   public async create(request: Request, response: Response) {
@@ -44,10 +42,7 @@ class CommentController {
     const commentDTO = new CommentDTO({ ...comment, user });
 
     if (user.id !== recipe.ownerId) {
-      const notification = await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "comment", noficationData: data.commentText, recipeId: recipe.id, createdAt: new Date })
-    
-      const recipientSocketId = userSockets[notification.userId];
-      io.to(recipientSocketId).emit("notification", notification);
+      await notificationService.craeteNotification({ userId: recipe.ownerId, noficitaionCreatorId: user.id, type: "comment", noficationData: data.commentText, recipeId: recipe.id, createdAt: new Date })
     }
 
     response.send(commentDTO);
@@ -87,9 +82,6 @@ class CommentController {
     const notification = await notificationService.getRecipeNotification(user.id, comment.recipeId, 'comment');
     
     if (notification) {
-      const recipientSocketId = userSockets[notification.userId];
-      io.to(recipientSocketId).emit("removeNotification", notification.id);
-
       await notificationService.deleteNotification(notification.id)
     }
 
@@ -124,10 +116,7 @@ class CommentController {
     }
 
     if (user.id !== userId) {
-      const notification = await notificationService.craeteNotification({ userId: userId, noficitaionCreatorId: user.id, type: "comment-reply", noficationData: data.commentText, recipeId: comment.recipeId, createdAt: new Date })
-      
-      const recipientSocketId = userSockets[notification.userId];
-      io.to(recipientSocketId).emit("notification", notification);
+      await notificationService.craeteNotification({ userId: userId, noficitaionCreatorId: user.id, type: "comment-reply", noficationData: data.commentText, recipeId: comment.recipeId, createdAt: new Date })
     }
 
     response.send(commentReplyDTO);
@@ -176,9 +165,6 @@ class CommentController {
     const notification = await notificationService.getRecipeNotification(user.id, recipe.id, 'comment-reply');
 
     if (notification) {
-      const recipientSocketId = userSockets[notification.userId];
-      io.to(recipientSocketId).emit("removeNotification", notification.id);
-
       await notificationService.deleteNotification(notification.id)
     }
 

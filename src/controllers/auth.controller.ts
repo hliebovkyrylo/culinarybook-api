@@ -13,9 +13,11 @@ import { userService }       from "../services/user.service";
 import { authService }       from "../services/auth.service";
 import { 
   createAccessToken, 
+  createRefreshToken, 
   verifyToken 
 }                            from "../utils/token";
 import { User }              from "@prisma/client";
+import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 
 class AuthController {
   public async signUp(request: Request, response: Response) {
@@ -38,10 +40,13 @@ class AuthController {
       });
     }
 
-    const password      = await bcrypt.hash(data.password, 8);
-    const user          = await authService.SignUp({ ...data, password });
-    const access_token  = createAccessToken(user.id);
+    const password = await bcrypt.hash(data.password, 8);
+    const user     = await authService.SignUp({ ...data, password });
 
+    const access_token  = createAccessToken(user.id);
+    const serializedRefreshToken = createRefreshToken(user.id);
+
+    response.setHeader('Set-Cookie', serializedRefreshToken);
     response.send({ access_token });
   };
 
@@ -67,18 +72,28 @@ class AuthController {
     }
 
     const access_token = createAccessToken(user.id);
+    const serializedRefreshToken = createRefreshToken(user.id);
 
+    response.setHeader('Set-Cookie', serializedRefreshToken);
     response.send({ access_token });
   };
 
   public async googleAuthCallback(request: Request, response: Response) {
-    const user          = request.user as User;
-    const access_token  = createAccessToken(user.id);
+    const user = request.user as User;
 
-    response.cookie('access_token', access_token);
+    const access_token = createAccessToken(user.id);
+    const serializedRefreshToken = createRefreshToken(user.id);
 
-    response.redirect(process.env.CLIENT_URL as string);
+    response.setHeader('Set-Cookie', serializedRefreshToken);
+    response.send({ access_token });
   }
+
+  public async signOut(_request: Request, response: Response) {
+    response.clearCookie("refresh_token")
+    response.clearCookie("access_token");
+
+    response.send({ message: "You are succefully sign out!" });
+  } 
 
   public async sendConfirmationCode(request: Request, response: Response) {
     const user = request.user as User;
@@ -291,6 +306,51 @@ class AuthController {
 
     response.send({ message: "Password successfully restored" });
   };
+
+  public async refreshToken(request: Request, response: Response) {
+    const refreshToken = request.cookies.refresh_token;
+
+    try {
+      if (!refreshToken) {
+        return response.status(401).send({
+          code   : "no-jwt",
+          message: "No jwt provided!"
+        });
+      }
+  
+      const id = verifyToken(refreshToken);
+      const user = await userService.getUserById(id);
+  
+      if (!user) {
+        return response.status(404).send({
+          code   : "user-not-found",
+          message: "User not found!",
+        });
+      }
+  
+      const newAccessToken = createAccessToken(id);
+      const newSerializedRefreshToken = createRefreshToken(id);
+  
+      response.setHeader('Set-Cookie', newSerializedRefreshToken);
+      response.send({ accessToken: newAccessToken });
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        return response.status(401).send({
+          code   : "refresh-token-expired",
+          message: "Refresh token has expired"
+        });
+      }
+  
+      if (error instanceof JsonWebTokenError) {
+        return response.status(401).send({
+          code   : "jwt-invalid",
+          message: "Token is not valid"
+        });
+      }
+  
+      console.log(error)
+    }
+  }
 };
 
 export const authController = new AuthController();

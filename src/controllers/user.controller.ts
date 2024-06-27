@@ -10,8 +10,6 @@ import { recipeService }              from "../services/recipe.service";
 import { followService }              from "../services/follow.service";
 import { likeService }                from "../services/like.service";
 import { notificationService }        from "../services/notification.service";
-import { userSockets }                from "../socket/socket.notification";
-import { io }                         from "..";
 
 class UserController {
   public async getMe(request: Request, response: Response) {
@@ -77,9 +75,6 @@ class UserController {
           const followRequestNotification = await notificationService.getFollowNotification(request.requesterId, user.id, "follow-request");
 
           if (followRequestNotification) {
-            const recipientSocketId = userSockets[followRequestNotification.userId];
-            io.to(recipientSocketId).emit("removeNotification", followRequestNotification.id);
-      
             await notificationService.deleteNotification(followRequestNotification.id);
           }
         }
