@@ -89,8 +89,8 @@ class AuthController {
   }
 
   public async signOut(_request: Request, response: Response) {
+    response.clearCookie("access_token", { domain: '.culinarybook.website' });
     response.clearCookie("refresh_token")
-    response.clearCookie("access_token");
 
     response.send({ message: "You are succefully sign out!" });
   } 
