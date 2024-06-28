@@ -28,6 +28,6 @@ authRoute.get('/google', passport.authenticate('google', { scope: ['profile', 'e
 authRoute.get ('/google/callback', passport.authenticate('google', { 
   failureRedirect: `${clientUrl}/sign-in`,
   successRedirect: `${clientUrl}` 
-}), authController.googleAuthCallback);
+}));
 authRoute.post('/refresh-token', authController.refreshToken);
 authRoute.post('/signOut', isAuth, authController.signOut);

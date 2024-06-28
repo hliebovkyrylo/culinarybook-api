@@ -1,31 +1,42 @@
-import passport                       from 'passport';
+import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { userService }                from '../services/user.service';
-import bcrypt                         from "bcrypt";
+import { userService } from '../services/user.service';
+import bcrypt from "bcrypt";
+import { createAccessToken, createRefreshToken } from '../utils/token';
 
-export const googleClientId     = process.env.GOOGLE_CLIENT_ID as string;
+export const googleClientId = process.env.GOOGLE_CLIENT_ID as string;
 export const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
-export const googleCallbackUrl  = process.env.GOOGLE_CALLBACK_URL as string;
+export const googleCallbackUrl = process.env.GOOGLE_CALLBACK_URL as string;
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID    : googleClientId,
+      clientID: googleClientId,
       clientSecret: googleClientSecret,
-      callbackURL : googleCallbackUrl,
+      callbackURL: googleCallbackUrl,
+      passReqToCallback: true,
     },
-    async (accessToken, refreshToken, profile, done) => {
-      const existingUser = await userService.getUserByEmail(profile.emails ? profile.emails[0].value : '');
+    async (req, accessToken, refreshToken, profile, done) => {
+      try {
+        const existingUser = await userService.getUserByEmail(profile.emails ? profile.emails[0].value : '');
 
-      if (existingUser) {
-        return done(null, existingUser);
+        let user = existingUser;
+
+        if (!existingUser) {
+          const hashedPassword = await bcrypt.hash(accessToken, 8);
+          user = await userService.createUserByGoogle(profile, hashedPassword);
+        }
+
+        const access_token = createAccessToken(user?.id as string);
+        const serializedRefreshToken = createRefreshToken(user?.id as string);
+
+        req.res?.cookie('refresh_token', serializedRefreshToken);
+        req.res?.cookie('access_token', access_token, { httpOnly: false, secure: false, domain: '.culinarybook.website' });
+
+        return done(null, user || undefined);
+      } catch (error) {
+        return done(error as Error, undefined);
       }
-
-      const hashedPassword = await bcrypt.hash(accessToken, 8);
-
-      const user = await userService.createUserByGoogle(profile, hashedPassword);
-
-      return done(null, user);
     }
   )
 );
