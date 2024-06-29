@@ -1,35 +1,28 @@
-import fs                              from "fs";
 import { type Request, type Response } from "express";
-import multer                          from "multer";
-
-const storage = multer.diskStorage({
-  destination: (_, __, callback) => {
-    const uploadFolder = 'uploads';
-    if (!fs.existsSync(uploadFolder)) {
-      fs.mkdirSync(uploadFolder);
-    }
-    callback(null, uploadFolder);
-  },
-  filename: (_, file, callback) => {
-    const filename = file.originalname.replace(/\s/g, '_');
-    callback(null, filename);
-  }
-});
-
-const upload = multer({ storage });
+import { s3 } from "../configs/aws.config";
+import { PutObjectCommandInput } from "@aws-sdk/client-s3";
 
 class UploadImageController {
-  public uploadImage(request: Request, response: Response) {
-    upload.single('image')(request, response, (err) => {
-      if (err) {
-        console.error(err);
-        return response.status(400).send({ code: "error-upload-file", message: "Error uploading file!" });
-      }
-      if (!request.file) {
-        return response.status(400).send({ code: "no-file", message: "No file uploaded!" });
-      }
-      response.send({ imageUrl: `uploads/${request.file.filename}` });
-    });
+  public async uploadImage(request: Request, response: Response) {
+    const file = request.file;
+
+    if (!file) {
+      return response.status(400).send({
+        code: "no-file",
+        message: "No file uploaded!"
+      });
+    }
+
+    const params: PutObjectCommandInput = {
+      Bucket: 'culinarybook-images',
+      Key: file.originalname,
+      Body: file.buffer,
+      ACL: 'public-read',
+      ContentType: file.mimetype
+    };
+
+    await s3.putObject(params);
+    response.send({ imageUrl: `https://culinarybook-images.s3.amazonaws.com/${file.originalname}` });
   };
 };
 
