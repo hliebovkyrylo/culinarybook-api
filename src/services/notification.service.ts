@@ -13,18 +13,20 @@ class NotificationService {
   };
 
   public async getNotificationsByUserId(userId: string) {
-    return await prisma.notification.findMany({
+    const notifications = await prisma.notification.findMany({
       where: {
         userId: userId,
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        notificationCreator: true,
-        recipe             : true
-      }
     });
+  
+    for (const notification of notifications) {
+      await prisma.notification.update({
+        where: { id: notification.id },
+        data: { isRead: true },
+      });
+    }
+  
+    return notifications;
   };
 
   public async changeNotificationReadStatus(notificationsIds: string[]) {
