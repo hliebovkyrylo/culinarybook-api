@@ -17,6 +17,10 @@ class NotificationService {
       where: {
         userId: userId,
       },
+      include: {
+        notificationCreator: true,
+        recipe             : true
+      }
     });
   
     for (const notification of notifications) {
