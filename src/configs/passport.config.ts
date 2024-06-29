@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { userService } from '../services/user.service';
 import bcrypt from "bcrypt";
-import { createAccessToken, createRefreshToken } from '../utils/token';
+import { createAccessToken, createNoSerializedRefreshToken } from '../utils/token';
 
 export const googleClientId = process.env.GOOGLE_CLIENT_ID as string;
 export const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
@@ -28,9 +28,15 @@ passport.use(
         }
 
         const access_token = createAccessToken(user?.id as string);
-        const serializedRefreshToken = createRefreshToken(user?.id as string);
+        const refresh_token = createNoSerializedRefreshToken(user?.id as string);
 
-        req.res?.cookie('refresh_token', serializedRefreshToken);
+        req.res?.cookie('refresh_token', refresh_token, { 
+          httpOnly: true, 
+          secure: process.env.PRODUCTION === 'true' ? true : false,
+          sameSite: process.env.PRODUCTION === 'true' ? 'strict' : 'lax',
+          maxAge: 60 * 60 * 24 * 31,
+          path: '/' 
+        });
         req.res?.cookie('access_token', access_token, { httpOnly: false, secure: false, domain: '.culinarybook.website' });
 
         return done(null, user || undefined);

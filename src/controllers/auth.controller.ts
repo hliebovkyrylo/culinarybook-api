@@ -332,7 +332,7 @@ class AuthController {
       const newSerializedRefreshToken = createRefreshToken(id);
   
       response.setHeader('Set-Cookie', newSerializedRefreshToken);
-      response.send({ accessToken: newAccessToken });
+      response.send({ access_token: newAccessToken });
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         return response.status(401).send({

@@ -43,6 +43,18 @@ export const createRefreshToken = (id: string) => {
   return serialized;
 }
 
+export const createNoSerializedRefreshToken = (id: string) => {
+  return jwt.sign(
+    {
+      id
+    },
+    JWT_SECRET,
+    {
+      expiresIn: JWT_REFRESH_EXPIRES_IN,
+    }
+  )
+}
+
 export const verifyToken = (token: string) => {
   const payload = jwt.verify(token, JWT_SECRET) as IPayload;
 
