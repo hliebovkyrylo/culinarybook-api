@@ -12,6 +12,8 @@ import { verifyToken }                  from "../utils/token";
 import { stepService }                  from "../services/step.service";
 import { likeService }                  from "../services/like.service";
 import { commentService }               from "../services/comment.service";
+import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { s3 } from "../configs/aws.config";
 
 class RecipeController {
   public async create(request: Request, response: Response) {
@@ -49,6 +51,35 @@ class RecipeController {
   public async update(request: Request, response: Response) {
     const recipeId = request.params.recipeId as string;
     const data     = request.body as IUpdateRecipeSchema;
+
+    const recipe = await recipeService.getRecipeById(recipeId);
+
+    if (!recipe) {
+      return response.status(404).send({
+        code: "recipe-not-found",
+        message: "Recipe not found!"
+      })
+    }
+
+    if (data.image !== '') {
+      const objectsToDelete = [];
+
+      if (data.image !== '' && recipe.image !== '') {
+        objectsToDelete.push({ Key: (recipe.image).split("/").pop() });
+      }
+
+      if (objectsToDelete.length > 0) {
+        const params = {
+          Bucket: 'culinarybook-images',
+          Delete: {
+            Objects: objectsToDelete
+          }
+        };
+
+        const command = new DeleteObjectsCommand(params);
+        await s3.send(command);
+      }
+    }
 
     const updatedRecipe = await recipeService.updateRecipe(recipeId, data);
 
