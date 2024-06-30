@@ -10,6 +10,8 @@ import { recipeService }              from "../services/recipe.service";
 import { followService }              from "../services/follow.service";
 import { likeService }                from "../services/like.service";
 import { notificationService }        from "../services/notification.service";
+import { s3 } from "../configs/aws.config";
+import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
 
 class UserController {
   public async getMe(request: Request, response: Response) {
@@ -57,6 +59,30 @@ class UserController {
         code   : "such-username-exist",
         message: "User with such username is already exist! Please, enter another username.",
       });
+    }
+
+    if (data.image !== '' || data.backgroundImage !== '') {
+      const objectsToDelete = [];
+
+      if (data.image !== '' && user.image !== '') {
+        objectsToDelete.push({ Key: (user.image).split("/").pop() });
+      }
+
+      if (data.backgroundImage !== '' && user.backgroundImage !== '') {
+        objectsToDelete.push({ Key: (user.backgroundImage).split("/").pop() });
+      }
+
+      if (objectsToDelete.length > 0) {
+        const params = {
+          Bucket: 'culinarybook-images',
+          Delete: {
+            Objects: objectsToDelete
+          }
+        };
+
+        const command = new DeleteObjectsCommand(params);
+        await s3.send(command);
+      }
     }
 
     const updatedUser    = await userService.updateUserInfo(user.id, data);
