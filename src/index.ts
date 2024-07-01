@@ -35,7 +35,6 @@ const app           = express();
 export const prisma = new PrismaClient();
 export const server = http.createServer(app);
 
-app.use('/uploads', express.static('uploads'));
 app.use(cors({
   origin     : clientUrl,
   credentials: true
