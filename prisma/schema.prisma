@@ -40,11 +40,12 @@ model VerificationCode {
 }
 
 model Follow {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String @db.ObjectId
-  followerId String @db.ObjectId
-  user       User   @relation("UserFollows", fields: [userId], references: [id])
-  follower   User   @relation("UserFollowed", fields: [followerId], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  followerId String   @db.ObjectId
+  user       User     @relation("UserFollows", fields: [userId], references: [id])
+  follower   User     @relation("UserFollowed", fields: [followerId], references: [id])
+  createdAt  DateTime @default(now()) @map("createdAt")
 }
 
 model Recipe {
@@ -69,27 +70,30 @@ model Recipe {
 }
 
 model Like {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  recipeId String @db.ObjectId
-  userId   String @db.ObjectId
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
-  user     User   @relation(fields: [userId], references: [id])
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId  String   @db.ObjectId
+  userId    String   @db.ObjectId
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("createdAt")
 }
 
 model Visited {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  recipeId String @db.ObjectId
-  userId   String @db.ObjectId
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
-  user     User   @relation(fields: [userId], references: [id])
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId  String   @db.ObjectId
+  userId    String   @db.ObjectId
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("createdAt")
 }
 
 model Saved {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  recipeId String @db.ObjectId
-  userId   String @db.ObjectId
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
-  user     User   @relation(fields: [userId], references: [id])
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  recipeId  String   @db.ObjectId
+  userId    String   @db.ObjectId
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("createdAt")
 }
 
 model Step {
