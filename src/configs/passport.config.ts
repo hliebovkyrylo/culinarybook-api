@@ -37,7 +37,7 @@ passport.use(
           maxAge: 60 * 60 * 24 * 31,
           path: '/' 
         });
-        req.res?.cookie('access_token', access_token, { httpOnly: false, secure: false, domain: '.culinarybook.website' });
+        req.res?.cookie('access_token', access_token, { httpOnly: false, secure: false, domain: '.culinarybook.website', maxAge: 60 * 60 * 24 * 2 });
 
         return done(null, user || undefined);
       } catch (error) {
