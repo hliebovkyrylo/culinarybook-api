@@ -355,6 +355,12 @@ class RecipeController {
     const recipesDTO = recipes.map(recipe => new RecipePreviewDTO(recipe));
     response.send(recipesDTO);
   };
+
+  public async getAllRecipesIds(_request: Request, response: Response) {
+    const recipesIds = await recipeService.getAllRecipesIds();
+
+    response.send({ recipesIds: recipesIds });
+  };
 };
 
 export const recipeController = new RecipeController();

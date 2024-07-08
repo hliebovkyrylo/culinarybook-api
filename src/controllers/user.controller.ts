@@ -240,6 +240,12 @@ class UserController {
     const paginatedUsers = userFollowersAndLikes.slice(startIndex, endIndex);
     response.send(paginatedUsers.map(user => new UserPreviewDTO(user.user)));
   };
+
+  public async getAllUsersIds(_request: Request, response: Response) {
+    const usersIds = await userService.getAllUsersIds();
+
+    response.send({ usersIds: usersIds });
+  };
 };
 
 export const userController = new UserController();

@@ -203,6 +203,12 @@ class UserService {
   
     return usersWithCounts;
   }
+
+  public async getAllUsersIds() {
+    return await prisma.user.findMany({
+      select: { id: true },
+    });
+  }
 };
 
 export const userService = new UserService();

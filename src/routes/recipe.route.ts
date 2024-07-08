@@ -28,3 +28,4 @@ recipeRoute.get("/saved/get", isAuth, isVerifiedAccount, recipeController.getSav
 recipeRoute.get("/popular/recipes", recipeController.getPopularRecipes);
 recipeRoute.get("/my/recipes", isAuth, isVerifiedAccount, recipeController.getMyRecipes);
 recipeRoute.get("/:userId/recipes", isPrivateAccount, recipeController.getUserRecipes);
+recipeRoute.get("/get/recipes/ids", recipeController.getAllRecipesIds);

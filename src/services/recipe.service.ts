@@ -303,6 +303,12 @@ class RecipeService {
       }
     });
   };
+
+  public async getAllRecipesIds() {
+    return await prisma.recipe.findMany({
+      select: { id: true },
+    });
+  }
 };
 
 export const recipeService = new RecipeService();

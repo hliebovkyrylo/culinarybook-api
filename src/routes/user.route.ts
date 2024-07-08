@@ -13,3 +13,4 @@ userRoute.patch('/update', isAuth, isVerifiedAccount, validate(UdpateUserInfoSch
 userRoute.patch('/changeType', isAuth, isVerifiedAccount, userController.updateAccountType);
 userRoute.get('/recommended/users', isAuth, isVerifiedAccount, userController.getRecommendedUsers);
 userRoute.get('/popular/users', userController.getPopularUsers);
+userRoute.get('/get/users/ids', userController.getAllUsersIds);
