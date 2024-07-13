@@ -11,6 +11,9 @@ class StepService {
       where: {
         recipeId: recipeId,
       },
+      orderBy: {
+        stepNumber: "asc",
+      },
     });
   };
 
